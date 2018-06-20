@@ -2,7 +2,7 @@ const leave = {
 	type_of_leave: '',
 	reason: '',
 	from: '',
-	to: '',	
+	to: '',
 	address: '',
 	contact_leave: ''
 }

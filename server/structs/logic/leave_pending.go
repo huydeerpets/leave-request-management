@@ -14,6 +14,7 @@ type LeavePending struct {
 	From             string `json:"from" orm:"column(from)"`
 	To               string `json:"to" orm:"column(to)"`
 	Total            int64  `json:"total" orm:"column(total)"`
+	LeaveRemaining   int64  `json:"leave_remaining" orm:"column(leave_remaining)"`
 	Address          string `json:"address" orm:"column(address)"`
-	MobilePhone      string `json:"mobile_phone" orm:"column(mobile_phone)"`
+	ContactLeave     string `json:"contact_leave" orm:"column(contact_leave)"`
 }

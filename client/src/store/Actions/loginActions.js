@@ -18,11 +18,14 @@ export function submitLogin(payload, pusher) {
 	return (dispatch) => {
 
 		fetch('http://localhost:8080/api/login', {
-			method: 'POST',
-			body: JSON.stringify(payload)
-		})
+				method: 'POST',
+				body: JSON.stringify(payload)
+			})
 			.then((resp) => resp.json())
-			.then(({ body, error }) => {
+			.then(({
+				body,
+				error
+			}) => {
 				const data = body
 				const token = body['Token']
 				const id = body['ID']
@@ -44,8 +47,7 @@ export function submitLogin(payload, pusher) {
 						localStorage.setItem('id', id)
 						pusher('/admin')
 						dispatch(clearField())
-					}
-					else if (role === 'director') {
+					} else if (role === 'director') {
 						localStorage.setItem('token', token)
 						localStorage.setItem('role', role)
 						localStorage.setItem('id', id)
@@ -63,8 +65,8 @@ export function submitLogin(payload, pusher) {
 						localStorage.setItem('id', id)
 						pusher('/employee')
 						dispatch(clearField())
-					} else {
-						alert('invalid username or password')
+					} else if (role !== 'admin' || role !== 'director' || role !== 'supervisor' || role !== 'employee') {
+						alert('Email not register, please register')
 						pusher('/')
 						dispatch(clearField())
 					}
@@ -75,7 +77,7 @@ export function submitLogin(payload, pusher) {
 			})
 			.catch(err => {
 				console.log(err)
-				alert('invalid username or password')
+				alert(err)
 				dispatch(clearField())
 			})
 	}

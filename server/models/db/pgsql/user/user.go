@@ -142,16 +142,18 @@ func (u *User) GetUserPending(supervisorID int64) ([]structLogic.LeavePending, e
 
 	qb.Select(user.TableName()+".employee_number",
 		user.TableName()+".name",
+		user.TableName()+".gender",
 		user.TableName()+".position",
 		user.TableName()+".start_working_date",
 		user.TableName()+".mobile_phone",
 		user.TableName()+".email",
-		leave.TableName()+".role",
+		user.TableName()+".role",
 		leave.TableName()+".type_of_leave",
 		leave.TableName()+".reason",
-		leave.TableName()+".type_of_leave",
 		leave.TableName()+".from",
 		leave.TableName()+".to",
+		leave.TableName()+".total",
+		leave.TableName()+".leave_remaining",
 		leave.TableName()+".address",
 		leave.TableName()+".contact_leave").
 		From(user.TableName()).

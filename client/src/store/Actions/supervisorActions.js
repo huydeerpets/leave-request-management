@@ -1,4 +1,3 @@
-
 function pendingFetch(payload) {
 	return {
 		type: 'FETCH_LEAVE_PENDING',
@@ -7,14 +6,16 @@ function pendingFetch(payload) {
 }
 
 export function pendingFetchData() {
-	const employeeNumber = localStorage.getItem('id')
-	console.log("===============", employeeNumber)
 	return (dispatch) => {
+		const employeeNumber = localStorage.getItem('id')
+		console.log("===============", employeeNumber)
 		fetch('http://localhost:8080/api/supervisor/' + employeeNumber, {
-			method: 'GET',
-		})
+				method: 'GET',
+			})
 			.then((resp) => resp.json())
-			.then(({ body }) => {
+			.then(({
+				body
+			}) => {
 				console.log(body)
 
 				let payload = {
@@ -30,5 +31,3 @@ export function pendingFetchData() {
 			})
 	}
 }
-
-
