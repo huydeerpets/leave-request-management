@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { pendingFetchData } from "../store/Actions/supervisorActions";
+import {
+  pendingFetchData,
+  updateStatusAccept
+} from "../store/Actions/supervisorActions";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
 import { Layout, Table, Divider, Button } from "antd";
@@ -15,22 +18,20 @@ class SupervisorPage extends Component {
       {
         title: "Employee Number",
         dataIndex: "employee_number",
-        key: "employee_number"
+        key: "employee_number",
+        width: 95,
       },
       {
         title: "Name",
         dataIndex: "name",
-        key: "name"
-      },
-      {
-        title: "Gender",
-        dataIndex: "gender",
-        key: "gender"
+        key: "name",
+        width: 70,
       },
       {
         title: "Position",
         dataIndex: "position",
-        key: "position"
+        key: "position",
+        width: 90,
       },
       {
         title: "Start Working Date",
@@ -40,37 +41,44 @@ class SupervisorPage extends Component {
       {
         title: "Email",
         dataIndex: "email",
-        key: "email"
+        key: "email",
+        width: 80,
       },
       {
         title: "Role",
         dataIndex: "role",
-        key: "role"
+        key: "role",
+        width: 65,
       },
       {
         title: "Type Of Leave",
         dataIndex: "type_of_leave",
-        key: "type_of_leave"
+        key: "type_of_leave",
+        width: 100,
       },
       {
         title: "Reason",
         dataIndex: "reason",
-        key: "reason"
+        key: "reason",
+        width: 85,
       },
       {
         title: "From",
         dataIndex: "from",
-        key: "from"
+        key: "from",
+        width: 65,
       },
       {
         title: "To",
         dataIndex: "to",
-        key: "to"
+        key: "to",
+        width: 50,
       },
       {
         title: "Total",
         dataIndex: "total",
-        key: "total"
+        key: "total",
+        width: 70,
       },
       {
         title: "Leave Remaining",
@@ -80,7 +88,8 @@ class SupervisorPage extends Component {
       {
         title: "Address",
         dataIndex: "address",
-        key: "address"
+        key: "address",
+        width: 100,
       },
       {
         title: "Contact Leave",
@@ -90,11 +99,13 @@ class SupervisorPage extends Component {
       {
         title: "Action",
         key: "action",
+        width: 100,
         render: (text, record) => (
           <span>
             <Button
               onClick={() => {
-                this.editUser(this.props.users, record.id);
+                this.updateStatusAccept(this.props.users, record.employee_number)                
+                window.location.reload()
               }}
               type="primary"
             >
@@ -104,7 +115,7 @@ class SupervisorPage extends Component {
             <Divider type="vertical" />
             <Button
               onClick={() => {
-                this.editUser(this.props.users, record.id);
+                this.editUser(this.props.users, record.id)
               }}
               type="danger"
             >
@@ -116,6 +127,11 @@ class SupervisorPage extends Component {
       }
     ];
   }
+
+  updateStatusAccept = (users, employeeNumber) => {    
+    this.props.updateStatusAccept(users, employeeNumber);
+  };
+
   editUser = (users, userId) => {
     console.log(userId, "--", users);
     this.props.history.push({
@@ -143,14 +159,18 @@ class SupervisorPage extends Component {
           <Content
             className="container"
             style={{
-              display: "flex",
-              margin: "24px 16px 0",
+              display: "flex",                      
+              margin: "18px 10px 0",
               justifyContent: "space-around",
               paddingBottom: "336px"
             }}
           >
-            <div style={{ padding: 150, background: "#fff", minHeight: 360 }}>
-              <Table columns={this.columns} dataSource={this.props.users} />
+            <div style={{ padding: 20, background: "#fff" }}>
+              <Table
+                columns={this.columns}
+                dataSource={this.props.users}
+                rowKey={record => record.employee_number}
+              />
             </div>
           </Content>
           <Footer />
@@ -168,7 +188,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      pendingFetchData
+      pendingFetchData,
+      updateStatusAccept
     },
     dispatch
   );

@@ -125,7 +125,11 @@ class Adminpage extends Component {
             }}
           >
             <div style={{ padding: 150, background: "#fff", minHeight: 360 }}>
-              <Table columns={this.columns} dataSource={this.props.users} />
+              <Table
+                columns={this.columns}
+                dataSource={this.props.users}
+                rowKey={record => record.employee_number}
+              />
             </div>
           </Content>
           <Footer style={{ background: "grey" }}>

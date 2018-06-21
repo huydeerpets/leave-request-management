@@ -33,10 +33,31 @@ func init() {
 			"post:PostLeaveRequest",
 		),
 
+		// get pending request in employee (only for employee)
+		beego.NSRouter("/employee/pending/:id:int ",
+			&controllers.UserController{},
+			"get:GetRequestPending",
+		),
+		// get accept request in employee (only for employee)
+		beego.NSRouter("/employee/accept/:id:int ",
+			&controllers.UserController{},
+			"get:GetRequestAccept",
+		),
+		// get reject request in employee (only for employee)
+		beego.NSRouter("/employee/reject/:id:int ",
+			&controllers.UserController{},
+			"get:GetRequestReject",
+		),
+
 		// get status pending in supervisor (only for supervisor)
 		beego.NSRouter("/supervisor/:id:int ",
 			&controllers.UserController{},
 			"get:GetPendingLeave",
+		),
+		// accept status by supervisor (only for supervisor)
+		beego.NSRouter("/employee/accept/:id:int ",
+			&controllers.UserController{},
+			"put:AcceptStatusBySupervisor",
 		),
 	)
 	beego.AddNamespace(ns)

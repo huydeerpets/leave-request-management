@@ -25,9 +25,28 @@ type IBaseUser interface {
 		result structDB.User,
 		err error,
 	)
+	// GetPendingRequest
+	GetPendingRequest(employeeNumber int64) (
+		[]structLogic.RequestPending,
+		error,
+	)
+	// GetAcceptRequest
+	GetAcceptRequest(employeeNumber int64) (
+		[]structLogic.RequestAccept,
+		error,
+	)
+	// GetRejectRequest
+	GetRejectRequest(employeeNumber int64) (
+		[]structLogic.RequestReject,
+		error,
+	)
 	// GetUserPending
 	GetUserPending(supervisorID int64) (
 		[]structLogic.LeavePending,
 		error,
 	)
+	// AcceptBySupervisor
+	AcceptBySupervisor(employeeNumber int64) error
+	// RejectBySupervisor
+	RejectBySupervisor(employeeNumber int64) error
 }

@@ -5,9 +5,10 @@ import { formOnChange, SumbitLeave } from "../store/Actions/leaveRequestAction";
 import moment from "moment";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
-import { Layout, Form, Icon, Input, Button, DatePicker } from "antd";
+import { Layout, Form, Icon, Input, Select, Button, DatePicker } from "antd";
 const { Content } = Layout;
 const FormItem = Form.Item;
+const Option = Select.Option;
 const { MonthPicker, RangePicker } = DatePicker;
 
 function range(start, end) {
@@ -71,6 +72,28 @@ class EmployeePage extends Component {
     this.props.SumbitLeave(this.props.leaveForm);
   };
 
+  handleChangeSelect(value) {
+    console.log(`selected ${value}`);
+  }
+
+  handleBlur() {
+    console.log("blur");
+  }
+
+  handleFocus() {
+    console.log("focus");
+  }
+
+  saveSelectValue = (e,id) => {
+    let data = {}
+    data.id = id;
+    data.value = e.target.value
+
+    this.props.formOnChange(data);
+    
+  }
+  
+
   render() {
     if (this.props.loading) {
       return <h1> loading... </h1>;
@@ -105,6 +128,27 @@ class EmployeePage extends Component {
                     onChange={this.handleOnChange}
                   />
                 </FormItem>
+
+                <Select                
+                  showSearch  
+                  placeholder= "Type of leave"                                
+                  onChange={this.handleChange}
+                  optionFilterProp="children"
+                  onChange={this.saveSelectValue}
+                  onFocus={this.handleFocus}
+                  onBlur={this.handleBlur}                  
+                  filterOption={(input, option) =>
+                    option.props.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  <Option value="holiday">Holiday</Option>
+                  <Option value="maternity">Maternity</Option>
+                  <Option value="paternity">Paternity Leave</Option>
+                  <Option value="sick">Sick Leave</Option>                  
+                </Select>
+
                 <FormItem>
                   <Input
                     type="text"
