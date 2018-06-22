@@ -45,6 +45,16 @@ type IBaseUser interface {
 		[]structLogic.LeavePending,
 		error,
 	)
+	// GetUserAccept
+	GetUserAccept(supervisorID int64) (
+		[]structLogic.LeaveAccept,
+		error,
+	)
+	// GetUserReject
+	GetUserReject(supervisorID int64) (
+		[]structLogic.LeaveReject,
+		error,
+	)
 	// AcceptBySupervisor
 	AcceptBySupervisor(employeeNumber int64) error
 	// RejectBySupervisor

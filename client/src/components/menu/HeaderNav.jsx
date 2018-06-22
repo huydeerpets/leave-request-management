@@ -139,8 +139,12 @@ export default class HeaderNav extends React.Component {
                 </span>
               }
             >
-              <Menu.Item key="user:1">List Accept</Menu.Item>
-              <Menu.Item key="user:2">List Reject</Menu.Item>
+              <Menu.Item key="user:1">
+                <NavLink to="/list-accept">List Accept</NavLink>
+              </Menu.Item>
+              <Menu.Item key="user:2">
+                <NavLink to="/list-reject">List Reject</NavLink>
+              </Menu.Item>
             </SubMenu>
 
             <SubMenu

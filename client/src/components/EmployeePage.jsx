@@ -84,15 +84,13 @@ class EmployeePage extends Component {
     console.log("focus");
   }
 
-  saveSelectValue = (e,id) => {
-    let data = {}
+  saveSelectValue = (e, id) => {
+    let data = {};
     data.id = id;
-    data.value = e.target.value
+    data.value = e.target.value;
 
     this.props.formOnChange(data);
-    
-  }
-  
+  };
 
   render() {
     if (this.props.loading) {
@@ -129,24 +127,27 @@ class EmployeePage extends Component {
                   />
                 </FormItem>
 
-                <Select                
-                  showSearch  
-                  placeholder= "Type of leave"                                
+                <Select
+                  showSearch
+                  placeholder="Type of leave"
                   onChange={this.handleChange}
                   optionFilterProp="children"
-                  onChange={this.saveSelectValue}
+                  // onChange={this.saveSelectValue}
                   onFocus={this.handleFocus}
-                  onBlur={this.handleBlur}                  
+                  onBlur={this.handleBlur}
                   filterOption={(input, option) =>
                     option.props.children
                       .toLowerCase()
                       .indexOf(input.toLowerCase()) >= 0
                   }
                 >
+                  <Option value="erran_leave">Errand Leave</Option>
+                  <Option value="sick_leave">Sick Leave</Option>
+                  <Option value="annual_leave">Annual Leave</Option>
                   <Option value="holiday">Holiday</Option>
+                  <Option value="married_leave">Married Leave</Option>
                   <Option value="maternity">Maternity</Option>
-                  <Option value="paternity">Paternity Leave</Option>
-                  <Option value="sick">Sick Leave</Option>                  
+                  <Option value="other_leave">Other Leave</Option>
                 </Select>
 
                 <FormItem>
@@ -188,6 +189,20 @@ class EmployeePage extends Component {
                     onChange={this.handleOnChange}
                   />
                 </FormItem>
+                <FormItem>
+                  <Input
+                    type="date"
+                    id="back_on"
+                    name="back_on"
+                    placeholder=" will be back to work on"
+                    prefix={
+                      <Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />
+                    }
+                    value={this.props.leaveForm.to}
+                    onChange={this.handleOnChange}
+                  />
+                </FormItem>
+
                 <FormItem>
                   <RangePicker
                     disabledDate={disabledDate}

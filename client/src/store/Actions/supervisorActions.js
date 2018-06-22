@@ -5,10 +5,109 @@ function pendingFetch(payload) {
 	}
 }
 
+function acceptFetch(payload) {
+	return {
+		type: 'FETCH_LEAVE_ACCEPT',
+		payload: payload
+	}
+}
+
+function rejectFetch(payload) {
+	return {
+		type: 'FETCH_LEAVE_REJECT',
+		payload: payload
+	}
+}
+
 function acceptRequest(payload) {
 	return {
 		type: 'ACCEPT_LEAVE_PENDING',
 		payload: payload
+	}
+}
+
+
+function rejectRequest(payload) {
+	return {
+		type: 'REJECT_LEAVE_PENDING',
+		payload: payload
+	}
+}
+
+
+export function pendingFetchData() {
+	return (dispatch) => {
+		const employeeNumber = localStorage.getItem('id')
+		fetch('http://localhost:8080/api/supervisor/pending/' + employeeNumber, {
+				method: 'GET',
+			})
+			.then((resp) => resp.json())
+			.then(({
+				body
+			}) => {
+				console.log(body)
+
+				let payload = {
+					loading: false,
+					users: body
+
+				}
+				dispatch(pendingFetch(payload))
+			})
+			.catch(err => {
+				console.log(err)
+			})
+	}
+}
+
+export function acceptFetchData() {
+	return (dispatch) => {
+		const employeeNumber = localStorage.getItem('id')
+		fetch('http://localhost:8080/api/supervisor/accept/' + employeeNumber, {
+				method: 'GET',
+			})
+			.then((resp) => resp.json())
+			.then(({
+				body
+			}) => {
+				console.log(body)
+
+				let payload = {
+					loading: false,
+					users: body
+
+				}
+				dispatch(acceptFetch(payload))
+			})
+			.catch(err => {
+				console.log(err)
+			})
+	}
+}
+
+
+export function rejectFetchData() {
+	return (dispatch) => {
+		const employeeNumber = localStorage.getItem('id')
+		fetch('http://localhost:8080/api/supervisor/reject/' + employeeNumber, {
+				method: 'GET',
+			})
+			.then((resp) => resp.json())
+			.then(({
+				body
+			}) => {
+				console.log(body)
+
+				let payload = {
+					loading: false,
+					users: body
+
+				}
+				dispatch(rejectFetch(payload))
+			})
+			.catch(err => {
+				console.log(err)
+			})
 	}
 }
 
@@ -18,7 +117,6 @@ export function updateStatusAccept(users, employeeNumber) {
 				method: 'PUT',
 			})
 			.then(response => {
-				console.log(response, 'ini apa ya?')
 				let newUserlist = users.filter(el => el.id !== employeeNumber)
 				console.log(newUserlist)
 				let payload = {
@@ -35,27 +133,23 @@ export function updateStatusAccept(users, employeeNumber) {
 	}
 }
 
-export function pendingFetchData() {
+export function updateStatusReject(users, employeeNumber) {
 	return (dispatch) => {
-		const employeeNumber = localStorage.getItem('id')		
-		fetch('http://localhost:8080/api/supervisor/' + employeeNumber, {
-				method: 'GET',
+		fetch('http://localhost:8080/api/employee/reject/' + employeeNumber, {
+				method: 'PUT',
 			})
-			.then((resp) => resp.json())
-			.then(({
-				body
-			}) => {
-				console.log(body)
-
+			.then(response => {
+				let newUserlist = users.filter(el => el.id !== employeeNumber)
+				console.log(newUserlist)
 				let payload = {
 					loading: false,
-					users: body
-
+					users: [
+						...newUserlist
+					]
 				}
-				console.log(payload, 'aaa')
-				dispatch(pendingFetch(payload))
-			})
-			.catch(err => {
+				dispatch(rejectRequest(payload))
+
+			}).catch(err => {
 				console.log(err)
 			})
 	}

@@ -9,9 +9,6 @@ import fetchReqPendingReducer from './Reducers/statusPendingReducer'
 import fetchReqAcceptReducer from './Reducers/statusAcceptReducer'
 import fetchReqRejectReducer from './Reducers/statusRejectReducer'
 
-
-
-
 const appStore = combineReducers({
 	signupReducer,
 	loginReducer,

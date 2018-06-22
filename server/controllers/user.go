@@ -120,7 +120,6 @@ func (c *UserController) GetRequestPending() {
 		resp.Error = errors.New("convert id failed").Error()
 		return
 	}
-	fmt.Println("=====================>", employeeNumber)
 
 	resGet, errGetPend := logic.DBPostUser.GetPendingRequest(employeeNumber)
 	if errGetPend != nil {
@@ -217,6 +216,60 @@ func (c *UserController) GetPendingLeave() {
 	}
 }
 
+// GetAcceptLeave ...
+func (c *UserController) GetAcceptLeave() {
+	var (
+		resp structAPI.RespData
+	)
+	idStr := c.Ctx.Input.Param(":id")
+	supervisorID, errCon := strconv.ParseInt(idStr, 0, 64)
+	if errCon != nil {
+		helpers.CheckErr("convert id failed @GetAcceptLeave", errCon)
+		resp.Error = errors.New("convert id failed").Error()
+		return
+	}
+
+	resGet, errGetAccept := logic.DBPostUser.GetUserAccept(supervisorID)
+	if errGetAccept != nil {
+		resp.Error = errGetAccept.Error()
+		c.Ctx.Output.SetStatus(400)
+	} else {
+		resp.Body = resGet
+	}
+
+	err := c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		helpers.CheckErr("failed giving output @GetAcceptLeave", err)
+	}
+}
+
+// GetRejectLeave ...
+func (c *UserController) GetRejectLeave() {
+	var (
+		resp structAPI.RespData
+	)
+	idStr := c.Ctx.Input.Param(":id")
+	supervisorID, errCon := strconv.ParseInt(idStr, 0, 64)
+	if errCon != nil {
+		helpers.CheckErr("convert id failed @GetRejectLeave", errCon)
+		resp.Error = errors.New("convert id failed").Error()
+		return
+	}
+
+	resGet, errGetReject := logic.DBPostUser.GetUserReject(supervisorID)
+	if errGetReject != nil {
+		resp.Error = errGetReject.Error()
+		c.Ctx.Output.SetStatus(400)
+	} else {
+		resp.Body = resGet
+	}
+
+	err := c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		helpers.CheckErr("failed giving output @GetRejectLeave", err)
+	}
+}
+
 // AcceptStatusBySupervisor ...
 func (c *UserController) AcceptStatusBySupervisor() {
 	var resp structAPI.RespData
@@ -233,11 +286,36 @@ func (c *UserController) AcceptStatusBySupervisor() {
 	if errUpStat != nil {
 		resp.Error = errUpStat.Error()
 	} else {
-		resp.Body = "update status success"
+		resp.Body = "status leave request has been accepted"
 	}
 
 	err := c.Ctx.Output.JSON(resp, false, false)
 	if err != nil {
 		helpers.CheckErr("failed giving output @AcceptStatusBySupervisor", err)
+	}
+}
+
+// RejectStatusBySupervisor ...
+func (c *UserController) RejectStatusBySupervisor() {
+	var resp structAPI.RespData
+
+	idStr := c.Ctx.Input.Param(":id")
+	employeeNumber, errCon := strconv.ParseInt(idStr, 0, 64)
+	if errCon != nil {
+		helpers.CheckErr("convert id failed @RejectStatusBySupervisor", errCon)
+		resp.Error = errors.New("convert id failed").Error()
+		return
+	}
+
+	errUpStat := logic.DBPostUser.RejectBySupervisor(employeeNumber)
+	if errUpStat != nil {
+		resp.Error = errUpStat.Error()
+	} else {
+		resp.Body = "status leave request has been rejected"
+	}
+
+	err := c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		helpers.CheckErr("failed giving output @RejectStatusBySupervisor", err)
 	}
 }

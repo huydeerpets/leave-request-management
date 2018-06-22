@@ -3,7 +3,8 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import {
   pendingFetchData,
-  updateStatusAccept
+  updateStatusAccept,
+  updateStatusReject
 } from "../store/Actions/supervisorActions";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
@@ -19,19 +20,19 @@ class SupervisorPage extends Component {
         title: "Employee Number",
         dataIndex: "employee_number",
         key: "employee_number",
-        width: 95,
+        width: 95
       },
       {
         title: "Name",
         dataIndex: "name",
         key: "name",
-        width: 70,
+        width: 70
       },
       {
         title: "Position",
         dataIndex: "position",
         key: "position",
-        width: 90,
+        width: 90
       },
       {
         title: "Start Working Date",
@@ -42,43 +43,43 @@ class SupervisorPage extends Component {
         title: "Email",
         dataIndex: "email",
         key: "email",
-        width: 80,
+        width: 80
       },
       {
         title: "Role",
         dataIndex: "role",
         key: "role",
-        width: 65,
+        width: 65
       },
       {
         title: "Type Of Leave",
         dataIndex: "type_of_leave",
         key: "type_of_leave",
-        width: 100,
+        width: 100
       },
       {
         title: "Reason",
         dataIndex: "reason",
         key: "reason",
-        width: 85,
+        width: 85
       },
       {
         title: "From",
         dataIndex: "from",
         key: "from",
-        width: 65,
+        width: 65
       },
       {
         title: "To",
         dataIndex: "to",
         key: "to",
-        width: 50,
+        width: 50
       },
       {
         title: "Total",
         dataIndex: "total",
         key: "total",
-        width: 70,
+        width: 70
       },
       {
         title: "Leave Remaining",
@@ -89,7 +90,7 @@ class SupervisorPage extends Component {
         title: "Address",
         dataIndex: "address",
         key: "address",
-        width: 100,
+        width: 100
       },
       {
         title: "Contact Leave",
@@ -104,8 +105,11 @@ class SupervisorPage extends Component {
           <span>
             <Button
               onClick={() => {
-                this.updateStatusAccept(this.props.users, record.employee_number)                
-                window.location.reload()
+                this.updateStatusAccept(
+                  this.props.users,
+                  record.employee_number
+                );
+                window.location.reload();
               }}
               type="primary"
             >
@@ -115,7 +119,11 @@ class SupervisorPage extends Component {
             <Divider type="vertical" />
             <Button
               onClick={() => {
-                this.editUser(this.props.users, record.id)
+                this.updateStatusReject(
+                  this.props.users,
+                  record.employee_number
+                );
+                window.location.reload();
               }}
               type="danger"
             >
@@ -128,16 +136,12 @@ class SupervisorPage extends Component {
     ];
   }
 
-  updateStatusAccept = (users, employeeNumber) => {    
+  updateStatusAccept = (users, employeeNumber) => {
     this.props.updateStatusAccept(users, employeeNumber);
   };
 
-  editUser = (users, userId) => {
-    console.log(userId, "--", users);
-    this.props.history.push({
-      pathname: "/edituser/" + userId,
-      state: { users: users }
-    });
+  updateStatusReject = (users, employeeNumber) => {
+    this.props.updateStatusReject(users, employeeNumber);
   };
 
   componentDidMount() {
@@ -159,7 +163,7 @@ class SupervisorPage extends Component {
           <Content
             className="container"
             style={{
-              display: "flex",                      
+              display: "flex",
               margin: "18px 10px 0",
               justifyContent: "space-around",
               paddingBottom: "336px"
@@ -189,7 +193,8 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       pendingFetchData,
-      updateStatusAccept
+      updateStatusAccept,
+      updateStatusReject
     },
     dispatch
   );

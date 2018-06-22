@@ -18,6 +18,8 @@ import ReqRejectPage from './components/ReqRejectPage.jsx';
 
 import LandingSupervisor from './components/LandingSupervisor.jsx';
 import SupervisorPage from './components/SupervisorPage.jsx';
+import SupervisorAcceptPage from './components/SupervisorAcceptPage';
+import SupervisorRejectPage from './components/SupervisorRejectPage.jsx';
 
 import Notfound from './components/NotFound.jsx';
 
@@ -42,6 +44,8 @@ class App extends Component {
 
               <Route path="/supervisor" component={LandingSupervisor} />
               <Route path="/list-request" component={SupervisorPage} />
+              <Route path="/list-accept" component={SupervisorAcceptPage} />
+              <Route path="/list-reject" component={SupervisorRejectPage} />
               
               <Route component={Notfound} />
             </Switch>

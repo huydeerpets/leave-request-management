@@ -50,14 +50,29 @@ func init() {
 		),
 
 		// get status pending in supervisor (only for supervisor)
-		beego.NSRouter("/supervisor/:id:int ",
+		beego.NSRouter("/supervisor/pending/:id:int ",
 			&controllers.UserController{},
 			"get:GetPendingLeave",
+		),
+		// get status accept in supervisor (only for supervisor)
+		beego.NSRouter("/supervisor/accept/:id:int ",
+			&controllers.UserController{},
+			"get:GetAcceptLeave",
+		),
+		// get status reject in supervisor (only for supervisor)
+		beego.NSRouter("/supervisor/reject/:id:int ",
+			&controllers.UserController{},
+			"get:GetRejectLeave",
 		),
 		// accept status by supervisor (only for supervisor)
 		beego.NSRouter("/employee/accept/:id:int ",
 			&controllers.UserController{},
 			"put:AcceptStatusBySupervisor",
+		),
+		// reject status by supervisor (only for supervisor)
+		beego.NSRouter("/employee/reject/:id:int ",
+			&controllers.UserController{},
+			"put:RejectStatusBySupervisor",
 		),
 	)
 	beego.AddNamespace(ns)
