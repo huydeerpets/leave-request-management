@@ -2,6 +2,7 @@ package logic
 
 // LeavePending ...
 type LeavePending struct {
+	ID               int64  `json:"id" orm:"column(id);pk"`
 	EmployeeNumber   int64  `json:"employee_number" orm:"column(employee_number);pk"`
 	Name             string `json:"name" orm:"column(name)"`
 	Gender           string `json:"gender" orm:"column(gender)"`

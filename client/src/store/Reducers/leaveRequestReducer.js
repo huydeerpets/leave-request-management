@@ -17,6 +17,11 @@ export default function leaveRequestReducer(state = leave, action) {
 			return {
 				...leave
 			}
+		case 'SAVE_SELECT_OPTION':
+			return {
+				...state,
+				selectedValue: action.payload
+			}
 		default:
 			return state
 	}

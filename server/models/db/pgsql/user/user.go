@@ -292,7 +292,8 @@ func (u *User) GetUserPending(supervisorID int64) ([]structLogic.LeavePending, e
 		return leavePending, errQB
 	}
 
-	qb.Select(user.TableName()+".employee_number",
+	qb.Select(leave.TableName()+".id",
+		user.TableName()+".employee_number",
 		user.TableName()+".name",
 		user.TableName()+".gender",
 		user.TableName()+".position",

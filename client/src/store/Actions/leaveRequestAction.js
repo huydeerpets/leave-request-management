@@ -7,6 +7,15 @@ export function formOnChange(payload) {
 	}
 }
 
+export function saveSelectValue(payload) {
+	return (dispach) => {
+		dispach({
+			type: 'SAVE_SELECT_OPTION',
+			payload: payload
+		})
+	}
+}
+
 function clearField() {
 	return {
 		type: 'CLEAR_FIELD'
@@ -15,14 +24,17 @@ function clearField() {
 
 export function SumbitLeave(payload) {
 	const employeeNumber = localStorage.getItem('id')
-	console.log("===============",employeeNumber)
+	console.log("===============", employeeNumber)
 	return (dispatch) => {
-		fetch('http://localhost:8080/api/leave/'+employeeNumber, {
-			method: 'POST',
-			body: JSON.stringify(payload)
-		})
+		fetch('http://localhost:8080/api/leave/' + employeeNumber, {
+				method: 'POST',
+				body: JSON.stringify(payload)
+			})
 			.then((resp) => resp.json())
-			.then(({ body, error }) => {
+			.then(({
+				body,
+				error
+			}) => {
 				let respErr = error
 				if (respErr === "type request malform") {
 					console.log(respErr)

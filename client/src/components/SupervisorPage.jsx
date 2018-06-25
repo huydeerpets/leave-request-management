@@ -8,14 +8,25 @@ import {
 } from "../store/Actions/supervisorActions";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
-import { Layout, Table, Divider, Button } from "antd";
+import { Layout, Table, Divider, Modal, Button, List } from "antd";
 const { Content } = Layout;
-
+let employee;
 class SupervisorPage extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      loading: false,
+      visible: false,
+      data: {}
+    };
 
     this.columns = [
+      {
+        title: "ID",
+        dataIndex: "id",
+        key: "id",
+        width: 95
+      },
       {
         title: "Employee Number",
         dataIndex: "employee_number",
@@ -26,115 +37,82 @@ class SupervisorPage extends Component {
         title: "Name",
         dataIndex: "name",
         key: "name",
-        width: 70
+        width: 150
       },
       {
         title: "Position",
         dataIndex: "position",
         key: "position",
-        width: 90
-      },
-      {
-        title: "Start Working Date",
-        dataIndex: "start_working_date",
-        key: "start_working_date"
+        width: 150
       },
       {
         title: "Email",
         dataIndex: "email",
         key: "email",
-        width: 80
-      },
-      {
-        title: "Role",
-        dataIndex: "role",
-        key: "role",
-        width: 65
+        width: 150
       },
       {
         title: "Type Of Leave",
         dataIndex: "type_of_leave",
         key: "type_of_leave",
-        width: 100
-      },
-      {
-        title: "Reason",
-        dataIndex: "reason",
-        key: "reason",
-        width: 85
+        width: 150
       },
       {
         title: "From",
         dataIndex: "from",
         key: "from",
-        width: 65
+        width: 120
       },
       {
         title: "To",
         dataIndex: "to",
         key: "to",
-        width: 50
-      },
-      {
-        title: "Total",
-        dataIndex: "total",
-        key: "total",
-        width: 70
-      },
-      {
-        title: "Leave Remaining",
-        dataIndex: "leave_remaining",
-        key: "leave_remaining"
-      },
-      {
-        title: "Address",
-        dataIndex: "address",
-        key: "address",
-        width: 100
-      },
-      {
-        title: "Contact Leave",
-        dataIndex: "contact_leave",
-        key: "contact_leave"
+        width: 120
       },
       {
         title: "Action",
         key: "action",
         width: 100,
-        render: (text, record) => (
+        render: (value, record) => (
           <span>
-            <Button
-              onClick={() => {
-                this.updateStatusAccept(
-                  this.props.users,
-                  record.employee_number
-                );
-                window.location.reload();
-              }}
-              type="primary"
-            >
-              {" "}
-              Accept
+            {/* {console.log("===========>id", record.id)} */}
+            <Button type="primary" onClick={this.showModal}>
+              Detail
             </Button>
-            <Divider type="vertical" />
-            <Button
-              onClick={() => {
-                this.updateStatusReject(
-                  this.props.users,
-                  record.employee_number
-                );
-                window.location.reload();
-              }}
-              type="danger"
-            >
-              Reject
-            </Button>
-            <Divider type="vertical" />
           </span>
         )
       }
     ];
   }
+
+  showModal = () => {
+    this.setState({
+      visible: true
+    });
+    let source = this.props.users;
+    for (var i = 0; i < source.length; i++) {
+      if (source[i].id === 0) {
+        // console.log(source[i].id);
+        return source[i];
+      }
+    }
+  };
+
+  onSelectChange = selectedRowKeys => {
+    employee = selectedRowKeys;
+    console.log("selectedRowKeys changed: ", selectedRowKeys.id);
+    // console.log("state data=============>", this.state.data);
+  };
+
+  handleOk = () => {
+    this.setState({ loading: true });
+    setTimeout(() => {
+      this.setState({ loading: false, visible: false });
+    }, 3000);
+  };
+  handleCancel = () => {
+    this.setState({ visible: false });
+  };
 
   updateStatusAccept = (users, employeeNumber) => {
     this.props.updateStatusAccept(users, employeeNumber);
@@ -153,6 +131,9 @@ class SupervisorPage extends Component {
     this.props.pendingFetchData();
   }
   render() {
+    const { visible, loading } = this.state;
+    const data = [];
+
     if (this.props.loading) {
       return <h1> loading... </h1>;
     } else {
@@ -173,9 +154,48 @@ class SupervisorPage extends Component {
               <Table
                 columns={this.columns}
                 dataSource={this.props.users}
-                rowKey={record => record.employee_number}
+                rowKey={record => record.id}
+                onRowClick={this.onSelectChange}
               />
             </div>
+
+            <Modal
+              visible={visible}
+              title="Title"
+              onOk={this.handleOk}
+              onCancel={this.handleCancel}
+              style={{ top: "20" }}
+              bodyStyle={{ padding: "0" }}
+              footer={[
+                <Button key="back" onClick={this.handleCancel}>
+                  Return
+                </Button>,
+                <Button
+                  key="submit"
+                  type="primary"
+                  loading={loading}
+                  onClick={this.handleOk}
+                >
+                  Submit
+                </Button>
+              ]}
+            >
+              <div style={{ padding: 10, background: "#fff" }}>
+                {/* <div style={{ padding: 20, background: "#fff" }}>
+                  {employee.map(item => {
+                    return <li key={item.id}>{item.id}</li>;
+                  })}
+                </div>        */}
+                {/* {console.log("state data=============>", employee)}     */}
+                <List
+                  header={<div>Header</div>}
+                  footer={<div>Footer</div>}
+                  bordered
+                  dataSource={employee}
+                  renderItem={item => <List.Item>{item}</List.Item>}
+                />
+              </div>
+            </Modal>
           </Content>
           <Footer />
         </Layout>
