@@ -2,6 +2,7 @@ package logic
 
 // RequestPending ...
 type RequestPending struct {
+	ID               int64  `json:"id" orm:"column(id);pk"`
 	EmployeeNumber   int64  `json:"employee_number" orm:"column(employee_number);pk"`
 	Name             string `json:"name" orm:"column(name)"`
 	Gender           string `json:"gender" orm:"column(gender)"`
@@ -12,6 +13,7 @@ type RequestPending struct {
 	TypeOfLeave      string `json:"type_of_leave" orm:"column(type_of_leave)"`
 	Reason           string `json:"reason" orm:"column(reason)"`
 	From             string `json:"from" orm:"column(from)"`
+	BackOn           string `json:"back_on" orm:"column(back_on)"`
 	To               string `json:"to" orm:"column(to)"`
 	Total            int64  `json:"total" orm:"column(total)"`
 	LeaveRemaining   int64  `json:"leave_remaining" orm:"column(leave_remaining)"`

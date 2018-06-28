@@ -63,9 +63,6 @@ class Landingpage extends Component {
               <Menu.Item key="2">
                 <NavLink to="/login">Login</NavLink>
               </Menu.Item>
-              <Menu.Item key="3">
-                <NavLink to="/register">Register</NavLink>
-              </Menu.Item>
             </Menu>
           </Header>
 

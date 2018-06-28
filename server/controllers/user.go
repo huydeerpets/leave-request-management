@@ -61,6 +61,31 @@ func (c *UserController) PostUser() {
 	}
 }
 
+// DeleteUser ...
+func (c *UserController) DeleteUser() {
+	var resp structAPI.RespData
+
+	idStr := c.Ctx.Input.Param(":id")
+	employeeNumber, errCon := strconv.ParseInt(idStr, 0, 64)
+	if errCon != nil {
+		helpers.CheckErr("convert id failed @GetRequestPending", errCon)
+		resp.Error = errors.New("convert id failed").Error()
+		return
+	}
+
+	if err := logic.DBPostUser.DeleteUser(employeeNumber); err == nil {
+		resp.Body = "Deleted success"
+	} else {
+		resp.Error = err.Error()
+		c.Ctx.Output.SetStatus(400)
+	}
+
+	err := c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		helpers.CheckErr("failed giving output @DeleteUser", err)
+	}
+}
+
 // Login ...
 func (c *UserController) Login() {
 	var resp structAPI.RespData
@@ -275,14 +300,22 @@ func (c *UserController) AcceptStatusBySupervisor() {
 	var resp structAPI.RespData
 
 	idStr := c.Ctx.Input.Param(":id")
-	employeeNumber, errCon := strconv.ParseInt(idStr, 0, 64)
+	id, errCon := strconv.ParseInt(idStr, 0, 64)
 	if errCon != nil {
 		helpers.CheckErr("convert id failed @AcceptStatusBySupervisor", errCon)
 		resp.Error = errors.New("convert id failed").Error()
 		return
 	}
 
-	errUpStat := logic.DBPostUser.AcceptBySupervisor(employeeNumber)
+	employeeStr := c.Ctx.Input.Param(":enumber")
+	employeeNumber, errCon := strconv.ParseInt(employeeStr, 0, 64)
+	if errCon != nil {
+		helpers.CheckErr("convert enum failed @AcceptStatusBySupervisor", errCon)
+		resp.Error = errors.New("convert id failed").Error()
+		return
+	}
+
+	errUpStat := logic.DBPostUser.AcceptBySupervisor(id, employeeNumber)
 	if errUpStat != nil {
 		resp.Error = errUpStat.Error()
 	} else {
@@ -300,14 +333,22 @@ func (c *UserController) RejectStatusBySupervisor() {
 	var resp structAPI.RespData
 
 	idStr := c.Ctx.Input.Param(":id")
-	employeeNumber, errCon := strconv.ParseInt(idStr, 0, 64)
+	id, errCon := strconv.ParseInt(idStr, 0, 64)
 	if errCon != nil {
-		helpers.CheckErr("convert id failed @RejectStatusBySupervisor", errCon)
+		helpers.CheckErr("convert id failed @AcceptStatusBySupervisor", errCon)
 		resp.Error = errors.New("convert id failed").Error()
 		return
 	}
 
-	errUpStat := logic.DBPostUser.RejectBySupervisor(employeeNumber)
+	employeeStr := c.Ctx.Input.Param(":enumber")
+	employeeNumber, errCon := strconv.ParseInt(employeeStr, 0, 64)
+	if errCon != nil {
+		helpers.CheckErr("convert enum failed @AcceptStatusBySupervisor", errCon)
+		resp.Error = errors.New("convert id failed").Error()
+		return
+	}
+
+	errUpStat := logic.DBPostUser.RejectBySupervisor(id, employeeNumber)
 	if errUpStat != nil {
 		resp.Error = errUpStat.Error()
 	} else {

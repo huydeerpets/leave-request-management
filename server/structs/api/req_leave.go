@@ -6,6 +6,7 @@ type ReqLeave struct {
 	Reason       string `json:"reason" orm:"column(reason)"`
 	From         string `json:"from" orm:"column(from)"`
 	To           string `json:"to" orm:"column(to)"`
+	BackOn       string `json:"back_on" orm:"column(back_on)"`
 	Address      string `json:"address" orm:"column(address)"`
 	ContactLeave string `json:"contact_leave" orm:"column(contact_leave)"`
 }

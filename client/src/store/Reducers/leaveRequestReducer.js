@@ -3,6 +3,7 @@ const leave = {
 	reason: '',
 	from: '',
 	to: '',
+	back_on: '',
 	address: '',
 	contact_leave: ''
 }
@@ -16,11 +17,6 @@ export default function leaveRequestReducer(state = leave, action) {
 		case 'CLEAR_FIELD':
 			return {
 				...leave
-			}
-		case 'SAVE_SELECT_OPTION':
-			return {
-				...state,
-				selectedValue: action.payload
 			}
 		default:
 			return state

@@ -1,23 +1,27 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux'
+import {
+	createStore,
+	combineReducers,
+	applyMiddleware
+} from 'redux'
 import thunk from 'redux-thunk';
 import signupReducer from './Reducers/signupReducer'
 import loginReducer from './Reducers/loginReducer'
 import adminReducer from './Reducers/adminReducer'
 import leaveRequestReducer from './Reducers/leaveRequestReducer'
+import fetchEmployeeReducer from './Reducers/fetchEmployeeReducer'
 import fetchSupervisorReducer from './Reducers/fetchSupervisorReducer'
-import fetchReqPendingReducer from './Reducers/statusPendingReducer'
-import fetchReqAcceptReducer from './Reducers/statusAcceptReducer'
-import fetchReqRejectReducer from './Reducers/statusRejectReducer'
+import fetchDirectorReducer from './Reducers/fetchDirectorReducer'
 
 const appStore = combineReducers({
-	signupReducer,
 	loginReducer,
 	adminReducer,
+	signupReducer,
 	leaveRequestReducer,
+
+	fetchEmployeeReducer,
 	fetchSupervisorReducer,
-	fetchReqPendingReducer,
-	fetchReqAcceptReducer,
-	fetchReqRejectReducer
+	fetchDirectorReducer,
+
 })
 
 const store = createStore(

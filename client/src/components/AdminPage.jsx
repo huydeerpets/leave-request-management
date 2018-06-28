@@ -3,14 +3,29 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { adminFetchData, deleteUser } from "../store/Actions/adminActions";
-import { Layout, Table, Divider, Button, Menu } from "antd";
-const { Header, Footer, Content } = Layout;
+import HeaderNav from "./menu/HeaderAdmin";
+import Footer from "./menu/Footer";
+import {
+  Layout,
+  Table,
+  Button,
+  Divider,
+  Popconfirm,
+  message,
+  notification
+} from "antd";
+const { Content } = Layout;
 
 class Adminpage extends Component {
   constructor(props) {
     super(props);
 
     this.columns = [
+      {
+        title: "Employee Number",
+        dataIndex: "employee_number",
+        key: "employee_number"
+      },
       {
         title: "Name",
         dataIndex: "name",
@@ -38,29 +53,31 @@ class Adminpage extends Component {
           <span>
             <Button
               onClick={() => {
-                // console.log(this.props,'sAs')
                 this.editUser(this.props.users, record.id);
               }}
               type="primary"
             >
-              {" "}
-              Edit Role
+              Edit
             </Button>
             <Divider type="vertical" />
-            <Button
-              onClick={() => {
-                this.deleteUser(this.props.users, record.id);
+            <Popconfirm
+              placement="top"
+              title={"Are you sure delete this employee?"}
+              onConfirm={() => {
+                this.deleteUser(this.props.users, record.employee_number);
+                message.success("Employee has been delete!");
               }}
-              type="danger"
+              okText="Yes"
+              cancelText="No"
             >
-              Delete
-            </Button>
-            <Divider type="vertical" />
+              <Button type="danger">Delete</Button>
+            </Popconfirm>
           </span>
         )
       }
     ];
   }
+
   editUser = (users, userId) => {
     console.log(userId, "--", users);
     this.props.history.push({
@@ -68,9 +85,9 @@ class Adminpage extends Component {
       state: { users: users }
     });
   };
-  deleteUser = (users, userId) => {
-    console.log("delete nih", users, "--", userId);
-    this.props.deleteUser(users, userId);
+  deleteUser = (users, employeeNumber) => {
+    this.props.deleteUser(users, employeeNumber);
+    console.log("delete nih", users, "--", employeeNumber);
   };
   componentDidMount() {
     if (localStorage.getItem("role") !== "admin") {
@@ -84,36 +101,7 @@ class Adminpage extends Component {
     } else {
       return (
         <Layout>
-          <Header>
-            <Menu
-              theme="dark"
-              mode="horizontal"
-              defaultSelectedKeys={["1"]}
-              style={{ lineHeight: "64px" }}
-            >
-              <Menu.Item key="1">
-                <NavLink to="/">Home</NavLink>
-              </Menu.Item>
-              <Menu.Item key="3">
-                <Button
-                  onClick={() => {
-                    localStorage.clear();
-                    this.props.history.push("/");
-                  }}
-                  type="danger"
-                  ghost
-                >
-                  Logout
-                </Button>
-              </Menu.Item>
-            </Menu>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between"
-              }}
-            />
-          </Header>
+          <HeaderNav />
 
           <Content
             className="container"

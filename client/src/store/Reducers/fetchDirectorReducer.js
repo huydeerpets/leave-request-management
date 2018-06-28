@@ -1,9 +1,9 @@
-let supervisorState = {
+let directorState = {
     loading: true,
     users: []
 }
 
-export default function fetchSupervisorReducer(state = supervisorState, action) {
+export default function fetchSupervisorReducer(state = directorState, action) {
     switch (action.type) {
         case 'FETCH_LEAVE_PENDING':
             return {

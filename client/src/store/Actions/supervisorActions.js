@@ -111,14 +111,16 @@ export function rejectFetchData() {
 	}
 }
 
-export function updateStatusAccept(users, employeeNumber) {
+export function updateStatusAccept(users, id, enumber) {
 	return (dispatch) => {
-		fetch('http://localhost:8080/api/employee/accept/' + employeeNumber, {
+		fetch('http://localhost:8080/api/employee/accept/' + `${id}/${enumber}`, {
 				method: 'PUT',
 			})
 			.then(response => {
-				let newUserlist = users.filter(el => el.id !== employeeNumber)
-				console.log(newUserlist)
+				let newUserlist = users.filter(el => {
+					el.id !== id && el.employee_number !== enumber
+					return
+				})
 				let payload = {
 					loading: false,
 					users: [
@@ -133,13 +135,16 @@ export function updateStatusAccept(users, employeeNumber) {
 	}
 }
 
-export function updateStatusReject(users, employeeNumber) {
+export function updateStatusReject(users, id, enumber) {
 	return (dispatch) => {
-		fetch('http://localhost:8080/api/employee/reject/' + employeeNumber, {
+		fetch('http://localhost:8080/api/employee/reject/' + `${id}/${enumber}`, {
 				method: 'PUT',
 			})
 			.then(response => {
-				let newUserlist = users.filter(el => el.id !== employeeNumber)
+				let newUserlist = users.filter(el => {
+					el.id !== id && el.id !== enumber
+					el.employee_number !== enumber && el.employee_number !== id
+				})
 				console.log(newUserlist)
 				let payload = {
 					loading: false,

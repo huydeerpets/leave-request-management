@@ -16,6 +16,8 @@ type LeavePending struct {
 	To               string `json:"to" orm:"column(to)"`
 	Total            int64  `json:"total" orm:"column(total)"`
 	LeaveRemaining   int64  `json:"leave_remaining" orm:"column(leave_remaining)"`
+	BackOn           string `json:"back_on" orm:"column(back_on)"`
 	Address          string `json:"address" orm:"column(address)"`
 	ContactLeave     string `json:"contact_leave" orm:"column(contact_leave)"`
+	Status           string `json:"status" orm:"column(status)"`
 }

@@ -1,6 +1,6 @@
 export function formOnchange(payload) {
-	return (dispach) => {
-		dispach({
+	return (dispatch) => {
+		dispatch({
 			type: 'SIGNUP_USER',
 			payload: payload
 		})
@@ -15,21 +15,27 @@ function clearField() {
 
 export function SumbitSignUp(payload) {
 	return (dispatch) => {
-		fetch('http://localhost:8080/api/register', {
-			method: 'POST',
-			body: JSON.stringify(payload)
-		})
+		fetch('http://localhost:8080/api/user/register', {
+				method: 'POST',
+				body: JSON.stringify(payload)
+			})
 			.then((resp) => resp.json())
-			.then(({ body, error }) => {
+			.then(({
+				body,
+				error
+			}) => {
 				let respErr = error
+				console.log("=================error", respErr)
 				if (respErr === "type request malform") {
-					console.log(respErr)
 					alert('regiter failed, please field out all field')
+				} else if (respErr === "Email already register") {
+					alert('regiter failed, email already register')
 				} else {
 					dispatch(clearField())
-					alert('register success, please login')
-				}
+					alert('register success')
+					window.location.href = "/admin";
 
+				}
 
 			}).catch(err => {
 				console.log(err)

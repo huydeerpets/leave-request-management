@@ -7,15 +7,6 @@ export function formOnChange(payload) {
 	}
 }
 
-export function saveSelectValue(payload) {
-	return (dispach) => {
-		dispach({
-			type: 'SAVE_SELECT_OPTION',
-			payload: payload
-		})
-	}
-}
-
 function clearField() {
 	return {
 		type: 'CLEAR_FIELD'

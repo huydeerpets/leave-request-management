@@ -47,6 +47,28 @@ func (u *User) AddUser(user structDB.User) error {
 	}
 }
 
+// DeleteUser ...
+func (u *User) DeleteUser(employeeNumber int64) (err error) {
+	o := orm.NewOrm()
+	v := structDB.User{EmployeeNumber: employeeNumber}
+
+	err = o.Read(&v)
+	if err == nil {
+		var num int64
+		if num, err = o.Delete(&structDB.User{EmployeeNumber: employeeNumber}); err == nil {
+			beego.Debug("Number of records deleted in database:", num)
+		} else if err != nil {
+			helpers.CheckErr("error deleted item @DeleteItem", err)
+			return errors.New("error deleted item")
+		}
+	}
+	if err != nil {
+		helpers.CheckErr("error deleted item @DeleteItem", err)
+		return errors.New("Delete failed, id not exist")
+	}
+	return err
+}
+
 // GetJWT ...
 func (u *User) GetJWT(loginData structAPI.ReqLogin) (result structAPI.RespLogin, err error) {
 	var user structDB.User
@@ -141,7 +163,8 @@ func (u *User) GetPendingRequest(employeeNumber int64) ([]structLogic.RequestPen
 		return reqPending, errQB
 	}
 
-	qb.Select(user.TableName()+".employee_number",
+	qb.Select(leave.TableName()+".id",
+		user.TableName()+".employee_number",
 		user.TableName()+".name",
 		user.TableName()+".gender",
 		user.TableName()+".position",
@@ -155,6 +178,7 @@ func (u *User) GetPendingRequest(employeeNumber int64) ([]structLogic.RequestPen
 		leave.TableName()+".to",
 		leave.TableName()+".total",
 		leave.TableName()+".leave_remaining",
+		leave.TableName()+".back_on",
 		leave.TableName()+".address",
 		leave.TableName()+".contact_leave",
 		leave.TableName()+".status").
@@ -191,7 +215,8 @@ func (u *User) GetAcceptRequest(employeeNumber int64) ([]structLogic.RequestAcce
 		return reqAccept, errQB
 	}
 
-	qb.Select(user.TableName()+".employee_number",
+	qb.Select(leave.TableName()+".id",
+		user.TableName()+".employee_number",
 		user.TableName()+".name",
 		user.TableName()+".gender",
 		user.TableName()+".position",
@@ -205,6 +230,7 @@ func (u *User) GetAcceptRequest(employeeNumber int64) ([]structLogic.RequestAcce
 		leave.TableName()+".to",
 		leave.TableName()+".total",
 		leave.TableName()+".leave_remaining",
+		leave.TableName()+".back_on",
 		leave.TableName()+".address",
 		leave.TableName()+".contact_leave",
 		leave.TableName()+".status",
@@ -242,7 +268,8 @@ func (u *User) GetRejectRequest(employeeNumber int64) ([]structLogic.RequestReje
 		return reqReject, errQB
 	}
 
-	qb.Select(user.TableName()+".employee_number",
+	qb.Select(leave.TableName()+".id",
+		user.TableName()+".employee_number",
 		user.TableName()+".name",
 		user.TableName()+".gender",
 		user.TableName()+".position",
@@ -256,10 +283,10 @@ func (u *User) GetRejectRequest(employeeNumber int64) ([]structLogic.RequestReje
 		leave.TableName()+".to",
 		leave.TableName()+".total",
 		leave.TableName()+".leave_remaining",
+		leave.TableName()+".back_on",
 		leave.TableName()+".address",
 		leave.TableName()+".contact_leave",
-		leave.TableName()+".status",
-		leave.TableName()+".reject_reason").
+		leave.TableName()+".status").
 		From(user.TableName()).
 		InnerJoin(leave.TableName()).
 		On(user.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
@@ -307,8 +334,10 @@ func (u *User) GetUserPending(supervisorID int64) ([]structLogic.LeavePending, e
 		leave.TableName()+".to",
 		leave.TableName()+".total",
 		leave.TableName()+".leave_remaining",
+		leave.TableName()+".back_on",
 		leave.TableName()+".address",
-		leave.TableName()+".contact_leave").
+		leave.TableName()+".contact_leave",
+		leave.TableName()+".status").
 		From(user.TableName()).
 		InnerJoin(leave.TableName()).
 		On(user.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
@@ -333,6 +362,7 @@ func (u *User) GetUserAccept(supervisorID int64) ([]structLogic.LeaveAccept, err
 		user        structDB.User
 	)
 	statusAccept := constant.StatusSuccessInSupervisor
+	statusAcceptDirector := constant.StatusSuccessInDirector
 
 	o := orm.NewOrm()
 	qb, errQB := orm.NewQueryBuilder("mysql")
@@ -341,7 +371,8 @@ func (u *User) GetUserAccept(supervisorID int64) ([]structLogic.LeaveAccept, err
 		return leaveAccept, errQB
 	}
 
-	qb.Select(user.TableName()+".employee_number",
+	qb.Select(leave.TableName()+".id",
+		user.TableName()+".employee_number",
 		user.TableName()+".name",
 		user.TableName()+".gender",
 		user.TableName()+".position",
@@ -355,15 +386,17 @@ func (u *User) GetUserAccept(supervisorID int64) ([]structLogic.LeaveAccept, err
 		leave.TableName()+".to",
 		leave.TableName()+".total",
 		leave.TableName()+".leave_remaining",
+		leave.TableName()+".back_on",
 		leave.TableName()+".address",
-		leave.TableName()+".contact_leave").
+		leave.TableName()+".contact_leave",
+		leave.TableName()+".status").
 		From(user.TableName()).
 		InnerJoin(leave.TableName()).
 		On(user.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
-		Where(`status = ? `).And(`supervisor_id = ? `)
+		Where(`(status = ? OR status = ? )`).And(user.TableName() + `.supervisor_id = ? `)
 	sql := qb.String()
 
-	count, errRaw := o.Raw(sql, statusAccept, supervisorID).QueryRows(&leaveAccept)
+	count, errRaw := o.Raw(sql, statusAccept, statusAcceptDirector, supervisorID).QueryRows(&leaveAccept)
 	if errRaw != nil {
 		helpers.CheckErr("Failed Query Select item @GetUserAccept", errRaw)
 		return leaveAccept, errors.New("employee number not exist")
@@ -389,7 +422,8 @@ func (u *User) GetUserReject(supervisorID int64) ([]structLogic.LeaveReject, err
 		return leaveReject, errQB
 	}
 
-	qb.Select(user.TableName()+".employee_number",
+	qb.Select(leave.TableName()+".id",
+		user.TableName()+".employee_number",
 		user.TableName()+".name",
 		user.TableName()+".gender",
 		user.TableName()+".position",
@@ -403,8 +437,10 @@ func (u *User) GetUserReject(supervisorID int64) ([]structLogic.LeaveReject, err
 		leave.TableName()+".to",
 		leave.TableName()+".total",
 		leave.TableName()+".leave_remaining",
+		leave.TableName()+".back_on",
 		leave.TableName()+".address",
-		leave.TableName()+".contact_leave").
+		leave.TableName()+".contact_leave",
+		leave.TableName()+".status").
 		From(user.TableName()).
 		InnerJoin(leave.TableName()).
 		On(user.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
@@ -422,7 +458,7 @@ func (u *User) GetUserReject(supervisorID int64) ([]structLogic.LeaveReject, err
 }
 
 // AcceptBySupervisor ...
-func (u *User) AcceptBySupervisor(employeeNumber int64) error {
+func (u *User) AcceptBySupervisor(id int64, employeeNumber int64) error {
 	var (
 		leave     structDB.LeaveRequest
 		user      structDB.User
@@ -455,7 +491,7 @@ func (u *User) AcceptBySupervisor(employeeNumber int64) error {
 	statAcceptSupervisor := constant.StatusSuccessInSupervisor
 	approvedBy := superName.Name
 
-	_, errRAW := o.Raw(`UPDATE `+leave.TableName()+` SET status = ?, approved_by = ? WHERE employee_number = ?`, statAcceptSupervisor, approvedBy, employeeNumber).Exec()
+	_, errRAW := o.Raw(`UPDATE `+leave.TableName()+` SET status = ?, approved_by = ? WHERE id = ? AND employee_number = ?`, statAcceptSupervisor, approvedBy, id, employeeNumber).Exec()
 	if errRAW != nil {
 		helpers.CheckErr("error update status @AcceptBySupervisor", errRAW)
 	}
@@ -463,12 +499,12 @@ func (u *User) AcceptBySupervisor(employeeNumber int64) error {
 }
 
 // RejectBySupervisor ...
-func (u *User) RejectBySupervisor(employeeNumber int64) error {
+func (u *User) RejectBySupervisor(id int64, employeeNumber int64) error {
 	var leave structDB.LeaveRequest
 	statRejectSupervisor := constant.StatusRejectInSuperVisor
 
 	o := orm.NewOrm()
-	_, errRAW := o.Raw(`UPDATE `+leave.TableName()+` SET status = ? WHERE employee_number = ?`, statRejectSupervisor, employeeNumber).Exec()
+	_, errRAW := o.Raw(`UPDATE `+leave.TableName()+` SET status = ? WHERE id = ? AND employee_number = ?`, statRejectSupervisor, id, employeeNumber).Exec()
 	if errRAW != nil {
 		helpers.CheckErr("error update status @RejectBySupervisor", errRAW)
 	}

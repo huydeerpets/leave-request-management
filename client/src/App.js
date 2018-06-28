@@ -4,22 +4,27 @@ import './App.css';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './store/index.js';
+
 import Landingpage from './components/Landingpage.jsx';
-import RegisterPage from './components/RegisterPage.jsx';
 import Adminpage from './components/AdminPage.jsx';
+import RegisterPage from './components/RegisterPage.jsx';
 
-import LandingEmployee from './components/LandingEmployee';
+import LeaveRequestPage from './components/LeaveRequestPage.jsx';
 
-import EmployeePage from './components/EmployeePage.jsx';
+import LandingEmployeePage from './components/LandingEmployeePage.jsx';
+import EmployeeReqPendingPage from './components/EmployeeReqPendingPage.jsx';
+import EmployeeReqAcceptPage from './components/EmployeeReqAcceptPage.jsx';
+import EmployeeReqRejectPage from './components/EmployeeReqRejectPage.jsx';
 
-import ReqPendingPage from './components/ReqPendingPage.jsx';
-import ReqAcceptPage from './components/ReqAcceptPage.jsx';
-import ReqRejectPage from './components/ReqRejectPage.jsx';
-
-import LandingSupervisor from './components/LandingSupervisor.jsx';
-import SupervisorPage from './components/SupervisorPage.jsx';
-import SupervisorAcceptPage from './components/SupervisorAcceptPage';
+import SupervisorLandingPage from './components/SupervisorLandingPage.jsx';
+import SupervisorPendingPage from './components/SupervisorPendingPage.jsx';
+import SupervisorAcceptPage from './components/SupervisorAcceptPage.jsx';
 import SupervisorRejectPage from './components/SupervisorRejectPage.jsx';
+
+import DirectorLandingPage from './components/DirectorLandingPage.jsx';
+import DirectorPendingPage from './components/DirectorPendingPage.jsx';
+import DirectorAcceptPage from './components/DirectorAcceptPage.jsx';
+import DirectorRejectPage from './components/DirectorRejectPage.jsx';
 
 import Notfound from './components/NotFound.jsx';
 
@@ -32,20 +37,26 @@ class App extends Component {
             <Switch>
               <Route exact path="/" component={Landingpage} />
               <Route exact path="/login" component={Landingpage} />
-              <Route exact path="/register" component={RegisterPage} />
+
               <Route path="/admin" component={Adminpage} />
+              <Route exact path="/register" component={RegisterPage} />
               
-              <Route path="/request-leave" component={EmployeePage} />
+              <Route path="/request-leave" component={LeaveRequestPage} />
 
-              <Route path="/employee" component={LandingEmployee} />
-              <Route path="/request-pending" component={ReqPendingPage} />
-              <Route path="/request-accept" component={ReqAcceptPage} />
-              <Route path="/request-reject" component={ReqRejectPage} />
+              <Route path="/employee" component={LandingEmployeePage} />
+              <Route path="/request-pending" component={EmployeeReqPendingPage} />
+              <Route path="/request-accept" component={EmployeeReqAcceptPage} />
+              <Route path="/request-reject" component={EmployeeReqRejectPage} />
 
-              <Route path="/supervisor" component={LandingSupervisor} />
-              <Route path="/list-request" component={SupervisorPage} />
+              <Route path="/supervisor" component={SupervisorLandingPage} />
+              <Route path="/list-request" component={SupervisorPendingPage} />
               <Route path="/list-accept" component={SupervisorAcceptPage} />
               <Route path="/list-reject" component={SupervisorRejectPage} />
+
+              <Route path="/director" component={DirectorLandingPage} />
+              <Route path="/list-pending-request" component={DirectorPendingPage} />
+              <Route path="/list-accept-request" component={DirectorAcceptPage} />
+              <Route path="/list-reject-request" component={DirectorRejectPage} />
               
               <Route component={Notfound} />
             </Switch>

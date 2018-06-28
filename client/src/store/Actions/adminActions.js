@@ -1,5 +1,3 @@
-import axios from 'axios'
-
 function adminloaded(payload) {
 	return {
 		type: 'ADMIN_LOADED',
@@ -17,10 +15,12 @@ function userDeleted(payload) {
 export function adminFetchData() {
 	return (dispatch) => {
 		fetch('http://localhost:8080/api/user', {
-			method: 'GET',
-		})
+				method: 'GET',
+			})
 			.then((resp) => resp.json())
-			.then(({ body }) => {
+			.then(({
+				body
+			}) => {
 				console.log(body)
 
 				let payload = {
@@ -37,25 +37,27 @@ export function adminFetchData() {
 	}
 }
 
-export function deleteUser(users, userId) {
+export function deleteUser(users, employeeNumber) {
 	return (dispatch) => {
-		axios.delete('http://localhost:3100/users/' + userId)
-			.then(response => {
-				console.log(response, 'ini apa ya?')
-				if (response.status === 200) {
-					let newUserlist = users.filter(el => el.id !== userId)
-					console.log(newUserlist)
-					let payload = {
-						loading: false,
-						users: [
-							...newUserlist
-						]
-					}
-					dispatch(userDeleted(payload))
+		fetch('http://localhost:8080/api/user/delete/' + employeeNumber, {
+				method: 'DELETE',
+			})
+			.then((resp) => resp.json())
+			.then(({
+				body
+			}) => {
+				let newUserlist = users.filter(el => el.employee_number !== employeeNumber)
+				console.log(newUserlist)
+				let payload = {
+					loading: false,
+					users: [
+						...newUserlist
+					]
 				}
-			}).catch(err => {
+				dispatch(userDeleted(payload))
+			})
+			.catch(err => {
 				console.log(err)
 			})
 	}
 }
-

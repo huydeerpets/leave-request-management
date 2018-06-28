@@ -10,6 +10,8 @@ import (
 type IBaseUser interface {
 	// AddUser
 	AddUser(user structDB.User) error
+	// DeleteUser
+	DeleteUser(employeeNumber int64) error
 	// GetJWT
 	GetJWT(loginData structAPI.ReqLogin) (
 		result structAPI.RespLogin,
@@ -56,7 +58,7 @@ type IBaseUser interface {
 		error,
 	)
 	// AcceptBySupervisor
-	AcceptBySupervisor(employeeNumber int64) error
+	AcceptBySupervisor(id int64, employeeNumber int64) error
 	// RejectBySupervisor
-	RejectBySupervisor(employeeNumber int64) error
+	RejectBySupervisor(id int64, employeeNumber int64) error
 }

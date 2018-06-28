@@ -2,6 +2,7 @@ package logic
 
 // RequestAccept ...
 type RequestAccept struct {
+	ID               int64  `json:"id" orm:"column(id);pk"`
 	EmployeeNumber   int64  `json:"employee_number" orm:"column(employee_number);pk"`
 	Name             string `json:"name" orm:"column(name)"`
 	Gender           string `json:"gender" orm:"column(gender)"`
@@ -13,6 +14,7 @@ type RequestAccept struct {
 	Reason           string `json:"reason" orm:"column(reason)"`
 	From             string `json:"from" orm:"column(from)"`
 	To               string `json:"to" orm:"column(to)"`
+	BackOn           string `json:"back_on" orm:"column(back_on)"`
 	Total            int64  `json:"total" orm:"column(total)"`
 	LeaveRemaining   int64  `json:"leave_remaining" orm:"column(leave_remaining)"`
 	Address          string `json:"address" orm:"column(address)"`
