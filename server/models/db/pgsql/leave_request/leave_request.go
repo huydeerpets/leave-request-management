@@ -19,7 +19,6 @@ func (l *LeaveRequest) CreateLeaveRequest(employeeNumber int64,
 	dateTo string,
 	backOn string,
 	total int64,
-	leaveRemaining int64,
 	address string,
 	contactLeave string,
 	status string) error {
@@ -41,13 +40,11 @@ func (l *LeaveRequest) CreateLeaveRequest(employeeNumber int64,
 		"date_to",
 		"back_on",
 		"total",
-		"leave_remaining",
 		"address",
 		"contact_leave",
 		"status").
-		Values("?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?")
+		Values("?, ?, ?, ?, ?, ?, ?, ?, ?, ?")
 	sql := qb.String()
-
 	values := []interface{}{employeeNumber,
 		typeOfLeave,
 		reason,
@@ -55,7 +52,6 @@ func (l *LeaveRequest) CreateLeaveRequest(employeeNumber int64,
 		dateTo,
 		backOn,
 		total,
-		leaveRemaining,
 		address,
 		contactLeave,
 		status}
@@ -75,7 +71,6 @@ func (l *LeaveRequest) CreateLeaveRequestSupervisor(employeeNumber int64,
 	dateTo string,
 	backOn string,
 	total int64,
-	leaveRemaining int64,
 	address string,
 	contactLeave string,
 	status string) error {
@@ -97,13 +92,11 @@ func (l *LeaveRequest) CreateLeaveRequestSupervisor(employeeNumber int64,
 		"date_to",
 		"back_on",
 		"total",
-		"leave_remaining",
 		"address",
 		"contact_leave",
 		"status").
-		Values("?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?")
+		Values("?, ?, ?, ?, ?, ?, ?, ?, ?, ?")
 	sql := qb.String()
-
 	values := []interface{}{employeeNumber,
 		typeOfLeave,
 		reason,
@@ -111,7 +104,6 @@ func (l *LeaveRequest) CreateLeaveRequestSupervisor(employeeNumber int64,
 		dateTo,
 		backOn,
 		total,
-		leaveRemaining,
 		address,
 		contactLeave,
 		status}

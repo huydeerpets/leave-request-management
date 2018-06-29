@@ -34,6 +34,7 @@ func (u *Admin) AddUser(user structDB.User) error {
 
 		user.Email = strings.ToLower(user.Email)
 		user.Password = string(hash)
+		user.LeaveRemaining = 12
 
 		_, err := o.Insert(&user)
 		if err != nil {
@@ -184,7 +185,7 @@ func (u *Admin) GetLeaveRequest() ([]structLogic.RequestAccept, error) {
 		leave.TableName()+".from",
 		leave.TableName()+".to",
 		leave.TableName()+".total",
-		leave.TableName()+".leave_remaining",
+		user.TableName()+".leave_remaining",
 		leave.TableName()+".back_on",
 		leave.TableName()+".address",
 		leave.TableName()+".contact_leave",
@@ -204,4 +205,33 @@ func (u *Admin) GetLeaveRequest() ([]structLogic.RequestAccept, error) {
 	beego.Debug("Total accept request =", count)
 
 	return reqAccept, errRaw
+}
+
+// UpdateLeaveRemaning ...
+func (u *Admin) UpdateLeaveRemaning(total int64, employeeNumber int64) (err error) {
+	var e *structDB.User
+	o := orm.NewOrm()
+	qb, errQB := orm.NewQueryBuilder("mysql")
+	if errQB != nil {
+		helpers.CheckErr("Query builder failed @UpdateUser", errQB)
+		return errQB
+	}
+
+	qb.Update(e.TableName()).Set("leave_remaining = leave_remaining - ?").Where("employee_number = ? ")
+	sql := qb.String()
+
+	res, errRaw := o.Raw(sql, total, employeeNumber).Exec()
+
+	if errRaw != nil {
+		helpers.CheckErr("err update @UpdateUser", errRaw)
+		return errors.New("update leave remaining failed")
+	}
+
+	_, errRow := res.RowsAffected()
+	if errRow != nil {
+		helpers.CheckErr("error get rows affected", errRow)
+		return errRow
+	}
+
+	return err
 }

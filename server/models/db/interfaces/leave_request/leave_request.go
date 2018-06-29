@@ -10,7 +10,6 @@ type IBaseLeaveRequest interface {
 		to string,
 		backOn string,
 		total int64,
-		leaveRemaining int64,
 		address string,
 		contactLeave string,
 		status string) error
@@ -22,7 +21,6 @@ type IBaseLeaveRequest interface {
 		to string,
 		backOn string,
 		total int64,
-		leaveRemaining int64,
 		address string,
 		contactLeave string,
 		status string) error

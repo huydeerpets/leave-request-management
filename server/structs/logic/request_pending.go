@@ -12,9 +12,9 @@ type RequestPending struct {
 	Role             string `json:"role" orm:"column(role)"`
 	TypeOfLeave      string `json:"type_of_leave" orm:"column(type_of_leave)"`
 	Reason           string `json:"reason" orm:"column(reason)"`
-	From             string `json:"from" orm:"column(from)"`
+	DateFrom         string `json:"date_from" orm:"column(date_from)"`
+	DateTo           string `json:"date_to" orm:"column(date_to)"`
 	BackOn           string `json:"back_on" orm:"column(back_on)"`
-	To               string `json:"to" orm:"column(to)"`
 	Total            int64  `json:"total" orm:"column(total)"`
 	LeaveRemaining   int64  `json:"leave_remaining" orm:"column(leave_remaining)"`
 	Address          string `json:"address" orm:"column(address)"`

@@ -99,7 +99,7 @@ func (u *Director) GetDirectorPendingRequest() ([]structLogic.RequestPending, er
 		leave.TableName()+".to",
 		leave.TableName()+".back_on",
 		leave.TableName()+".total",
-		leave.TableName()+".leave_remaining",
+		user.TableName()+".leave_remaining",
 		leave.TableName()+".address",
 		leave.TableName()+".contact_leave",
 		leave.TableName()+".status").
@@ -151,7 +151,7 @@ func (u *Director) GetDirectorAcceptRequest() ([]structLogic.RequestAccept, erro
 		leave.TableName()+".to",
 		leave.TableName()+".back_on",
 		leave.TableName()+".total",
-		leave.TableName()+".leave_remaining",
+		user.TableName()+".leave_remaining",
 		leave.TableName()+".address",
 		leave.TableName()+".contact_leave",
 		leave.TableName()+".status").
@@ -203,7 +203,7 @@ func (u *Director) GetDirectorRejectRequest() ([]structLogic.RequestReject, erro
 		leave.TableName()+".to",
 		leave.TableName()+".back_on",
 		leave.TableName()+".total",
-		leave.TableName()+".leave_remaining",
+		user.TableName()+".leave_remaining",
 		leave.TableName()+".address",
 		leave.TableName()+".contact_leave",
 		leave.TableName()+".status").

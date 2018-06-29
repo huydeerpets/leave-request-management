@@ -25,4 +25,6 @@ type IBaseAdmin interface {
 	UpdateUser(e *structDB.User, employeeNumber int64) (err error)
 	// GetLeaveRequest
 	GetLeaveRequest() ([]structLogic.RequestAccept, error)
+	// UpdateLeaveRemaning
+	UpdateLeaveRemaning(total int64, employeeNumber int64) (err error)
 }

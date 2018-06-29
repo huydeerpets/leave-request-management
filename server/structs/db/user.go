@@ -1,7 +1,5 @@
 package db
 
-import "time"
-
 // User ...
 type User struct {
 	EmployeeNumber   int64  `json:"employee_number" orm:"column(employee_number);pk"`
@@ -14,20 +12,7 @@ type User struct {
 	Password         string `json:"password" orm:"column(password)"`
 	Role             string `json:"role" orm:"column(role)"`
 	SupervisorID     int64  `json:"supervisor_id" orm:"column(supervisor_id)"`
-}
-
-// UserToken ...
-type UserToken struct {
-	Email            string
-	ID               int64
-	Name             string
-	Gender           string
-	Position         string
-	StartWorkingDate time.Time
-	MobilePhone      string
-	SupervisorID     int64
-	RoleID           int64
-	Expires          int64
+	LeaveRemaining   int64  `json:"leave_remaining" orm:"column(leave_remaining)"`
 }
 
 // TableName ...
