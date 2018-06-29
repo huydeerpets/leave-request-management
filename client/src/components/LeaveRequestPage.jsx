@@ -45,7 +45,7 @@ class LeaveRequestPage extends Component {
   handleChange(value, e) {
     let newLeave = {
       ...this.props.leaveForm,
-      ["type_of_leave"]: value
+      "type_of_leave": value
     };
     this.props.formOnChange(newLeave);
   }
@@ -160,18 +160,18 @@ class LeaveRequestPage extends Component {
               <FormItem {...formItemLayout} label="From">
                 <Input
                   type="date"
-                  id="from"
-                  name="from"
-                  value={this.props.leaveForm.from}
+                  id="date_from"
+                  name="date_from"
+                  value={this.props.leaveForm.date_from}
                   onChange={this.handleOnChange}
                 />
               </FormItem>
               <FormItem {...formItemLayout} label="To">
                 <Input
                   type="date"
-                  id="to"
-                  name="to"
-                  value={this.props.leaveForm.to}
+                  id="date_to"
+                  name="date_to"
+                  value={this.props.leaveForm.date_to}
                   onChange={this.handleOnChange}
                 />
               </FormItem>

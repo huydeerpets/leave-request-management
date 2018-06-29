@@ -110,12 +110,12 @@ export function rejectFetchData() {
 
 export function updateStatusAccept(users, id, enumber) {
 	return (dispatch) => {
-		fetch('http://localhost:8080/api/director/accept/' + `${id}/${enumber}`, {
+		fetch(`http://localhost:8080/api/director/accept/${id}/${enumber}`, {
 				method: 'PUT',
 			})
 			.then(response => {
 				let newUserlist = users.filter(el => {
-					el.id !== id && el.employee_number !== enumber
+					return el.id !== id && el.employee_number !== enumber
 				})
 				let payload = {
 					loading: false,
@@ -133,12 +133,12 @@ export function updateStatusAccept(users, id, enumber) {
 
 export function updateStatusReject(users, id, enumber) {
 	return (dispatch) => {
-		fetch('http://localhost:8080/api/director/reject/' + `${id}/${enumber}`, {
+		fetch(`http://localhost:8080/api/director/reject/${id}/${enumber}`, {
 				method: 'PUT',
 			})
 			.then(response => {
 				let newUserlist = users.filter(el => {
-					el.id !== id && el.employee_number !== enumber
+					return el.id !== id && el.employee_number !== enumber
 				})
 				console.log("=================>new",newUserlist)
 				let payload = {

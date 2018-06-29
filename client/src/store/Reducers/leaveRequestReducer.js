@@ -1,8 +1,8 @@
 const leave = {
 	type_of_leave: '',
 	reason: '',
-	from: '',
-	to: '',
+	date_from: '',
+	date_to: '',
 	back_on: '',
 	address: '',
 	contact_leave: ''

@@ -45,7 +45,7 @@ export default class HeaderAdmin extends React.Component {
             </NavLink>
           </Menu.Item>
           <Menu.Item key="3">
-            <NavLink to="/list-request">
+            <NavLink to="/list-request-leave">
               <span>
                 <Icon type="schedule" />
               </span>List Leave Request

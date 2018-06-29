@@ -15,7 +15,7 @@ function clearField() {
 
 export function SumbitSignUp(payload) {
 	return (dispatch) => {
-		fetch('http://localhost:8080/api/user/register', {
+		fetch('http://localhost:8080/api/admin/user/register', {
 				method: 'POST',
 				body: JSON.stringify(payload)
 			})
@@ -34,7 +34,6 @@ export function SumbitSignUp(payload) {
 					dispatch(clearField())
 					alert('register success')
 					window.location.href = "/admin";
-
 				}
 
 			}).catch(err => {

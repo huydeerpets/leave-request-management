@@ -60,14 +60,14 @@ class DirectorPendingPage extends Component {
       },
       {
         title: "From",
-        dataIndex: "from",
-        key: "from",
+        dataIndex: "date_from",
+        key: "date_from",
         width: 120
       },
       {
         title: "To",
-        dataIndex: "to",
-        key: "to",
+        dataIndex: "date_to",
+        key: "date_to",
         width: 120
       },
       {
@@ -201,8 +201,8 @@ class DirectorPendingPage extends Component {
                 Type Of Leave :
                 {this.state.user && this.state.user.type_of_leave} <br />
                 Reason : {this.state.user && this.state.user.reason} <br />
-                From : {this.state.user && this.state.user.from} <br />
-                To : {this.state.user && this.state.user.to} <br />
+                From : {this.state.user && this.state.user.date_from} <br />
+                To : {this.state.user && this.state.user.date_to} <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
                 Total : {this.state.user && this.state.user.total} <br />
                 Leave Remaining :

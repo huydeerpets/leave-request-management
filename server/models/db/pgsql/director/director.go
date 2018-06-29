@@ -74,6 +74,7 @@ func (u *Director) GetDirectorPendingRequest() ([]structLogic.RequestPending, er
 		user       structDB.User
 	)
 	statAcceptSupervisor := constant.StatusSuccessInSupervisor
+	statPendingDirector := constant.StatusPendingInDirector
 
 	o := orm.NewOrm()
 	qb, errQB := orm.NewQueryBuilder("mysql")
@@ -105,10 +106,10 @@ func (u *Director) GetDirectorPendingRequest() ([]structLogic.RequestPending, er
 		From(user.TableName()).
 		InnerJoin(leave.TableName()).
 		On(leave.TableName() + ".employee_number" + "=" + user.TableName() + ".employee_number").
-		Where(`status = ? `)
+		Where(`(status = ? OR status = ? )`)
 	sql := qb.String()
 
-	count, errRaw := o.Raw(sql, statAcceptSupervisor).QueryRows(&reqPending)
+	count, errRaw := o.Raw(sql, statAcceptSupervisor, statPendingDirector).QueryRows(&reqPending)
 	if errRaw != nil {
 		helpers.CheckErr("Failed Query get @GetDirectorPendingRequest", errRaw)
 		return reqPending, errors.New("employee number not exist")

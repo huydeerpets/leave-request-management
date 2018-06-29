@@ -22,21 +22,36 @@ func init() {
 			&controllers.LeaveController{},
 			"post:PostLeaveRequest",
 		),
+		// create leave request form (for all role except admin and director)
+		beego.NSRouter("/supervisor/leave/:id:int ",
+			&controllers.LeaveController{},
+			"post:PostLeaveRequestSupervisor",
+		),
 
 		// ========================= admin ========================= //
-		// get all user
-		beego.NSRouter("/user",
-			&controllers.UserController{},
-			"get:GetUsers",
+		// get leave request success
+		beego.NSRouter("/admin/leave",
+			&controllers.AdminController{},
+			"get:GetRequestAccept",
 		),
 		// register user
-		beego.NSRouter("/user/register",
-			&controllers.UserController{},
-			"post:PostUser",
+		beego.NSRouter("/admin/user/register",
+			&controllers.AdminController{},
+			"post:CreateUser",
+		),
+		// get all user
+		beego.NSRouter("/admin/user",
+			&controllers.AdminController{},
+			"get:GetUsers;post:CreateUser",
+		),
+		// get one user, update one user, delete one user
+		beego.NSRouter("/admin/user/:id:int",
+			&controllers.AdminController{},
+			"get:GetUser;put:UpdateUser;delete:DeleteUser",
 		),
 		// delete user
-		beego.NSRouter("/user/delete/:id:int ",
-			&controllers.UserController{},
+		beego.NSRouter("/admin/user/delete/:id:int",
+			&controllers.AdminController{},
 			"delete:DeleteUser",
 		),
 

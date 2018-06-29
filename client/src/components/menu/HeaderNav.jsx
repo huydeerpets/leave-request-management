@@ -124,7 +124,7 @@ export default class HeaderNav extends React.Component {
               }
             >
               <Menu.Item key="schedule:1">
-                <NavLink to="/request-leave">Form Request Pending</NavLink>
+                <NavLink to="/supervisor-request-leave">Form Leave Request</NavLink>
               </Menu.Item>
               <Menu.Item key="schedule:2">
                 <NavLink to="/request-pending">List Request Pending</NavLink>

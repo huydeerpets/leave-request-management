@@ -1,10 +1,9 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { NavLink } from "react-router-dom";
 import { formOnchange, SumbitSignUp } from "../store/Actions/signupActions";
 
-import { Layout, Form, Icon, Input, Select, Button, Menu } from "antd";
+import { Layout, Form, Input, Select, Button } from "antd";
 import HeaderNav from "./menu/HeaderAdmin";
 import Footer from "./menu/Footer";
 const { Content } = Layout;
@@ -56,7 +55,7 @@ class RegisterPage extends Component {
   handleOnChangeNumber = e => {
     let employee_num = {
       ...this.props.signupForm,
-      ["employee_number"]: Number(e.target.value)
+      employee_number: Number(e.target.value)
     };
     this.props.formOnchange(employee_num);
   };
@@ -64,7 +63,7 @@ class RegisterPage extends Component {
   handleChangeGender(value, event) {
     let gender = {
       ...this.props.signupForm,
-      ["gender"]: value
+      gender: value
     };
 
     this.props.formOnchange(gender);
@@ -73,7 +72,7 @@ class RegisterPage extends Component {
   handleChangeRole(value, event) {
     let role = {
       ...this.props.signupForm,
-      ["role"]: value
+      role: value
     };
 
     this.props.formOnchange(role);
@@ -82,7 +81,7 @@ class RegisterPage extends Component {
   handleChangeSupervisor(value, event) {
     let supervisor = {
       ...this.props.signupForm,
-      ["supervisor_id"]: Number(value)
+      supervisor_id: Number(value)
     };
 
     this.props.formOnchange(supervisor);
@@ -166,7 +165,6 @@ class RegisterPage extends Component {
                         name="employee_number"
                         placeholder="employee_number"
                         onChange={this.handleOnChangeNumber}
-                        // value={this.props.signupForm.employee_number}
                       />
                     )}
                   </FormItem>
@@ -185,7 +183,6 @@ class RegisterPage extends Component {
                         id="name"
                         name="name"
                         placeholder="name"
-                        // value={this.props.signupForm.name}
                         onChange={this.handleOnChange}
                       />
                     )}
@@ -209,7 +206,6 @@ class RegisterPage extends Component {
                         id="email"
                         name="email"
                         placeholder="email"
-                        // value={this.props.signupForm.email}
                         onChange={this.handleOnChange}
                       />
                     )}
@@ -262,7 +258,6 @@ class RegisterPage extends Component {
                         id="position"
                         name="position"
                         placeholder="position"
-                        // value={this.props.signupForm.position}
                         onChange={this.handleOnChange}
                       />
                     )}
@@ -282,7 +277,6 @@ class RegisterPage extends Component {
                         id="start_working_date"
                         name="start_working_date"
                         placeholder="start_working_date"
-                        // value={this.props.signupForm.start_working_date}
                         onChange={this.handleOnChange}
                       />
                     )}
@@ -302,7 +296,6 @@ class RegisterPage extends Component {
                         id="mobile_phone"
                         name="mobile_phone"
                         placeholder="mobile_phone"
-                        // value={this.props.signupForm.mobile_phone}
                         onChange={this.handleOnChange}
                       />
                     )}

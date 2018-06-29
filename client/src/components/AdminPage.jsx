@@ -1,19 +1,10 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { NavLink } from "react-router-dom";
 import { adminFetchData, deleteUser } from "../store/Actions/adminActions";
 import HeaderNav from "./menu/HeaderAdmin";
 import Footer from "./menu/Footer";
-import {
-  Layout,
-  Table,
-  Button,
-  Divider,
-  Popconfirm,
-  message,
-  notification
-} from "antd";
+import { Layout, Table, Button, Divider, Popconfirm, message } from "antd";
 const { Content } = Layout;
 
 class Adminpage extends Component {
@@ -53,7 +44,7 @@ class Adminpage extends Component {
           <span>
             <Button
               onClick={() => {
-                this.editUser(this.props.users, record.id);
+                this.editUser(this.props.users, record.employee_number);
               }}
               type="primary"
             >
@@ -78,10 +69,10 @@ class Adminpage extends Component {
     ];
   }
 
-  editUser = (users, userId) => {
-    console.log(userId, "--", users);
+  editUser = (users, employeeNumber) => {
+    console.log(employeeNumber, "--", users);
     this.props.history.push({
-      pathname: "/edituser/" + userId,
+      pathname: "/edituser/" + employeeNumber,
       state: { users: users }
     });
   };

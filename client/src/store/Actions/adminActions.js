@@ -1,3 +1,10 @@
+function leaveloaded(payload) {
+	return {
+		type: 'LEAVE_LOADED',
+		payload: payload
+	}
+}
+
 function adminloaded(payload) {
 	return {
 		type: 'ADMIN_LOADED',
@@ -14,7 +21,7 @@ function userDeleted(payload) {
 
 export function adminFetchData() {
 	return (dispatch) => {
-		fetch('http://localhost:8080/api/user', {
+		fetch('http://localhost:8080/api/admin/user', {
 				method: 'GET',
 			})
 			.then((resp) => resp.json())
@@ -39,7 +46,7 @@ export function adminFetchData() {
 
 export function deleteUser(users, employeeNumber) {
 	return (dispatch) => {
-		fetch('http://localhost:8080/api/user/delete/' + employeeNumber, {
+		fetch('http://localhost:8080/api/admin/user/delete/' + employeeNumber, {
 				method: 'DELETE',
 			})
 			.then((resp) => resp.json())
@@ -55,6 +62,30 @@ export function deleteUser(users, employeeNumber) {
 					]
 				}
 				dispatch(userDeleted(payload))
+			})
+			.catch(err => {
+				console.log(err)
+			})
+	}
+}
+
+export function leaveFetchData() {
+	return (dispatch) => {
+		fetch('http://localhost:8080/api/admin/leave', {
+				method: 'GET',
+			})
+			.then((resp) => resp.json())
+			.then(({
+				body
+			}) => {
+				console.log(body)
+
+				let payload = {
+					loading: false,
+					users: body
+				}
+				console.log(payload, 'aaa')
+				dispatch(leaveloaded(payload))
 			})
 			.catch(err => {
 				console.log(err)

@@ -39,3 +39,29 @@ export function SumbitLeave(payload) {
 			})
 	}
 }
+
+export function SumbitLeaveSupervisor(payload) {
+	const employeeNumber = localStorage.getItem('id')	
+	return (dispatch) => {
+		fetch('http://localhost:8080/api/supervisor/leave/' + employeeNumber, {
+				method: 'POST',
+				body: JSON.stringify(payload)
+			})
+			.then((resp) => resp.json())
+			.then(({
+				body,
+				error
+			}) => {
+				let respErr = error
+				if (respErr === "type request malform") {
+					console.log(respErr)
+					alert('create failed, please field out all field')
+				} else {
+					dispatch(clearField())
+					alert('create leave request success')
+				}
+			}).catch(err => {
+				console.log(err)
+			})
+	}
+}

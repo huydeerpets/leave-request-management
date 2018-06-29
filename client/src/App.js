@@ -8,8 +8,11 @@ import store from './store/index.js';
 import Landingpage from './components/Landingpage.jsx';
 import Adminpage from './components/AdminPage.jsx';
 import RegisterPage from './components/RegisterPage.jsx';
+import AdminLeaveRequestPage from './components/AdminLeaveRequestPage.jsx';
+import AdminEditPage from './components/AdminEditPage.jsx';
 
 import LeaveRequestPage from './components/LeaveRequestPage.jsx';
+import LeaveRequestSupervisorPage from './components/LeaveRequestSupervisorPage.jsx';
 
 import LandingEmployeePage from './components/LandingEmployeePage.jsx';
 import EmployeeReqPendingPage from './components/EmployeeReqPendingPage.jsx';
@@ -39,9 +42,12 @@ class App extends Component {
               <Route exact path="/login" component={Landingpage} />
 
               <Route path="/admin" component={Adminpage} />
-              <Route exact path="/register" component={RegisterPage} />
+              <Route exact path="/register" component={RegisterPage} />              
+              <Route path="/list-request-leave" component={AdminLeaveRequestPage} />
+              <Route path={`/edituser/:id`} component={AdminEditPage}/>
               
               <Route path="/request-leave" component={LeaveRequestPage} />
+              <Route path="/supervisor-request-leave" component={LeaveRequestSupervisorPage} />
 
               <Route path="/employee" component={LandingEmployeePage} />
               <Route path="/request-pending" component={EmployeeReqPendingPage} />
