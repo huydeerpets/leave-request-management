@@ -8,7 +8,7 @@ import {
 } from "../store/Actions/supervisorActions";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
-import { Layout, Table, Modal, Button } from "antd";
+import { Layout, Table, Modal, Button, Input } from "antd";
 const { Content } = Layout;
 
 class SupervisorPendingPage extends Component {
@@ -18,8 +18,13 @@ class SupervisorPendingPage extends Component {
       loadingA: false,
       loadingR: false,
       visible: false,
-      user: null
+      visibleReject: false,
+      user: null,
+      reason: null
     };
+
+    this.handleReject = this.handleReject.bind(this);
+    this.handleOnChange = this.handleOnChange.bind(this);
 
     this.columns = [
       {
@@ -76,7 +81,6 @@ class SupervisorPendingPage extends Component {
         width: 100,
         render: (value, record) => (
           <span>
-            {/* {console.log("===========>id", record.id)} */}
             <Button type="primary" onClick={() => this.showDetail(record)}>
               Detail
             </Button>
@@ -93,6 +97,12 @@ class SupervisorPendingPage extends Component {
     });
   };
 
+  showReject = () => {
+    this.setState({
+      visibleReject: true
+    });
+  };
+
   onSelectChange = selectedRowKeys => {
     console.log("selected row: ", selectedRowKeys);
   };
@@ -105,7 +115,7 @@ class SupervisorPendingPage extends Component {
     setTimeout(() => {
       this.setState({ loadingA: false, visible: false });
       this.updateStatusAccept(this.props.users, id, employeeNumber);
-      window.location.reload();
+      // window.location.reload();
     }, 1000);
   };
 
@@ -115,9 +125,14 @@ class SupervisorPendingPage extends Component {
 
     this.setState({ loadingR: true });
     setTimeout(() => {
-      this.setState({ loadingR: false, visible: false });
-      this.updateStatusReject(this.props.users, id, employeeNumber);
-      window.location.reload();
+      this.setState({ loadingR: false,visible: false, visibleReject: false });
+      this.updateStatusReject(
+        this.props.users,
+        id,
+        employeeNumber,
+        this.state.reason
+      );
+      // window.location.reload();
     }, 1000);
   };
 
@@ -125,12 +140,25 @@ class SupervisorPendingPage extends Component {
     this.setState({ visible: false });
   };
 
+  handleCancelReject = () => {
+    this.setState({ visibleReject: false });
+  };
+
   updateStatusAccept = (users, id, enumber) => {
     this.props.updateStatusAccept(users, id, enumber);
   };
 
-  updateStatusReject = (users, id, enumber) => {
-    this.props.updateStatusReject(users, id, enumber);
+  updateStatusReject = (users, id, enumber, reason) => {
+    this.props.updateStatusReject(users, id, enumber, reason);
+  };
+
+  handleOnChange = e => {
+    let newLeave = {
+      ...this.props.leave,
+      [e.target.name]: e.target.value
+    };
+    this.setState({ reason: e.target.value });
+    console.log("=========", e.target.value);
   };
 
   componentDidMount() {
@@ -142,7 +170,7 @@ class SupervisorPendingPage extends Component {
     this.props.pendingFetchData();
   }
   render() {
-    const { visible, loadingA, loadingR } = this.state;
+    const { visible, visibleReject, loadingA, loadingR } = this.state;
 
     if (this.props.loading) {
       return <h1> loading... </h1>;
@@ -169,6 +197,39 @@ class SupervisorPendingPage extends Component {
             </div>
 
             <Modal
+              visible={visibleReject}
+              title="Reject Reason"
+              onOk={this.handleReject}
+              onCancel={this.handleCancelReject}
+              style={{ top: "20" }}
+              bodyStyle={{ padding: "0" }}
+              footer={[
+                <Button
+                  key="reject"
+                  type="danger"
+                  loading={loadingR}
+                  onClick={this.handleReject}
+                >
+                  Reject
+                </Button>,
+                <Button
+                  key="cancel"                  
+                  onClick={this.handleCancelReject}
+                >
+                  Return
+                </Button>
+              ]}
+            >
+              <Input
+                type="text"
+                id="reject_reason"
+                name="reject_reason"
+                placeholder="reject reason"
+                onChange={this.handleOnChange}
+              />
+            </Modal>
+
+            <Modal
               visible={visible}
               title="Detail Leave Request"
               onOk={this.handleOk}
@@ -184,12 +245,7 @@ class SupervisorPendingPage extends Component {
                 >
                   Accept
                 </Button>,
-                <Button
-                  key="reject"
-                  type="danger"
-                  loading={loadingR}
-                  onClick={this.handleReject}
-                >
+                <Button type="danger" onClick={this.showReject}>
                   Reject
                 </Button>
               ]}
@@ -224,7 +280,8 @@ class SupervisorPendingPage extends Component {
 
 const mapStateToProps = state => ({
   loading: state.fetchSupervisorReducer.loading,
-  users: state.fetchSupervisorReducer.users
+  users: state.fetchSupervisorReducer.users,
+  leave: state.fetchSupervisorReducer.leave
 });
 
 const mapDispatchToProps = dispatch =>

@@ -1,5 +1,3 @@
-import axios from "axios"
-
 function fetchUser(payload) {
 	return {
 		type: 'FETCH_EDIT',

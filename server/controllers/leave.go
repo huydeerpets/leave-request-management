@@ -163,3 +163,71 @@ func (c *LeaveController) PostLeaveRequestSupervisor() {
 		helpers.CheckErr("failed giving output @PostLeaveRequestSupervisor", err)
 	}
 }
+
+// UpdateRequest ...
+func (c *LeaveController) UpdateRequest() {
+	var (
+		resp    structAPI.RespData
+		leave   structDB.LeaveRequest
+		dbLeave db.LeaveRequest
+	)
+
+	body := c.Ctx.Input.RequestBody
+	fmt.Println("REGISTER=======>", string(body))
+
+	err := json.Unmarshal(body, &leave)
+	if err != nil {
+		helpers.CheckErr("unmarshall req body failed @UpdateRequest", err)
+		resp.Error = errors.New("type request malform").Error()
+		c.Ctx.Output.JSON(resp, false, false)
+		return
+	}
+
+	idStr := c.Ctx.Input.Param(":id")
+	id, errCon := strconv.ParseInt(idStr, 0, 64)
+	if errCon != nil {
+		helpers.CheckErr("convert id failed @GetRequestAccept", errCon)
+		resp.Error = errors.New("convert id failed").Error()
+		return
+	}
+
+	errUpdate := dbLeave.UpdateRequest(&leave, id)
+	if errUpdate != nil {
+		resp.Error = errUpdate.Error()
+	} else {
+		resp.Body = "update leave success"
+	}
+
+	err = c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		helpers.CheckErr("failed giving output @UpdateRequest", err)
+	}
+}
+
+// DeleteRequest ...
+func (c *LeaveController) DeleteRequest() {
+	var (
+		resp    structAPI.RespData
+		dbLeave db.LeaveRequest
+	)
+
+	idStr := c.Ctx.Input.Param(":id")
+	id, errCon := strconv.ParseInt(idStr, 0, 64)
+	if errCon != nil {
+		helpers.CheckErr("convert id failed @DeleteRequest", errCon)
+		resp.Error = errors.New("convert id failed").Error()
+		return
+	}
+
+	if err := dbLeave.DeleteRequest(id); err == nil {
+		resp.Body = "Deleted success"
+	} else {
+		resp.Error = err.Error()
+		c.Ctx.Output.SetStatus(400)
+	}
+
+	err := c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		helpers.CheckErr("failed giving output @DeleteRequest", err)
+	}
+}

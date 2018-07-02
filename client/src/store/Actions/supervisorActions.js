@@ -117,9 +117,7 @@ export function updateStatusAccept(users, id, enumber) {
 				method: 'PUT',
 			})
 			.then(response => {
-				let newUserlist = users.filter(el => {
-					return el.id !== id && el.employee_number !== enumber
-				})
+				let newUserlist = users.filter(el => el.id !== id)
 				let payload = {
 					loading: false,
 					users: [
@@ -134,16 +132,21 @@ export function updateStatusAccept(users, id, enumber) {
 	}
 }
 
-export function updateStatusReject(users, id, enumber) {
+export function updateStatusReject(users, id, enumber, reason) {
+	let spaceReason
+	if (reason) {
+		spaceReason = reason.replace(/ /g, "_");
+	}
+
 	return (dispatch) => {
-		fetch(`http://localhost:8080/api/employee/reject/${id}/${enumber}`, {
+		fetch(`http://localhost:8080/api/employee/reject/${id}/${enumber}/` + String(spaceReason), {
 				method: 'PUT',
 			})
-			.then(response => {
-				let newUserlist = users.filter(el => {
-					return el.id !== id && el.employee_number !== enumber
-				})
-				console.log(newUserlist)
+			.then((resp) => resp.json())
+			.then(({
+				body
+			}) => {
+				let newUserlist = users.filter(el => el.id !== id)
 				let payload = {
 					loading: false,
 					users: [

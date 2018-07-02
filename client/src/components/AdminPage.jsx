@@ -76,16 +76,19 @@ class Adminpage extends Component {
       state: { users: users }
     });
   };
+
   deleteUser = (users, employeeNumber) => {
     this.props.deleteUser(users, employeeNumber);
     console.log("delete nih", users, "--", employeeNumber);
   };
+
   componentDidMount() {
     if (localStorage.getItem("role") !== "admin") {
       this.props.history.push("/");
     }
     this.props.adminFetchData();
   }
+
   render() {
     if (this.props.loading) {
       return <h1> loading... </h1>;

@@ -10,8 +10,10 @@ import Adminpage from './components/AdminPage.jsx';
 import RegisterPage from './components/RegisterPage.jsx';
 import AdminLeaveRequestPage from './components/AdminLeaveRequestPage.jsx';
 import AdminEditPage from './components/AdminEditPage.jsx';
+import LeaveEditPage from './components/LeaveEditPage';
 
 import LeaveRequestPage from './components/LeaveRequestPage.jsx';
+import ProfilePage from './components/ProfilePage';
 import LeaveRequestSupervisorPage from './components/LeaveRequestSupervisorPage.jsx';
 
 import LandingEmployeePage from './components/LandingEmployeePage.jsx';
@@ -50,6 +52,9 @@ class App extends Component {
               <Route path="/supervisor-request-leave" component={LeaveRequestSupervisorPage} />
 
               <Route path="/employee" component={LandingEmployeePage} />
+              <Route path={`/editrequest/:id`} component={LeaveEditPage}/>
+              <Route path="/profile" component={ProfilePage} />
+              
               <Route path="/request-pending" component={EmployeeReqPendingPage} />
               <Route path="/request-accept" component={EmployeeReqAcceptPage} />
               <Route path="/request-reject" component={EmployeeReqRejectPage} />

@@ -1,10 +1,21 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { pendingFetchData } from "../store/Actions/employeeAction";
+import {
+  pendingFetchData,
+  deleteRequest
+} from "../store/Actions/employeeAction";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
-import { Layout, Table, Modal, Button } from "antd";
+import {
+  Layout,
+  Table,
+  Modal,
+  Button,
+  Divider,
+  Popconfirm,
+  message
+} from "antd";
 const { Content } = Layout;
 
 class EmployeeReqAcceptPage extends Component {
@@ -27,7 +38,7 @@ class EmployeeReqAcceptPage extends Component {
         title: "Employee Number",
         dataIndex: "employee_number",
         key: "employee_number",
-        width: 95
+        width: 100
       },
       {
         title: "Name",
@@ -68,17 +79,52 @@ class EmployeeReqAcceptPage extends Component {
       {
         title: "Action",
         key: "action",
-        width: 100,
+        width: 300,
         render: (value, record) => (
           <span>
             <Button type="primary" onClick={() => this.showDetail(record)}>
               Detail
             </Button>
+            <Divider type="vertical" />
+            <Button
+              onClick={() => {
+                this.editLeave(this.props.users, record.id);
+              }}
+              type="primary"
+            >
+              Edit
+            </Button>
+            <Divider type="vertical" />
+            <Popconfirm
+              placement="top"
+              title={"Are you sure delete this leave request?"}
+              onConfirm={() => {
+                this.deleteRequest(this.props.users, record.id);
+                message.success("Leave request has been delete!");
+              }}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button type="danger">Delete</Button>
+            </Popconfirm>
           </span>
         )
       }
     ];
   }
+
+  editLeave = (leave, id) => {
+    console.log(id, "--", leave);
+    this.props.history.push({
+      pathname: "/editrequest/" + id,
+      state: { leave: leave }
+    });
+  };
+
+  deleteRequest = (users, id) => {
+    this.props.deleteRequest(users, id);
+    console.log("delete nih", users, "--", id);
+  };
 
   showDetail = record => {
     this.setState({
@@ -186,7 +232,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      pendingFetchData
+      pendingFetchData,
+      deleteRequest
     },
     dispatch
   );

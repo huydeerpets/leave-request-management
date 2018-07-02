@@ -1,5 +1,7 @@
 package leave
 
+import structDB "server/structs/db"
+
 // IBaseLeaveRequest ...
 type IBaseLeaveRequest interface {
 	// CreateLeaveRequest
@@ -24,4 +26,8 @@ type IBaseLeaveRequest interface {
 		address string,
 		contactLeave string,
 		status string) error
+	// UpdateRequest
+	UpdateRequest(e *structDB.LeaveRequest, id int64) (err error)
+	// DeleteRequest
+	DeleteRequest(id int64) (err error)
 }

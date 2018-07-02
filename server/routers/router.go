@@ -17,23 +17,18 @@ func init() {
 			"post:Login",
 		),
 
-		// create leave request form (for all role except admin and director)
+		// create leave request for employee, update leave request, delete leave request
 		beego.NSRouter("/leave/:id:int ",
 			&controllers.LeaveController{},
-			"post:PostLeaveRequest",
+			"post:PostLeaveRequest;put:UpdateRequest;delete:DeleteRequest",
 		),
-		// create leave request form (for all role except admin and director)
+		// create leave request for supervisor
 		beego.NSRouter("/supervisor/leave/:id:int ",
 			&controllers.LeaveController{},
 			"post:PostLeaveRequestSupervisor",
 		),
 
 		// ========================= admin ========================= //
-		// get leave request success
-		beego.NSRouter("/admin/leave",
-			&controllers.AdminController{},
-			"get:GetRequestAccept",
-		),
 		// register user
 		beego.NSRouter("/admin/user/register",
 			&controllers.AdminController{},
@@ -53,6 +48,11 @@ func init() {
 		beego.NSRouter("/admin/user/delete/:id:int",
 			&controllers.AdminController{},
 			"delete:DeleteUser",
+		),
+		// get leave request success
+		beego.NSRouter("/admin/leave",
+			&controllers.AdminController{},
+			"get:GetRequestAccept",
 		),
 
 		// ========================= employee ========================= //
@@ -79,7 +79,7 @@ func init() {
 			"put:AcceptStatusBySupervisor",
 		),
 		// reject status by supervisor
-		beego.NSRouter("/employee/reject/:id:int/:enumber:int",
+		beego.NSRouter("/employee/reject/:id:int/:enumber:int/:reason:string",
 			&controllers.UserController{},
 			"put:RejectStatusBySupervisor",
 		),

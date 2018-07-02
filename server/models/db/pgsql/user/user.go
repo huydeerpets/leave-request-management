@@ -1,73 +1,26 @@
 package user
 
 import (
+	"bytes"
 	"errors"
+	"html/template"
+	"path/filepath"
 	"server/helpers"
 	"server/helpers/constant"
 	structAPI "server/structs/api"
 	structDB "server/structs/db"
 	structLogic "server/structs/logic"
 
-	"strings"
-
 	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"golang.org/x/crypto/bcrypt"
+	gomail "gopkg.in/gomail.v2"
 )
 
 // User ...
 type User struct{}
-
-// AddUser ...
-func (u *User) AddUser(user structDB.User) error {
-	var count int
-	o := orm.NewOrm()
-
-	o.Raw(`SELECT count(*) as Count FROM `+user.TableName()+` WHERE email = ?`, user.Email).QueryRow(&count)
-
-	if count > 0 {
-		return errors.New("Email already register")
-	} else {
-		hash, errHash := bcrypt.GenerateFromPassword([]byte(user.Password), 5)
-		if errHash != nil {
-			helpers.CheckErr("error hash password @AddUser", errHash)
-		}
-
-		user.Email = strings.ToLower(user.Email)
-		user.Password = string(hash)
-
-		_, err := o.Insert(&user)
-		if err != nil {
-			helpers.CheckErr("error insert @AddUser", err)
-			return errors.New("insert users failed")
-		}
-		return err
-	}
-}
-
-// DeleteUser ...
-func (u *User) DeleteUser(employeeNumber int64) (err error) {
-	o := orm.NewOrm()
-	v := structDB.User{EmployeeNumber: employeeNumber}
-
-	err = o.Read(&v)
-	if err == nil {
-		var num int64
-		if num, err = o.Delete(&structDB.User{EmployeeNumber: employeeNumber}); err == nil {
-			beego.Debug("Number of records deleted in database:", num)
-		} else if err != nil {
-			helpers.CheckErr("error deleted item @DeleteItem", err)
-			return errors.New("error deleted item")
-		}
-	}
-	if err != nil {
-		helpers.CheckErr("error deleted item @DeleteItem", err)
-		return errors.New("Delete failed, id not exist")
-	}
-	return err
-}
 
 // GetJWT ...
 func (u *User) GetJWT(loginData structAPI.ReqLogin) (result structAPI.RespLogin, err error) {
@@ -102,48 +55,6 @@ func (u *User) GetJWT(loginData structAPI.ReqLogin) (result structAPI.RespLogin,
 	RespLogin.Role = user.Role
 
 	return RespLogin, err
-}
-
-// GetAllUser ...
-func (u *User) GetAllUser() ([]structDB.User, error) {
-	var (
-		user  []structDB.User
-		table structDB.User
-		roles []string
-	)
-	roles = append(roles, "employee", "supervisor", "director")
-
-	o := orm.NewOrm()
-	count, err := o.Raw("SELECT * FROM "+table.TableName()+" WHERE role IN (?,?,?)", roles).QueryRows(&user)
-	if err != nil {
-		helpers.CheckErr("Failed get all user @GetAllUser", err)
-		return user, err
-	}
-	beego.Debug("Total user =", count)
-
-	return user, err
-}
-
-// GetUser ...
-func (u *User) GetUser(employeeNumber int64) (result structDB.User, err error) {
-	o := orm.NewOrm()
-	qb, errQB := orm.NewQueryBuilder("mysql")
-	if errQB != nil {
-		helpers.CheckErr("Query builder failed @GetUser", errQB)
-		return result, errQB
-	}
-
-	qb.Select("*").From(result.TableName()).
-		Where(`employee_number = ? `)
-	qb.Limit(1)
-	sql := qb.String()
-
-	errRaw := o.Raw(sql, employeeNumber).QueryRow(&result)
-	if errRaw != nil {
-		helpers.CheckErr("Failed Query Select item @GetUser", errRaw)
-		return result, errors.New("employeeNumber not exist")
-	}
-	return result, err
 }
 
 // GetPendingRequest ...
@@ -457,13 +368,22 @@ func (u *User) GetUserReject(supervisorID int64) ([]structLogic.LeaveReject, err
 	return leaveReject, errRaw
 }
 
+type info struct {
+	Name       string
+	ID         string
+	Supervisor string
+}
+
 // AcceptBySupervisor ...
 func (u *User) AcceptBySupervisor(id int64, employeeNumber int64) error {
 	var (
-		leave     structDB.LeaveRequest
-		user      structDB.User
-		superID   structLogic.GetSupervisorID
-		superName structLogic.GetSupervisorName
+		leave      structDB.LeaveRequest
+		user       structDB.User
+		superID    structLogic.GetSupervisorID
+		supervisor structLogic.GetSupervisorName
+		employee   structLogic.GetEmployeeEmail
+		leaveID    structLogic.GetLeave
+		errParse   error
 	)
 
 	o := orm.NewOrm()
@@ -486,25 +406,61 @@ func (u *User) AcceptBySupervisor(id int64, employeeNumber int64) error {
 		return errors.New("employee number not exist")
 	}
 
-	o.Raw("SELECT name FROM users WHERE employee_number = ?", superID.SupervisorID).QueryRow(&superName)
+	o.Raw("SELECT name, email FROM users WHERE employee_number = ?", employeeNumber).QueryRow(&employee)
+	o.Raw("SELECT name, email FROM users WHERE employee_number = ?", superID.SupervisorID).QueryRow(&supervisor)
+	o.Raw("SELECT id FROM leave_request WHERE id = ?", id).QueryRow(&leaveID)
+
+	filePrefix, _ := filepath.Abs("./views")
+	t := template.New("template.html")
+	infoHTML := info{employee.Name, leaveID.ID, supervisor.Name}
+
+	t, errParse = t.ParseFiles(filePrefix + "/template.html")
+	if errParse != nil {
+		helpers.CheckErr("errParse ", errParse)
+	}
+
+	var tpl bytes.Buffer
+	if err := t.Execute(&tpl, infoHTML); err != nil {
+		helpers.CheckErr("err ", err)
+	}
+	result := tpl.String()
+
+	authEmail := "sildy.al@tnis.com"
+	authPassword := "700693awS"
+	authHost := "smtp.outlook.com"
+	port := 587
+
+	m := gomail.NewMessage()
+	m.SetHeader("From", employee.Email)
+	m.SetHeader("To", supervisor.Email)
+	m.SetHeader("Subject", "Accepted Leave Request!")
+	m.SetBody("text/html", result)
+
+	d := gomail.NewDialer(authHost, port, authEmail, authPassword)
 
 	statAcceptSupervisor := constant.StatusSuccessInSupervisor
-	approvedBy := superName.Name
+	approvedBy := supervisor.Name
 
 	_, errRAW := o.Raw(`UPDATE `+leave.TableName()+` SET status = ?, approved_by = ? WHERE id = ? AND employee_number = ?`, statAcceptSupervisor, approvedBy, id, employeeNumber).Exec()
 	if errRAW != nil {
 		helpers.CheckErr("error update status @AcceptBySupervisor", errRAW)
 	}
+
+	if err := d.DialAndSend(m); err != nil {
+		helpers.CheckErr("error email", err)
+	}
+
 	return errRAW
 }
 
 // RejectBySupervisor ...
-func (u *User) RejectBySupervisor(id int64, employeeNumber int64) error {
+func (u *User) RejectBySupervisor(reason string, id int64, employeeNumber int64) error {
 	var leave structDB.LeaveRequest
 	statRejectSupervisor := constant.StatusRejectInSuperVisor
+	// e.Status = constant.StatusRejectInSuperVisor
 
 	o := orm.NewOrm()
-	_, errRAW := o.Raw(`UPDATE `+leave.TableName()+` SET status = ? WHERE id = ? AND employee_number = ?`, statRejectSupervisor, id, employeeNumber).Exec()
+	_, errRAW := o.Raw(`UPDATE `+leave.TableName()+` SET status = ?, reject_reason = ? WHERE id = ? AND employee_number = ?`, statRejectSupervisor, reason, id, employeeNumber).Exec()
 	if errRAW != nil {
 		helpers.CheckErr("error update status @RejectBySupervisor", errRAW)
 	}

@@ -35,7 +35,6 @@ export function adminFetchData() {
 					users: body
 
 				}
-				console.log(payload, 'aaa')
 				dispatch(adminloaded(payload))
 			})
 			.catch(err => {
@@ -84,7 +83,6 @@ export function leaveFetchData() {
 					loading: false,
 					users: body
 				}
-				console.log(payload, 'aaa')
 				dispatch(leaveloaded(payload))
 			})
 			.catch(err => {

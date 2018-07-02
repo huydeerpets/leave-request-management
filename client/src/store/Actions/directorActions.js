@@ -114,9 +114,7 @@ export function updateStatusAccept(users, id, enumber) {
 				method: 'PUT',
 			})
 			.then(response => {
-				let newUserlist = users.filter(el => {
-					return el.id !== id && el.employee_number !== enumber
-				})
+				let newUserlist = users.filter(el => el.id !== id)
 				let payload = {
 					loading: false,
 					users: [
@@ -137,10 +135,7 @@ export function updateStatusReject(users, id, enumber) {
 				method: 'PUT',
 			})
 			.then(response => {
-				let newUserlist = users.filter(el => {
-					return el.id !== id && el.employee_number !== enumber
-				})
-				console.log("=================>new",newUserlist)
+				let newUserlist = users.filter(el => el.id !== id)
 				let payload = {
 					loading: false,
 					users: [

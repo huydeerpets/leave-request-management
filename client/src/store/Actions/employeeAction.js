@@ -21,6 +21,13 @@ function rejectFetch(payload) {
 	}
 }
 
+function requestDeleted(payload) {
+	return {
+		type: 'DELETE_REQUEST_PENDING',
+		payload: payload
+	}
+}
+
 
 export function pendingFetchData() {
 	return (dispatch) => {
@@ -93,6 +100,30 @@ export function rejectFetchData() {
 				}
 				console.log(payload, 'aaa')
 				dispatch(rejectFetch(payload))
+			})
+			.catch(err => {
+				console.log(err)
+			})
+	}
+}
+
+export function deleteRequest(users, id) {
+	return (dispatch) => {
+		fetch('http://localhost:8080/api/leave/' + id, {
+				method: 'DELETE',
+			})
+			.then((resp) => resp.json())
+			.then(({
+				body
+			}) => {
+				let newUserlist = users.filter(el => el.id !== id)
+				let payload = {
+					loading: false,
+					users: [
+						...newUserlist
+					]
+				}
+				dispatch(requestDeleted(payload))
 			})
 			.catch(err => {
 				console.log(err)

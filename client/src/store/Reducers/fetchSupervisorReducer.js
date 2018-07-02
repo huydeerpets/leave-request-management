@@ -1,6 +1,9 @@
 let supervisorState = {
     loading: true,
-    users: []
+    users: [],
+    leave: {
+        reject_reason: ''
+    }
 }
 
 export default function fetchSupervisorReducer(state = supervisorState, action) {
@@ -22,6 +25,10 @@ export default function fetchSupervisorReducer(state = supervisorState, action) 
                 ...action.payload
             }
         case 'REJECT_LEAVE_PENDING':
+            return {
+                ...action.payload
+            }
+        case 'REJECT_REASON':
             return {
                 ...action.payload
             }
