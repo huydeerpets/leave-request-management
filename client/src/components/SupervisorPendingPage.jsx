@@ -125,7 +125,7 @@ class SupervisorPendingPage extends Component {
 
     this.setState({ loadingR: true });
     setTimeout(() => {
-      this.setState({ loadingR: false,visible: false, visibleReject: false });
+      this.setState({ loadingR: false, visible: false, visibleReject: false });
       this.updateStatusReject(
         this.props.users,
         id,
@@ -158,7 +158,7 @@ class SupervisorPendingPage extends Component {
       [e.target.name]: e.target.value
     };
     this.setState({ reason: e.target.value });
-    console.log("=========", e.target.value);
+    console.log("=========", newLeave);
   };
 
   componentDidMount() {
@@ -196,38 +196,37 @@ class SupervisorPendingPage extends Component {
               />
             </div>
 
-            <Modal
-              visible={visibleReject}
-              title="Reject Reason"
-              onOk={this.handleReject}
-              onCancel={this.handleCancelReject}
-              style={{ top: "20" }}
-              bodyStyle={{ padding: "0" }}
-              footer={[
-                <Button
-                  key="reject"
-                  type="danger"
-                  loading={loadingR}
-                  onClick={this.handleReject}
-                >
-                  Reject
-                </Button>,
-                <Button
-                  key="cancel"                  
-                  onClick={this.handleCancelReject}
-                >
-                  Return
-                </Button>
-              ]}
-            >
-              <Input
-                type="text"
-                id="reject_reason"
-                name="reject_reason"
-                placeholder="reject reason"
-                onChange={this.handleOnChange}
-              />
-            </Modal>
+            <div>
+              <Modal
+                visible={visibleReject}
+                title="Reject Reason"
+                onOk={this.handleReject}
+                onCancel={this.handleCancelReject}
+                style={{ top: "20" }}
+                bodyStyle={{ padding: "0" }}
+                footer={[
+                  <Button
+                    key="reject"
+                    type="danger"
+                    loading={loadingR}
+                    onClick={this.handleReject}
+                  >
+                    Reject
+                  </Button>,
+                  <Button key="cancel" onClick={this.handleCancelReject}>
+                    Return
+                  </Button>
+                ]}
+              >
+                <Input
+                  type="text"
+                  id="reject_reason"
+                  name="reject_reason"
+                  placeholder="reject reason"
+                  onChange={this.handleOnChange}
+                />
+              </Modal>
+            </div>
 
             <Modal
               visible={visible}

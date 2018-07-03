@@ -1,10 +1,7 @@
 package user
 
 import (
-	"bytes"
 	"errors"
-	"html/template"
-	"path/filepath"
 	"server/helpers"
 	"server/helpers/constant"
 	structAPI "server/structs/api"
@@ -16,7 +13,6 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"golang.org/x/crypto/bcrypt"
-	gomail "gopkg.in/gomail.v2"
 )
 
 // User ...
@@ -383,7 +379,6 @@ func (u *User) AcceptBySupervisor(id int64, employeeNumber int64) error {
 		supervisor structLogic.GetSupervisorName
 		employee   structLogic.GetEmployeeEmail
 		leaveID    structLogic.GetLeave
-		errParse   error
 	)
 
 	o := orm.NewOrm()
@@ -410,34 +405,6 @@ func (u *User) AcceptBySupervisor(id int64, employeeNumber int64) error {
 	o.Raw("SELECT name, email FROM users WHERE employee_number = ?", superID.SupervisorID).QueryRow(&supervisor)
 	o.Raw("SELECT id FROM leave_request WHERE id = ?", id).QueryRow(&leaveID)
 
-	filePrefix, _ := filepath.Abs("./views")
-	t := template.New("template.html")
-	infoHTML := info{employee.Name, leaveID.ID, supervisor.Name}
-
-	t, errParse = t.ParseFiles(filePrefix + "/template.html")
-	if errParse != nil {
-		helpers.CheckErr("errParse ", errParse)
-	}
-
-	var tpl bytes.Buffer
-	if err := t.Execute(&tpl, infoHTML); err != nil {
-		helpers.CheckErr("err ", err)
-	}
-	result := tpl.String()
-
-	authEmail := "sildy.al@tnis.com"
-	authPassword := "700693awS"
-	authHost := "smtp.outlook.com"
-	port := 587
-
-	m := gomail.NewMessage()
-	m.SetHeader("From", employee.Email)
-	m.SetHeader("To", supervisor.Email)
-	m.SetHeader("Subject", "Accepted Leave Request!")
-	m.SetBody("text/html", result)
-
-	d := gomail.NewDialer(authHost, port, authEmail, authPassword)
-
 	statAcceptSupervisor := constant.StatusSuccessInSupervisor
 	approvedBy := supervisor.Name
 
@@ -446,9 +413,8 @@ func (u *User) AcceptBySupervisor(id int64, employeeNumber int64) error {
 		helpers.CheckErr("error update status @AcceptBySupervisor", errRAW)
 	}
 
-	if err := d.DialAndSend(m); err != nil {
-		helpers.CheckErr("error email", err)
-	}
+	helpers.GoMailEmployee(employee.Email, employee.Name, leaveID.ID, supervisor.Name)
+	helpers.GoMailSupervisor(supervisor.Email, supervisor.Name, leaveID.ID)
 
 	return errRAW
 }

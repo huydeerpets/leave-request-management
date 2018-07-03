@@ -111,6 +111,16 @@ class RegisterPage extends Component {
     console.log("focus");
   }
 
+  makeid() {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  
+    for (var i = 0; i < 6; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+  
+    return text;
+  }
+
   render() {
     const formItemLayout = {
       labelCol: {
@@ -238,8 +248,8 @@ class RegisterPage extends Component {
                             .indexOf(input.toLowerCase()) >= 0
                         }
                       >
-                        <Option value="male">Male</Option>
-                        <Option value="female">Female</Option>
+                        <Option value="Male">Male</Option>
+                        <Option value="Female">Female</Option>
                       </Select>
                     )}
                   </FormItem>
@@ -330,7 +340,7 @@ class RegisterPage extends Component {
                       >
                         <Option value="employee">Employee</Option>
                         <Option value="supervisor">Supervisor</Option>
-                        <Option value="dirctor">Director</Option>
+                        <Option value="director">Director</Option>
                       </Select>
                     )}
                   </FormItem>
@@ -355,23 +365,23 @@ class RegisterPage extends Component {
                             .indexOf(input.toLowerCase()) >= 0
                         }
                       >
-                        {/* <Option value={0} selected>
-                          none
-                        </Option> */}
-                        <Option value={12345}>Supervisor</Option>
-                        <Option value={54321}>Visor</Option>
+                        <Option value={12345}>David Zendrato</Option>
+                        <Option value={54321}>Jannes Santoso</Option>
                       </Select>
                     </FormItem>
-                  </div>
+                  </div>                
 
-                  <Input
-                    type="hidden"
-                    id="password"
-                    name="password"
-                    placeholder="password"
-                    value={this.props.signupForm.password}
-                    onChange={this.handleOnChange}
-                  />
+                  <FormItem {...formItemLayout} label="Password">                    
+                      <Input
+                        type="text"
+                        id="password"
+                        name="password"
+                        placeholder="password"
+                        value={this.makeid()}
+                        value={this.props.signupForm.password}
+                        onChange={this.handleOnChange}
+                      />                                      
+                  </FormItem>
 
                   <FormItem>
                     <Button

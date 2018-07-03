@@ -13,7 +13,7 @@ import AdminEditPage from './components/AdminEditPage.jsx';
 import LeaveEditPage from './components/LeaveEditPage';
 
 import LeaveRequestPage from './components/LeaveRequestPage.jsx';
-import ProfilePage from './components/ProfilePage';
+import ProfileEditPage from './components/ProfileEditPage';
 import LeaveRequestSupervisorPage from './components/LeaveRequestSupervisorPage.jsx';
 
 import LandingEmployeePage from './components/LandingEmployeePage.jsx';
@@ -53,7 +53,7 @@ class App extends Component {
 
               <Route path="/employee" component={LandingEmployeePage} />
               <Route path={`/editrequest/:id`} component={LeaveEditPage}/>
-              <Route path="/profile" component={ProfilePage} />
+              <Route path="/profile" component={ProfileEditPage} />
               
               <Route path="/request-pending" component={EmployeeReqPendingPage} />
               <Route path="/request-accept" component={EmployeeReqAcceptPage} />

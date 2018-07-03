@@ -13,10 +13,17 @@ const Option = Select.Option;
 class LeaveRequestPage extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      from: "",
+      to: ""
+    };
 
-    this.handleChange = this.handleChange.bind(this);
     this.handleOnChange = this.handleOnChange.bind(this);
+    this.handleChangeTypeOfLeave = this.handleChangeTypeOfLeave.bind(this);
+    this.handleChangeDateFrom = this.handleChangeDateFrom.bind(this);
+    this.handleChangeDateTo = this.handleChangeDateTo.bind(this);
   }
+
   componentWillMount() {
     if (!localStorage.getItem("token")) {
       this.props.history.push("/");
@@ -42,12 +49,12 @@ class LeaveRequestPage extends Component {
     console.log("=========>", newLeave);
   };
 
-  handleChange(value, e) {
-    let newLeave = {
+  handleChangeTypeOfLeave(value) {
+    let typeLeave = {
       ...this.props.leaveForm,
-      "type_of_leave": value
+      type_of_leave: value
     };
-    this.props.formOnChange(newLeave);
+    this.props.formOnChange(typeLeave);
   }
 
   handleChangeSelect(value) {
@@ -64,6 +71,57 @@ class LeaveRequestPage extends Component {
     console.log("selected=======>", value);
   }
 
+  handleChangeDateFrom(e) {
+    let dateFrom = {
+      ...this.props.leaveForm,
+      date_from: e.target.value
+    };
+
+    this.setState({ from: e.target.value });
+    this.props.formOnChange(dateFrom);
+    console.log("datefrom===========", e.target.value);
+  }
+
+  handleChangeDateTo(e) {
+    let dateTo = {
+      ...this.props.leaveForm,
+      date_to: e.target.value
+    };
+
+    this.setState({ to: e.target.value });
+    this.props.formOnChange(dateTo);
+    console.log("dateto===========", e.target.value);
+  }
+
+  onChangeAddHalfDay(e) {
+    let hiddenDiv = document.getElementById("halfDay");
+    if (e.target.checked === true) {
+      hiddenDiv.style.display = "block";
+    } else {
+      hiddenDiv.style.display = "none";
+    }
+    console.log(`checked add hald day = ${e.target.checked}`);
+  }
+
+  onChangeIsHalfDay(e) {
+    console.log(`checked is half day= ${e.target.checked}`);
+  }
+
+  getDates(startDate, endDate) {
+    let dates = [],
+      currentDate = startDate,
+      addDays = function(days) {
+        const date = new Date(this.valueOf());
+        date.setDate(date.getDate() + days);
+        return date;
+      };
+    while (currentDate <= endDate) {
+      dates.push(currentDate);
+      currentDate = addDays.call(currentDate, 1);
+    }
+    return dates;
+  }
+
   handleBlur() {
     console.log("blur");
   }
@@ -72,12 +130,45 @@ class LeaveRequestPage extends Component {
     console.log("focus");
   }
 
-  onChange(e) {
-    console.log(`checked = ${e.target.checked}`);
-  }
-
   render() {
     const { getFieldDecorator } = this.props.form;
+    const dates = this.getDates(
+      new Date(this.state.from),
+      new Date(this.state.to)
+    );
+
+    const arr = [];
+    dates.map((fulldate, i) => {
+      const date = new Date(fulldate),
+        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+        day = ("0" + date.getDate()).slice(-2);
+      arr.push([date.getFullYear(), mnth, day].join("-"));
+      console.log("============", [date.getFullYear(), mnth, day].join("-"));
+    });
+
+    const elements = [];
+    for (let i = 0; i < arr.length; i++) {
+      elements.push(
+        <Input
+          style={{
+            width: 150
+          }}
+          type="date"
+          id="half_day"
+          name="half_day"
+          value={arr[i]}
+          disabled
+        />,
+        " Is Half Day ",
+        <Checkbox
+          id="is_half_day"
+          name="is_half_day"
+          onChange={this.onChangeIsHalfDay}
+        />,
+        <br />
+      );
+    }
+
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -123,10 +214,10 @@ class LeaveRequestPage extends Component {
                   name="type_of_leave"
                   placeholder="Select type of leave"
                   optionFilterProp="children"
-                  onChange={this.handleChange}
+                  onChange={this.handleChangeTypeOfLeave}
                   onSelect={(value, event) =>
                     this.handleChangeSelect(value, event)
-                  }                  
+                  }
                   showSearch
                   onFocus={this.handleFocus}
                   onBlur={this.handleBlur}
@@ -163,7 +254,7 @@ class LeaveRequestPage extends Component {
                   id="date_from"
                   name="date_from"
                   value={this.props.leaveForm.date_from}
-                  onChange={this.handleOnChange}
+                  onChange={this.handleChangeDateFrom}
                 />
               </FormItem>
               <FormItem {...formItemLayout} label="To">
@@ -172,18 +263,25 @@ class LeaveRequestPage extends Component {
                   id="date_to"
                   name="date_to"
                   value={this.props.leaveForm.date_to}
-                  onChange={this.handleOnChange}
+                  onChange={this.handleChangeDateTo}
                 />
               </FormItem>
               <FormItem>
                 <Checkbox
-                  id="half_day"
-                  name="half_day"
-                  onChange={this.onChange}
+                  id="add_half_day"
+                  name="add_half_day"
+                  onChange={this.onChangeAddHalfDay}
                 >
                   Add Half Day
                 </Checkbox>
               </FormItem>
+
+              <div id="halfDay">
+                <FormItem {...formItemLayout} label="Add Half Day">
+                  {elements}
+                </FormItem>
+              </div>
+
               <FormItem {...formItemLayout} label="Back to work on">
                 <Input
                   type="date"

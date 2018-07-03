@@ -33,6 +33,7 @@ export function SumbitLeave(payload) {
 				} else {
 					dispatch(clearField())
 					alert('create leave request success')
+					window.location.href = "/request-pending";
 				}
 			}).catch(err => {
 				console.log(err)

@@ -74,19 +74,19 @@ response:
     "start_working_date": "2018-05-02",
     "mobile_phone": "085713757757",
     "email": "sildy.al@tnis.com",
-    "password": "123",
+    "password": "12345",
     "role": "employee",
     "supervisor_id": 12345
 }
 
 {
 		"employee_number": 12345,
-    "name": "Supervisor",
+    "name": "David Zendrato",
     "gender": "Male",
-    "position": "Senior Software Developer",
+    "position": "Senior",
     "start_working_date": "2017-05-02",
     "mobile_phone": "0855",
-    "email": "supervisor@tnis.com",
+    "email": "david.pr@tnis.com",
     "password": "123",
     "role": "supervisor",
     "supervisor_id": 13311

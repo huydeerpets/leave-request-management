@@ -206,14 +206,13 @@ class EmployeeReqAcceptPage extends Component {
                 From : {this.state.user && this.state.user.date_from} <br />
                 To : {this.state.user && this.state.user.date_to} <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
-                Total : {this.state.user && this.state.user.total} <br />
+                Total : {this.state.user && this.state.user.total} day <br />
                 Leave Remaining :
                 {this.state.user && this.state.user.leave_remaining} <br />
                 Address Leave : {this.state.user && this.state.user.address}
                 <br />
                 Phone Leave : {this.state.user && this.state.user.contact_leave}
-                <br />
-                Status : {this.state.user && this.state.user.status}
+                <br />                
               </div>
             </Modal>
           </Content>

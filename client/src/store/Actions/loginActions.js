@@ -1,4 +1,4 @@
-import jwtDecode from 'jwt-decode';
+// import jwtDecode from 'jwt-decode';
 import setAuthorizationToken from '../../utils/setAuthorizationToken';
 
 export function handleFormInput(payload) {
@@ -26,7 +26,6 @@ export function submitLogin(payload, pusher) {
 				body,
 				error
 			}) => {
-				const data = body
 				const token = body['Token']
 				const id = body['ID']
 				const role = body['Role']
@@ -47,37 +46,38 @@ export function submitLogin(payload, pusher) {
 						localStorage.setItem('id', id)
 						pusher('/admin')
 						dispatch(clearField())
+						alert("login success")
 					} else if (role === 'director') {
 						localStorage.setItem('token', token)
 						localStorage.setItem('role', role)
 						localStorage.setItem('id', id)
 						pusher('/director')
 						dispatch(clearField())
+						alert("login success")
 					} else if (role === 'supervisor') {
 						localStorage.setItem('token', token)
 						localStorage.setItem('role', role)
 						localStorage.setItem('id', id)
 						pusher('/supervisor')
 						dispatch(clearField())
+						alert("login success")
 					} else if (role === 'employee') {
 						localStorage.setItem('token', token)
 						localStorage.setItem('role', role)
 						localStorage.setItem('id', id)
 						pusher('/employee')
 						dispatch(clearField())
+						alert("login success")
 					} else if (role !== 'admin' || role !== 'director' || role !== 'supervisor' || role !== 'employee') {
 						alert('Email not register, please register')
 						pusher('/')
 						dispatch(clearField())
 					}
-					console.log("RESPONSE BODY=======>", data)
-					console.log("TOKEN=======>", token);
-					console.log("DECODE_TOKEN=======>", jwtDecode(token));
 				}
 			})
 			.catch(err => {
 				console.log(err)
-				alert(err)
+				alert("please check email and password", err)
 				dispatch(clearField())
 			})
 	}

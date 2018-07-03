@@ -135,6 +135,7 @@ class LeaveEditPage extends Component {
                           .toLowerCase()
                           .indexOf(input.toLowerCase()) >= 0
                       }
+                      value={this.props.leave.type_of_leave}
                     >
                       <Option value="Errand Leave">Errand Leave</Option>
                       <Option value="Sick Leave">Sick Leave</Option>

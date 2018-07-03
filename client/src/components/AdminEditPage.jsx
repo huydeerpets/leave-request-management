@@ -1,22 +1,25 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { Layout, Button, Card, Form, Input, Select } from "antd";
 import {
   fetchedEdit,
   handleEdit,
   saveEditUser
 } from "../store/Actions/editUserAction";
+import { Layout, Button, Form, Input, Select, DatePicker } from "antd";
+import moment from "moment";
 import HeaderNav from "./menu/HeaderAdmin";
 import Footer from "./menu/Footer";
 const { Content } = Layout;
 const FormItem = Form.Item;
 const Option = Select.Option;
-const { Meta } = Card;
 
 class AdminEditPage extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      date: ""
+    };
 
     this.saveEdit = this.saveEdit.bind(this);
     this.handleOnChange = this.handleOnChange.bind(this);
@@ -41,10 +44,8 @@ class AdminEditPage extends Component {
       let user = this.props.history.location.state.users.filter(
         el => el.employee_number === id
       );
-      // this.props.history.location.state
       this.props.fetchedEdit(user[0]);
     }
-    // this.props.fetchedEdit()
   }
 
   saveEdit = () => {
@@ -89,6 +90,16 @@ class AdminEditPage extends Component {
     };
 
     this.props.handleEdit(supervisor);
+  }
+
+  onChange(date, dateString) {
+    let workDate = {
+      ...this.props.user,
+      start_working_date: dateString
+    };
+
+    this.props.handleEdit(workDate);
+    console.log(date, dateString);
   }
 
   handleChangeSelectRole(value, event) {
@@ -192,12 +203,10 @@ class AdminEditPage extends Component {
                           .toLowerCase()
                           .indexOf(input.toLowerCase()) >= 0
                       }
+                      value={this.props.user.gender}
                     >
-                      <Option value="male">Male</Option>
-                      <Option value="female">Female</Option>
-
-                      {/* <Option value={this.props.user.gender === "male" ? "selected" : ""}>Male</Option>
-				   		<Option value={ this.props.user.gender === "female" ? "selected" : ""}>Female</Option> */}
+                      <Option value="Male">Male</Option>
+                      <Option value="Female">Female</Option>
                     </Select>
                   </FormItem>
 
@@ -213,6 +222,13 @@ class AdminEditPage extends Component {
                   </FormItem>
 
                   <FormItem {...formItemLayout} label="Start Working Date">
+                    {/* <DatePicker
+                      onChange={this.onChange}
+                      defaultValue={moment(
+                        String(this.props.user.start_working_date),
+                        "YYYY-MM-DD"
+                      )}
+                    /> */}
                     <Input
                       type="date"
                       id="start_working_date"
@@ -252,6 +268,7 @@ class AdminEditPage extends Component {
                           .toLowerCase()
                           .indexOf(input.toLowerCase()) >= 0
                       }
+                      value={this.props.user.role}
                     >
                       <Option value="employee">Employee</Option>
                       <Option value="supervisor">Supervisor</Option>
@@ -259,31 +276,42 @@ class AdminEditPage extends Component {
                     </Select>
                   </FormItem>
 
-                  <div id="roles">
-                    <FormItem {...formItemLayout} label="Supervisor">
-                      <Select
-                        id="supervisor_id"
-                        name="supervisor_id"
-                        placeholder="Select Supervisor"
-                        optionFilterProp="children"
-                        onChange={this.handleChangeSupervisor}
-                        onSelect={(value, event) =>
-                          this.handleChangeSelect(value, event)
-                        }
-                        showSearch
-                        onFocus={this.handleFocus}
-                        onBlur={this.handleBlur}
-                        filterOption={(input, option) =>
-                          option.props.children
-                            .toLowerCase()
-                            .indexOf(input.toLowerCase()) >= 0
-                        }
-                      >
-                        <Option value={12345}>Supervisor</Option>
-                        <Option value={54321}>Visor</Option>
-                      </Select>
-                    </FormItem>
-                  </div>
+                  <FormItem {...formItemLayout} label="Supervisor">
+                    <Select
+                      id="supervisor_id"
+                      name="supervisor_id"
+                      placeholder="Select Supervisor"
+                      optionFilterProp="children"
+                      onChange={this.handleChangeSupervisor}
+                      onSelect={(value, event) =>
+                        this.handleChangeSelect(value, event)
+                      }
+                      showSearch
+                      onFocus={this.handleFocus}
+                      onBlur={this.handleBlur}
+                      filterOption={(input, option) =>
+                        option.props.children
+                          .toLowerCase()
+                          .indexOf(input.toLowerCase()) >= 0
+                      }
+                      value={this.props.user.supervisor_id}
+                    >
+                      <Option value={12345}>Supervisor</Option>
+                      <Option value={54321}>Visor</Option>
+                    </Select>
+                  </FormItem>
+
+                  
+                  <FormItem {...formItemLayout} label="Password">
+                    <Input
+                      type="text"
+                      id="password"
+                      name="password"
+                      placeholder="password"
+                      value={this.props.user.password}
+                      onChange={this.handleOnChange}
+                    />
+                  </FormItem>
 
                   <FormItem>
                     <Button

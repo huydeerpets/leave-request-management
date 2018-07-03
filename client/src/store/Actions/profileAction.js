@@ -5,7 +5,7 @@ function profileloaded(payload) {
 	}
 }
 
-export function adminFetchData() {
+export function profileFetchData() {
 	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
 		fetch(`http://localhost:8080/api/admin/user/${employeeNumber}`, {
@@ -15,8 +15,6 @@ export function adminFetchData() {
 			.then(({
 				body
 			}) => {
-				console.log(body)
-
 				let payload = {
 					loading: false,
 					user: body
