@@ -52,7 +52,7 @@ func (c *LeaveController) PostLeaveRequest() {
 
 	leave := structAPI.CreateLeaveRequest{
 		EmployeeNumber: employeeNumber,
-		TypeOfLeave:    req.TypeOfLeave,
+		TypeLeaveID:    req.TypeLeaveID,
 		Reason:         req.Reason,
 		DateFrom:       req.DateFrom,
 		DateTo:         req.DateTo,
@@ -70,7 +70,7 @@ func (c *LeaveController) PostLeaveRequest() {
 
 	errAddLeave := dbLeave.CreateLeaveRequest(
 		leave.EmployeeNumber,
-		leave.TypeOfLeave,
+		leave.TypeLeaveID,
 		leave.Reason,
 		leave.DateFrom,
 		leave.DateTo,
@@ -123,7 +123,7 @@ func (c *LeaveController) PostLeaveRequestSupervisor() {
 
 	leave := structDB.LeaveRequest{
 		EmployeeNumber: employeeNumber,
-		TypeOfLeave:    req.TypeOfLeave,
+		TypeLeaveID:    req.TypeLeaveID,
 		Reason:         req.Reason,
 		DateFrom:       req.DateFrom,
 		DateTo:         req.DateTo,
@@ -141,7 +141,7 @@ func (c *LeaveController) PostLeaveRequestSupervisor() {
 
 	errAddLeave := dbLeave.CreateLeaveRequestSupervisor(
 		leave.EmployeeNumber,
-		leave.TypeOfLeave,
+		leave.TypeLeaveID,
 		leave.Reason,
 		leave.DateFrom,
 		leave.DateTo,

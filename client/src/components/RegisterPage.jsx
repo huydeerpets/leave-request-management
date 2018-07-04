@@ -283,7 +283,7 @@ class RegisterPage extends Component {
                       ]
                     })(
                       <Input
-                        type="date"
+                        type="date"                        
                         id="start_working_date"
                         name="start_working_date"
                         placeholder="start_working_date"

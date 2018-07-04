@@ -34,7 +34,6 @@ func (u *Admin) AddUser(user structDB.User) error {
 
 		user.Email = strings.ToLower(user.Email)
 		user.Password = string(hash)
-		user.LeaveRemaining = 12
 
 		_, err := o.Insert(&user)
 		if err != nil {

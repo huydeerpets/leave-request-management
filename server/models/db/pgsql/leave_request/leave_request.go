@@ -14,7 +14,7 @@ type LeaveRequest struct{}
 
 // CreateLeaveRequest ...
 func (l *LeaveRequest) CreateLeaveRequest(employeeNumber int64,
-	typeOfLeave string,
+	typeLeaveID int64,
 	reason string,
 	dateFrom string,
 	dateTo string,
@@ -35,7 +35,7 @@ func (l *LeaveRequest) CreateLeaveRequest(employeeNumber int64,
 	qb.InsertInto(
 		leave.TableName(),
 		"employee_number",
-		"type_of_leave",
+		"type_leave_id",
 		"reason",
 		"date_from",
 		"date_to",
@@ -47,7 +47,7 @@ func (l *LeaveRequest) CreateLeaveRequest(employeeNumber int64,
 		Values("?, ?, ?, ?, ?, ?, ?, ?, ?, ?")
 	sql := qb.String()
 	values := []interface{}{employeeNumber,
-		typeOfLeave,
+		typeLeaveID,
 		reason,
 		dateFrom,
 		dateTo,
@@ -66,7 +66,7 @@ func (l *LeaveRequest) CreateLeaveRequest(employeeNumber int64,
 
 // CreateLeaveRequestSupervisor ...
 func (l *LeaveRequest) CreateLeaveRequestSupervisor(employeeNumber int64,
-	typeOfLeave string,
+	typeLeaveID int64,
 	reason string,
 	dateFrom string,
 	dateTo string,
@@ -87,7 +87,7 @@ func (l *LeaveRequest) CreateLeaveRequestSupervisor(employeeNumber int64,
 	qb.InsertInto(
 		leave.TableName(),
 		"employee_number",
-		"type_of_leave",
+		"type_leave_id",
 		"reason",
 		"date_from",
 		"date_to",
@@ -99,7 +99,7 @@ func (l *LeaveRequest) CreateLeaveRequestSupervisor(employeeNumber int64,
 		Values("?, ?, ?, ?, ?, ?, ?, ?, ?, ?")
 	sql := qb.String()
 	values := []interface{}{employeeNumber,
-		typeOfLeave,
+		typeLeaveID,
 		reason,
 		dateFrom,
 		dateTo,
@@ -126,7 +126,7 @@ func (l *LeaveRequest) UpdateRequest(e *structDB.LeaveRequest, id int64) (err er
 	}
 
 	qb.Update(e.TableName()).
-		Set("type_of_leave = ?",
+		Set("type_leave_id = ?",
 			"reason = ?",
 			"date_from = ?",
 			"date_to = ?",
@@ -136,7 +136,7 @@ func (l *LeaveRequest) UpdateRequest(e *structDB.LeaveRequest, id int64) (err er
 	sql := qb.String()
 
 	res, errRaw := o.Raw(sql,
-		e.TypeOfLeave,
+		e.TypeLeaveID,
 		e.Reason,
 		e.DateFrom,
 		e.DateTo,

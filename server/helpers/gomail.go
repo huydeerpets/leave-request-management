@@ -3,6 +3,7 @@ package helpers
 import (
 	"bytes"
 	"html/template"
+	"os"
 	"path/filepath"
 
 	gomail "gopkg.in/gomail.v2"
@@ -14,13 +15,27 @@ type info struct {
 	Supervisor string
 }
 
-type supervisorMail struct {
-	Name string
-	ID   string
+type supervisorMailReject struct {
+	LeaveID        string
+	EmployeeName   string
+	SupervisorName string
+	Reason         string
+}
+
+type directorMail struct {
+	LeaveID        string
+	EmployeeName   string
+	SupervisorName string
+	DirectorName   string
+}
+type directorMailAction struct {
+	LeaveID      string
+	EmployeeName string
+	DirectorName string
 }
 
 // GoMailEmployee ...
-func GoMailEmployee(mailTo string, employeeName string, leaveID string, supervisorName string) {
+func GoMailEmployee(mailTo string, leaveID string, employeeName string, supervisorName string) {
 
 	var errParse error
 
@@ -39,15 +54,15 @@ func GoMailEmployee(mailTo string, employeeName string, leaveID string, supervis
 	mailHTML := tpl.String()
 
 	authEmail := "tnis.noreply@gmail.com"
-	authPassword := "tnis1234"
+	authPassword := os.Getenv("GOPWD")
 	authHost := "smtp.gmail.com"
 	port := 587
 
 	m := gomail.NewMessage()
 	m.SetHeader("From", authEmail)
 	m.SetHeader("To", mailTo)
-	m.SetHeader("Subject", "Accepted Leave Request!")
-	// m.SetAddressHeader("Cc", "<RECIPIENT CC>", "<RECIPIENT CC NAME>")
+	m.SetHeader("Subject", "Accepted Leave Request")
+	m.Embed(filePrefix + "/tnis.png")
 	m.SetBody("text/html", mailHTML)
 
 	d := gomail.NewDialer(authHost, port, authEmail, authPassword)
@@ -57,15 +72,53 @@ func GoMailEmployee(mailTo string, employeeName string, leaveID string, supervis
 	}
 }
 
-// GoMailSupervisor ...
-func GoMailSupervisor(mailTo string, employeeName string, leaveID string) {
+// GoMailDirector ...
+func GoMailDirector(mailTo string, leaveID string, employeeName string, supervisorName string, DirectorName string) {
 
 	var errParse error
 
 	filePrefix, _ := filepath.Abs("./views")
-	t := template.New("supervisor.html")
-	infoHTML := supervisorMail{employeeName, leaveID}
-	t, errParse = t.ParseFiles(filePrefix + "/supervisor.html")
+	t := template.New("director.html")
+	infoHTML := directorMail{leaveID, employeeName, supervisorName, DirectorName}
+	t, errParse = t.ParseFiles(filePrefix + "/director.html")
+	if errParse != nil {
+		CheckErr("errParse ", errParse)
+	}
+
+	var tpl bytes.Buffer
+	if err := t.Execute(&tpl, infoHTML); err != nil {
+		CheckErr("err ", err)
+	}
+	mailHTML := tpl.String()
+
+	authEmail := "tnis.noreply@gmail.com"
+	authPassword := os.Getenv("GOPWD")
+	authHost := "smtp.gmail.com"
+	port := 587
+
+	m := gomail.NewMessage()
+	m.SetHeader("From", authEmail)
+	m.SetHeader("To", mailTo)
+	m.SetHeader("Subject", "Request Leave Request")
+	m.Embed("/tnis.png")
+	m.SetBody("text/html", mailHTML)
+
+	d := gomail.NewDialer(authHost, port, authEmail, authPassword)
+
+	if err := d.DialAndSend(m); err != nil {
+		CheckErr("error email", err)
+	}
+}
+
+// GoMailSupervisorReject ...
+func GoMailSupervisorReject(mailTo string, leaveID string, employeeName string, supervisorName string, reason string) {
+
+	var errParse error
+
+	filePrefix, _ := filepath.Abs("./views")
+	t := template.New("supervisor_reject.html")
+	infoHTML := supervisorMailReject{leaveID, employeeName, supervisorName, reason}
+	t, errParse = t.ParseFiles(filePrefix + "/supervisor_reject.html")
 	if errParse != nil {
 		CheckErr("errParse ", errParse)
 	}
@@ -84,8 +137,83 @@ func GoMailSupervisor(mailTo string, employeeName string, leaveID string) {
 	m := gomail.NewMessage()
 	m.SetHeader("From", authEmail)
 	m.SetHeader("To", mailTo)
-	m.SetHeader("Subject", "Accepted Leave Request!")
-	// m.SetAddressHeader("Cc", "<RECIPIENT CC>", "<RECIPIENT CC NAME>")
+	m.SetHeader("Subject", "Reject Leave Request")
+	m.Embed(filePrefix + "/tnis.png")
+	m.SetBody("text/html", mailHTML)
+
+	d := gomail.NewDialer(authHost, port, authEmail, authPassword)
+
+	if err := d.DialAndSend(m); err != nil {
+		CheckErr("error email", err)
+	}
+}
+
+// GoMailDirectorAccept ...
+func GoMailDirectorAccept(mailTo string, leaveID string, employeeName string, directorName string) {
+
+	var errParse error
+
+	filePrefix, _ := filepath.Abs("./views")
+	t := template.New("director_accept.html")
+	infoHTML := directorMailAction{leaveID, employeeName, directorName}
+	t, errParse = t.ParseFiles(filePrefix + "/director_accept.html")
+	if errParse != nil {
+		CheckErr("errParse ", errParse)
+	}
+
+	var tpl bytes.Buffer
+	if err := t.Execute(&tpl, infoHTML); err != nil {
+		CheckErr("err ", err)
+	}
+	mailHTML := tpl.String()
+
+	authEmail := "tnis.noreply@gmail.com"
+	authPassword := "tnis1234"
+	authHost := "smtp.gmail.com"
+	port := 587
+
+	m := gomail.NewMessage()
+	m.SetHeader("From", authEmail)
+	m.SetHeader("To", mailTo)
+	m.SetHeader("Subject", "Reject Leave Request")
+	m.Embed(filePrefix + "/tnis.png")
+	m.SetBody("text/html", mailHTML)
+	d := gomail.NewDialer(authHost, port, authEmail, authPassword)
+
+	if err := d.DialAndSend(m); err != nil {
+		CheckErr("error email", err)
+	}
+}
+
+// GoMailDirectorReject ...
+func GoMailDirectorReject(mailTo string, leaveID string, employeeName string, directorName string) {
+
+	var errParse error
+
+	filePrefix, _ := filepath.Abs("./views")
+	t := template.New("director_reject.html")
+	infoHTML := directorMailAction{leaveID, employeeName, directorName}
+	t, errParse = t.ParseFiles(filePrefix + "/director_reject.html")
+	if errParse != nil {
+		CheckErr("errParse ", errParse)
+	}
+
+	var tpl bytes.Buffer
+	if err := t.Execute(&tpl, infoHTML); err != nil {
+		CheckErr("err ", err)
+	}
+	mailHTML := tpl.String()
+
+	authEmail := "tnis.noreply@gmail.com"
+	authPassword := "tnis1234"
+	authHost := "smtp.gmail.com"
+	port := 587
+
+	m := gomail.NewMessage()
+	m.SetHeader("From", authEmail)
+	m.SetHeader("To", mailTo)
+	m.SetHeader("Subject", "Reject Leave Request")
+	m.Embed(filePrefix + "/tnis.png")
 	m.SetBody("text/html", mailHTML)
 
 	d := gomail.NewDialer(authHost, port, authEmail, authPassword)

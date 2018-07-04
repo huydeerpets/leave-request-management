@@ -6,7 +6,7 @@ import structDB "server/structs/db"
 type IBaseLeaveRequest interface {
 	// CreateLeaveRequest
 	CreateLeaveRequest(employeeNumber int64,
-		typeOfLeave string,
+		typeLeaveID int64,
 		reason string,
 		from string,
 		to string,
@@ -17,7 +17,7 @@ type IBaseLeaveRequest interface {
 		status string) error
 	// CreateLeaveRequestSupervisor
 	CreateLeaveRequestSupervisor(employeeNumber int64,
-		typeOfLeave string,
+		typeLeaveID int64,
 		reason string,
 		from string,
 		to string,

@@ -12,7 +12,6 @@ type User struct {
 	Password         string `json:"password" orm:"column(password)"`
 	Role             string `json:"role" orm:"column(role)"`
 	SupervisorID     int64  `json:"supervisor_id" orm:"column(supervisor_id)"`
-	LeaveRemaining   int64  `json:"leave_remaining" orm:"column(leave_remaining)"`
 }
 
 // TableName ...

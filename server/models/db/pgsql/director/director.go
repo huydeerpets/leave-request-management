@@ -17,10 +17,10 @@ type Director struct{}
 // AcceptByDirector ...
 func (u *Director) AcceptByDirector(id int64, employeeNumber int64) error {
 	var (
-		leave        structDB.LeaveRequest
-		user         structDB.User
-		directorID   structLogic.GetDirectorID
-		directorName structLogic.GetDirectorName
+		leave       structDB.LeaveRequest
+		user        structDB.User
+		directorID  structLogic.GetDirectorID
+		getDirector structLogic.GetDirector
 	)
 
 	o := orm.NewOrm()
@@ -41,10 +41,10 @@ func (u *Director) AcceptByDirector(id int64, employeeNumber int64) error {
 		return errors.New("employee number not exist")
 	}
 
-	o.Raw("SELECT name FROM users WHERE employee_number = ?", directorID.DirectorID).QueryRow(&directorName)
+	o.Raw("SELECT name,email FROM users WHERE employee_number = ?", directorID.DirectorID).QueryRow(&getDirector)
 
 	statAcceptDirector := constant.StatusSuccessInDirector
-	approvedBy := directorName.Name
+	approvedBy := getDirector.Name
 
 	_, errRAW := o.Raw(`UPDATE `+leave.TableName()+` SET status = ?, approved_by = ? WHERE id = ? AND employee_number = ?`, statAcceptDirector, approvedBy, id, employeeNumber).Exec()
 	if errRAW != nil {
