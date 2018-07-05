@@ -25,7 +25,6 @@ func (m *CreateTableTypeLeave_20180704_164723) Up() {
 	var table db.TypeLeave
 	dt := "20180704"
 	m.SQL(GetQuery(table.TableName(), dt, "create_table_type_leave"))
-
 }
 
 // Reverse the migrations

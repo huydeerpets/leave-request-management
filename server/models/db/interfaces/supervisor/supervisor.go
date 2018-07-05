@@ -1,11 +1,11 @@
-package user
+package supervisor
 
 import (
 	structLogic "server/structs/logic"
 )
 
-// IBaseUser ...
-type IBaseUser interface {
+// IBaseSupervisor ...
+type IBaseSupervisor interface {
 
 	// GetUserPending
 	GetUserPending(supervisorID int64) (
@@ -25,5 +25,5 @@ type IBaseUser interface {
 	// AcceptBySupervisor
 	AcceptBySupervisor(id int64, employeeNumber int64) error
 	// RejectBySupervisor
-	RejectBySupervisor(id int64, employeeNumber int64) error
+	// RejectBySupervisor(id int64, employeeNumber int64) error
 }

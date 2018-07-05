@@ -1,5 +1,5 @@
-CREATE TABLE IF NOT EXISTS type_leave(
+CREATE TABLE IF NOT EXISTS type_leave
+(
   "id" int PRIMARY KEY NOT NULL,
-  "type_name" text NOT NULL,
-  "total" int NOT NULL
+  "type_name" text NOT NULL
 );

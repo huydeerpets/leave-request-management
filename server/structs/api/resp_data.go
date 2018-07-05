@@ -1,9 +1,7 @@
 package api
 
-type (
-	//RespData ...
-	RespData struct {
-		Body  interface{} `json:"body"`
-		Error interface{} `json:"error"`
-	}
-)
+//RespData ...
+type RespData struct {
+	Body  interface{} `json:"body"`
+	Error interface{} `json:"error"`
+}

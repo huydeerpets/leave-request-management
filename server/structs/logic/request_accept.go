@@ -10,15 +10,15 @@ type RequestAccept struct {
 	StartWorkingDate string `json:"start_working_date" orm:"column(start_working_date)"`
 	Email            string `json:"email" orm:"column(email)"`
 	Role             string `json:"role" orm:"column(role)"`
-	TypeOfLeave      string `json:"type_of_leave" orm:"column(type_of_leave)"`
+	TypeName         string `json:"type_name" orm:"column(type_name)"`
+	LeaveRemaining   int64  `json:"leave_remaining" orm:"column(leave_remaining)"`
 	Reason           string `json:"reason" orm:"column(reason)"`
 	DateFrom         string `json:"date_from" orm:"column(date_from)"`
 	DateTo           string `json:"date_to" orm:"column(date_to)"`
 	BackOn           string `json:"back_on" orm:"column(back_on)"`
 	Total            int64  `json:"total" orm:"column(total)"`
-	LeaveRemaining   int64  `json:"leave_remaining" orm:"column(leave_remaining)"`
-	Address          string `json:"address" orm:"column(address)"`
-	ContactLeave     string `json:"contact_leave" orm:"column(contact_leave)"`
+	ContactAddress   string `json:"contact_address" orm:"column(contact_address)"`
+	ContactNumber    string `json:"contact_number" orm:"column(contact_number)"`
 	Status           string `json:"status" orm:"column(status)"`
-	ApprovedBy       string `json:"approved_by" orm:"column(approved_by)"`
+	ActionBy         string `json:"action_by" orm:"column(action_by)"`
 }

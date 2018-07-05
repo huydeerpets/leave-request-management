@@ -33,3 +33,11 @@ func GetTotalDay(from string, to string) int64 {
 
 	return int64(diff.Hours() / 24)
 }
+
+// GetDay ...
+func GetDay(date string) int {
+	dateDay, _ := time.Parse("2006-01-02", date)
+	m := dateDay.Month()
+	var i = int(m)
+	return i
+}

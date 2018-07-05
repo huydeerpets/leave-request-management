@@ -7,6 +7,7 @@ type GetSupervisorID struct {
 
 // GetSupervisor ...
 type GetSupervisor struct {
-	Name  string `json:"name" orm:"column(name)"`
-	Email string `json:"email" orm:"column(email)"`
+	SupervisorID int64  `json:"supervisor_id" orm:"column(supervisor_id)"`
+	Name         string `json:"name" orm:"column(name)"`
+	Email        string `json:"email" orm:"column(email)"`
 }

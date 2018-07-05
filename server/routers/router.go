@@ -50,7 +50,7 @@ func init() {
 			"delete:DeleteUser",
 		),
 		// get leave request success
-		beego.NSRouter("/admin/leave",
+		beego.NSRouter("/admin/leave/accept",
 			&controllers.AdminController{},
 			"get:GetRequestAccept",
 		),
@@ -75,27 +75,27 @@ func init() {
 		// ========================= supervisor ========================= //
 		// accept status by supervisor
 		beego.NSRouter("/employee/accept/:id:int/:enumber:int",
-			&controllers.UserController{},
+			&controllers.SupervisorController{},
 			"put:AcceptStatusBySupervisor",
 		),
-		// reject status by supervisor
-		beego.NSRouter("/employee/reject/:id:int/:enumber:int/:reason:string",
-			&controllers.UserController{},
-			"put:RejectStatusBySupervisor",
-		),
+		// // reject status by supervisor
+		// beego.NSRouter("/employee/reject/:id:int/:enumber:int/:reason:string",
+		// 	&controllers.SupervisorController{},
+		// 	"put:RejectStatusBySupervisor",
+		// ),
 		// get status pending in supervisor
 		beego.NSRouter("/supervisor/pending/:id:int ",
-			&controllers.UserController{},
+			&controllers.SupervisorController{},
 			"get:GetPendingLeave",
 		),
 		// get status accept in supervisor
 		beego.NSRouter("/supervisor/accept/:id:int ",
-			&controllers.UserController{},
+			&controllers.SupervisorController{},
 			"get:GetAcceptLeave",
 		),
 		// get status reject in supervisor
 		beego.NSRouter("/supervisor/reject/:id:int ",
-			&controllers.UserController{},
+			&controllers.SupervisorController{},
 			"get:GetRejectLeave",
 		),
 

@@ -27,7 +27,7 @@ func (c *AdminController) CreateUser() {
 	)
 
 	body := c.Ctx.Input.RequestBody
-	fmt.Println("REGISTER=======>", string(body))
+	fmt.Println("CREATE-USER=======>", string(body))
 
 	errMarshal := json.Unmarshal(body, &user)
 	if errMarshal != nil {
@@ -46,6 +46,17 @@ func (c *AdminController) CreateUser() {
 		resp.Body = user
 	}
 
+	startDate := helpers.GetDay(user.StartWorkingDate)
+	annualLeave := 12 + (12 - startDate)
+	beego.Debug("==>", annualLeave)
+
+	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 11, 12)
+	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 22, 3)
+	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 33, 30)
+	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 44, 2)
+	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 55, 90)
+	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 66, 2)
+
 	err := c.Ctx.Output.JSON(resp, false, false)
 	if err != nil {
 		helpers.CheckErr("failed giving output @CreateUser", err)
@@ -59,7 +70,7 @@ func (c *AdminController) DeleteUser() {
 	idStr := c.Ctx.Input.Param(":id")
 	employeeNumber, errCon := strconv.ParseInt(idStr, 0, 64)
 	if errCon != nil {
-		helpers.CheckErr("convert id failed @GetRequestPending", errCon)
+		helpers.CheckErr("convert id failed @DeleteUser", errCon)
 		resp.Error = errors.New("convert id failed").Error()
 		return
 	}
@@ -123,13 +134,15 @@ func (c *AdminController) GetUser() {
 
 // UpdateUser ...
 func (c *AdminController) UpdateUser() {
-	var resp structAPI.RespData
-	var user structDB.User
+	var (
+		resp structAPI.RespData
+		user structDB.User
+	)
 
 	body := c.Ctx.Input.RequestBody
-	fmt.Println("REGISTER=======>", string(body))
+	fmt.Println("UPDATE-USER=======>", string(body))
 
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &user)
+	err := json.Unmarshal(body, &user)
 	if err != nil {
 		helpers.CheckErr("unmarshall req body failed @UpdateUser", err)
 		resp.Error = errors.New("type request malform").Error()
@@ -140,7 +153,7 @@ func (c *AdminController) UpdateUser() {
 	idStr := c.Ctx.Input.Param(":id")
 	employeeNumber, errCon := strconv.ParseInt(idStr, 0, 64)
 	if errCon != nil {
-		helpers.CheckErr("convert id failed @GetRequestAccept", errCon)
+		helpers.CheckErr("convert id failed @UpdateUser", errCon)
 		resp.Error = errors.New("convert id failed").Error()
 		return
 	}
@@ -149,7 +162,7 @@ func (c *AdminController) UpdateUser() {
 	if errUpdate != nil {
 		resp.Error = errUpdate.Error()
 	} else {
-		resp.Body = "update user success"
+		resp.Body = "Update user success"
 	}
 
 	err = c.Ctx.Output.JSON(resp, false, false)
@@ -160,9 +173,7 @@ func (c *AdminController) UpdateUser() {
 
 // GetRequestAccept ...
 func (c *AdminController) GetRequestAccept() {
-	var (
-		resp structAPI.RespData
-	)
+	var resp structAPI.RespData
 
 	resGet, errGetAccept := logic.DBPostAdmin.GetLeaveRequest()
 	if errGetAccept != nil {

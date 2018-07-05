@@ -17,20 +17,23 @@ type Supervisor struct{}
 // GetUserPending ...
 func (u *Supervisor) GetUserPending(supervisorID int64) ([]structLogic.LeavePending, error) {
 	var (
-		leavePending []structLogic.LeavePending
-		leave        structDB.LeaveRequest
-		user         structDB.User
+		reqPending    []structLogic.LeavePending
+		user          structDB.User
+		leave         structDB.LeaveRequest
+		typeLeave     structDB.TypeLeave
+		userTypeLeave structDB.UserTypeLeave
 	)
-	statusPending := constant.StatusPendingInSupervisor
 
+	statPendingInSupervisor := constant.StatusPendingInSupervisor
 	o := orm.NewOrm()
 	qb, errQB := orm.NewQueryBuilder("mysql")
 	if errQB != nil {
-		helpers.CheckErr("Query builder failed @GetUserPending", errQB)
-		return leavePending, errQB
+		helpers.CheckErr("Query builder failed @GetDirectorPendingRequest", errQB)
+		return reqPending, errQB
 	}
 
-	qb.Select(leave.TableName()+".id",
+	qb.Select(
+		leave.TableName()+".id",
 		user.TableName()+".employee_number",
 		user.TableName()+".name",
 		user.TableName()+".gender",
@@ -39,50 +42,60 @@ func (u *Supervisor) GetUserPending(supervisorID int64) ([]structLogic.LeavePend
 		user.TableName()+".mobile_phone",
 		user.TableName()+".email",
 		user.TableName()+".role",
-		leave.TableName()+".type_of_leave",
+		typeLeave.TableName()+".type_name",
+		userTypeLeave.TableName()+".leave_remaining",
 		leave.TableName()+".reason",
-		leave.TableName()+".from",
-		leave.TableName()+".to",
+		leave.TableName()+".date_from",
+		leave.TableName()+".date_to",
 		leave.TableName()+".total",
-		user.TableName()+".leave_remaining",
 		leave.TableName()+".back_on",
-		leave.TableName()+".address",
-		leave.TableName()+".contact_leave",
-		leave.TableName()+".status").
+		leave.TableName()+".contact_address",
+		leave.TableName()+".contact_number",
+		leave.TableName()+".status",
+		leave.TableName()+".action_by").
 		From(user.TableName()).
 		InnerJoin(leave.TableName()).
 		On(user.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
+		InnerJoin(typeLeave.TableName()).
+		On(typeLeave.TableName() + ".id" + "=" + leave.TableName() + ".type_leave_id").
+		InnerJoin(userTypeLeave.TableName()).
+		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
+		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
 		Where(`status = ? `).And(`supervisor_id = ? `)
 	sql := qb.String()
 
-	count, errRaw := o.Raw(sql, statusPending, supervisorID).QueryRows(&leavePending)
+	count, errRaw := o.Raw(sql, statPendingInSupervisor, supervisorID).QueryRows(&reqPending)
 	if errRaw != nil {
-		helpers.CheckErr("Failed Query Select item @GetUserPending", errRaw)
-		return leavePending, errors.New("employee number not exist")
+		helpers.CheckErr("Failed Query Select @GetDirectorPendingRequest", errRaw)
+		return reqPending, errors.New("error get leave request pending")
 	}
-	beego.Debug("Total user pending =", count)
+	beego.Debug("Total pending request =", count)
 
-	return leavePending, errRaw
+	return reqPending, errRaw
 }
 
 // GetUserAccept ...
 func (u *Supervisor) GetUserAccept(supervisorID int64) ([]structLogic.LeaveAccept, error) {
 	var (
-		leaveAccept []structLogic.LeaveAccept
-		leave       structDB.LeaveRequest
-		user        structDB.User
+		reqAccepts    []structLogic.LeaveAccept
+		user          structDB.User
+		leave         structDB.LeaveRequest
+		typeLeave     structDB.TypeLeave
+		userTypeLeave structDB.UserTypeLeave
 	)
-	statusAccept := constant.StatusSuccessInSupervisor
-	statusAcceptDirector := constant.StatusSuccessInDirector
+
+	statPendingInDirector := constant.StatusPendingInDirector
+	statSuccessInDirector := constant.StatusSuccessInDirector
 
 	o := orm.NewOrm()
 	qb, errQB := orm.NewQueryBuilder("mysql")
 	if errQB != nil {
 		helpers.CheckErr("Query builder failed @GetUserAccept", errQB)
-		return leaveAccept, errQB
+		return reqAccepts, errQB
 	}
 
-	qb.Select(leave.TableName()+".id",
+	qb.Select(
+		leave.TableName()+".id",
 		user.TableName()+".employee_number",
 		user.TableName()+".name",
 		user.TableName()+".gender",
@@ -91,49 +104,59 @@ func (u *Supervisor) GetUserAccept(supervisorID int64) ([]structLogic.LeaveAccep
 		user.TableName()+".mobile_phone",
 		user.TableName()+".email",
 		user.TableName()+".role",
-		leave.TableName()+".type_of_leave",
+		typeLeave.TableName()+".type_name",
+		userTypeLeave.TableName()+".leave_remaining",
 		leave.TableName()+".reason",
-		leave.TableName()+".from",
-		leave.TableName()+".to",
+		leave.TableName()+".date_from",
+		leave.TableName()+".date_to",
 		leave.TableName()+".total",
-		user.TableName()+".leave_remaining",
 		leave.TableName()+".back_on",
-		leave.TableName()+".address",
-		leave.TableName()+".contact_leave",
-		leave.TableName()+".status").
+		leave.TableName()+".contact_address",
+		leave.TableName()+".contact_number",
+		leave.TableName()+".status",
+		leave.TableName()+".action_by").
 		From(user.TableName()).
 		InnerJoin(leave.TableName()).
 		On(user.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
+		InnerJoin(typeLeave.TableName()).
+		On(typeLeave.TableName() + ".id" + "=" + leave.TableName() + ".type_leave_id").
+		InnerJoin(userTypeLeave.TableName()).
+		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
+		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
 		Where(`(status = ? OR status = ? )`).And(user.TableName() + `.supervisor_id = ? `)
 	sql := qb.String()
 
-	count, errRaw := o.Raw(sql, statusAccept, statusAcceptDirector, supervisorID).QueryRows(&leaveAccept)
+	count, errRaw := o.Raw(sql, statPendingInDirector, statSuccessInDirector, supervisorID).QueryRows(&reqAccepts)
 	if errRaw != nil {
-		helpers.CheckErr("Failed Query Select item @GetUserAccept", errRaw)
-		return leaveAccept, errors.New("employee number not exist")
+		helpers.CheckErr("Failed Query Select @GetUserAccept", errRaw)
+		return reqAccepts, errors.New("error get leave request accept")
 	}
-	beego.Debug("Total user accept =", count)
+	beego.Debug("Total accept request =", count)
 
-	return leaveAccept, errRaw
+	return reqAccepts, errRaw
 }
 
 // GetUserReject ...
 func (u *Supervisor) GetUserReject(supervisorID int64) ([]structLogic.LeaveReject, error) {
 	var (
-		leaveReject []structLogic.LeaveReject
-		leave       structDB.LeaveRequest
-		user        structDB.User
+		reqRejects    []structLogic.LeaveReject
+		user          structDB.User
+		leave         structDB.LeaveRequest
+		typeLeave     structDB.TypeLeave
+		userTypeLeave structDB.UserTypeLeave
 	)
-	statusReject := constant.StatusRejectInSuperVisor
+
+	statRejectInSupervisor := constant.StatusRejectInSuperVisor
 
 	o := orm.NewOrm()
 	qb, errQB := orm.NewQueryBuilder("mysql")
 	if errQB != nil {
 		helpers.CheckErr("Query builder failed @GetUserReject", errQB)
-		return leaveReject, errQB
+		return reqRejects, errQB
 	}
 
-	qb.Select(leave.TableName()+".id",
+	qb.Select(
+		leave.TableName()+".id",
 		user.TableName()+".employee_number",
 		user.TableName()+".name",
 		user.TableName()+".gender",
@@ -142,82 +165,132 @@ func (u *Supervisor) GetUserReject(supervisorID int64) ([]structLogic.LeaveRejec
 		user.TableName()+".mobile_phone",
 		user.TableName()+".email",
 		user.TableName()+".role",
-		leave.TableName()+".type_of_leave",
+		typeLeave.TableName()+".type_name",
+		userTypeLeave.TableName()+".leave_remaining",
 		leave.TableName()+".reason",
-		leave.TableName()+".from",
-		leave.TableName()+".to",
+		leave.TableName()+".date_from",
+		leave.TableName()+".date_to",
 		leave.TableName()+".total",
-		user.TableName()+".leave_remaining",
 		leave.TableName()+".back_on",
-		leave.TableName()+".address",
-		leave.TableName()+".contact_leave",
-		leave.TableName()+".status").
+		leave.TableName()+".contact_address",
+		leave.TableName()+".contact_number",
+		leave.TableName()+".status",
+		leave.TableName()+".action_by").
 		From(user.TableName()).
 		InnerJoin(leave.TableName()).
 		On(user.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
-		Where(`status = ? `).And(`supervisor_id = ? `)
+		InnerJoin(typeLeave.TableName()).
+		On(typeLeave.TableName() + ".id" + "=" + leave.TableName() + ".type_leave_id").
+		InnerJoin(userTypeLeave.TableName()).
+		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
+		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
+		Where(`status = ?`).And(user.TableName() + `.supervisor_id = ? `)
 	sql := qb.String()
 
-	count, errRaw := o.Raw(sql, statusReject, supervisorID).QueryRows(&leaveReject)
+	count, errRaw := o.Raw(sql, statRejectInSupervisor, supervisorID).QueryRows(&reqRejects)
 	if errRaw != nil {
-		helpers.CheckErr("Failed Query Select item @GetUserReject", errRaw)
-		return leaveReject, errors.New("employee number not exist")
+		helpers.CheckErr("Failed Query Select @GetUserReject", errRaw)
+		return reqRejects, errors.New("error get leave request reject")
 	}
-	beego.Debug("Total user reject =", count)
+	beego.Debug("Total reject request =", count)
 
-	return leaveReject, errRaw
+	return reqRejects, errRaw
 }
 
 // AcceptBySupervisor ...
 func (u *Supervisor) AcceptBySupervisor(id int64, employeeNumber int64) error {
 	var (
-		leave     structDB.LeaveRequest
-		user      structDB.User
-		superID   structLogic.GetSupervisorID
-		superName structLogic.GetSupervisorName
+		dbLeave       structDB.LeaveRequest
+		dbUser        structDB.User
+		superID       structLogic.GetSupervisorID
+		getEmployee   structLogic.GetEmployee
+		getSupervisor structLogic.GetSupervisor
+		getDirector   structLogic.GetDirector
+		getLeave      structLogic.GetLeave
 	)
 
 	o := orm.NewOrm()
 	qb, errQB := orm.NewQueryBuilder("mysql")
 	if errQB != nil {
-		helpers.CheckErr("Query builder failed @GetUserPending", errQB)
+		helpers.CheckErr("Query builder failed @AcceptBySupervisor", errQB)
 		return errQB
 	}
 
-	qb.Select(user.TableName() + ".supervisor_id").
-		From(user.TableName()).
-		InnerJoin(leave.TableName()).
-		On(user.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
-		Where(user.TableName() + `.employee_number = ? `)
+	qb.Select(dbUser.TableName() + ".supervisor_id").
+		From(dbUser.TableName()).
+		InnerJoin(dbLeave.TableName()).
+		On(dbUser.TableName() + ".employee_number" + "=" + dbLeave.TableName() + ".employee_number").
+		Where(dbUser.TableName() + `.employee_number = ? `)
 	sql := qb.String()
 
 	errRawGet := o.Raw(sql, employeeNumber).QueryRow(&superID)
 	if errRawGet != nil {
-		helpers.CheckErr("Failed Query Select item @GetUserPending", errRawGet)
-		return errors.New("employee number not exist")
+		helpers.CheckErr("Failed Query Select item @AcceptBySupervisor", errRawGet)
+		return errRawGet
 	}
 
-	o.Raw("SELECT name FROM users WHERE employee_number = ?", superID.SupervisorID).QueryRow(&superName)
+	role := "director"
+	o.Raw("SELECT name, email FROM users WHERE employee_number = ?", employeeNumber).QueryRow(&getEmployee)
+	o.Raw("SELECT name, email FROM users WHERE employee_number = ?", superID.SupervisorID).QueryRow(&getSupervisor)
+	o.Raw("SELECT id FROM leave_request WHERE id = ?", id).QueryRow(&getLeave)
+	o.Raw("SELECT name, email FROM users WHERE role = ?", role).QueryRow(&getDirector)
 
-	statAcceptSupervisor := constant.StatusSuccessInSupervisor
-	approvedBy := superName.Name
+	statPendingDirector := constant.StatusPendingInDirector
+	actionBy := getSupervisor.Name
 
-	_, errRAW := o.Raw(`UPDATE `+leave.TableName()+` SET status = ?, approved_by = ? WHERE id = ? AND employee_number = ?`, statAcceptSupervisor, approvedBy, id, employeeNumber).Exec()
+	_, errRAW := o.Raw(`UPDATE `+dbLeave.TableName()+` SET status = ?, action_by = ? WHERE id = ? AND employee_number = ?`, statPendingDirector, actionBy, id, employeeNumber).Exec()
 	if errRAW != nil {
 		helpers.CheckErr("error update status @AcceptBySupervisor", errRAW)
 	}
+
+	helpers.GoMailEmployee(getEmployee.Email, getLeave.ID, getEmployee.Name, getSupervisor.Name)
+	helpers.GoMailDirector(getDirector.Email, getLeave.ID, getEmployee.Name, getSupervisor.Name, getDirector.Name)
+
 	return errRAW
 }
 
-// RejectBySupervisor ...
-func (u *Supervisor) RejectBySupervisor(id int64, employeeNumber int64) error {
-	var leave structDB.LeaveRequest
-	statRejectSupervisor := constant.StatusRejectInSuperVisor
+// // RejectBySupervisor ...
+// func (u *Supervisor) RejectBySupervisor(reason string, id int64, employeeNumber int64) error {
+// 	var (
+// 		dbUser          structDB.User
+// 		dbLeave         structDB.LeaveRequest
+// 		getSupervisorID structLogic.GetSupervisorID
+// 		getEmployee     structLogic.GetEmployee
+// 		getSupervisor   structLogic.GetSupervisor
+// 		getLeave        structLogic.GetLeave
+// 	)
+// 	statRejectSupervisor := constant.StatusRejectInSuperVisor
+// 	o := orm.NewOrm()
 
-	o := orm.NewOrm()
-	_, errRAW := o.Raw(`UPDATE `+leave.TableName()+` SET status = ? WHERE id = ? AND employee_number = ?`, statRejectSupervisor, id, employeeNumber).Exec()
-	if errRAW != nil {
-		helpers.CheckErr("error update status @RejectBySupervisor", errRAW)
-	}
-	return errRAW
-}
+// 	qb, errQB := orm.NewQueryBuilder("mysql")
+// 	if errQB != nil {
+// 		helpers.CheckErr("Query builder failed @AcceptBySupervisor", errQB)
+// 		return errQB
+// 	}
+
+// 	qb.Select(dbUser.TableName() + ".supervisor_id").
+// 		From(dbUser.TableName()).
+// 		InnerJoin(dbLeave.TableName()).
+// 		On(dbUser.TableName() + ".employee_number" + "=" + dbLeave.TableName() + ".employee_number").
+// 		Where(dbUser.TableName() + `.employee_number = ? `)
+// 	sql := qb.String()
+
+// 	errRawGet := o.Raw(sql, employeeNumber).QueryRow(&getSupervisorID)
+// 	if errRawGet != nil {
+// 		helpers.CheckErr("Failed Query Select item @AcceptBySupervisor", errRawGet)
+// 		return errRawGet
+// 	}
+
+// 	o.Raw("SELECT name, email FROM users WHERE employee_number = ?", getSupervisorID.SupervisorID).QueryRow(&getSupervisor)
+// 	o.Raw("SELECT name, email FROM users WHERE employee_number = ?", employeeNumber).QueryRow(&getEmployee)
+
+// 	o.Raw("SELECT id FROM leave_request WHERE id = ?", id).QueryRow(&getLeave)
+
+// 	helpers.GoMailSupervisorReject(getEmployee.Email, getLeave.ID, getEmployee.Name, getSupervisor.Name, reason)
+
+// 	_, errRAW := o.Raw(`UPDATE `+dbLeave.TableName()+` SET status = ?, reject_reason = ? WHERE id = ? AND employee_number = ?`, statRejectSupervisor, reason, id, employeeNumber).Exec()
+// 	if errRAW != nil {
+// 		helpers.CheckErr("error update status @RejectBySupervisor", errRAW)
+// 	}
+// 	return errRAW
+// }

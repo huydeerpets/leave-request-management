@@ -8,7 +8,6 @@ import (
 	"server/helpers/constant"
 	"strconv"
 
-	user "server/models/db/pgsql/admin"
 	db "server/models/db/pgsql/leave_request"
 
 	structAPI "server/structs/api"
@@ -28,8 +27,8 @@ func (c *LeaveController) PostLeaveRequest() {
 		resp    structAPI.RespData
 		req     structAPI.ReqLeave
 		dbLeave db.LeaveRequest
-		dbUser  user.Admin
 	)
+
 	idStr := c.Ctx.Input.Param(":id")
 	employeeNumber, errCon := strconv.ParseInt(idStr, 0, 64)
 	if errCon != nil {
@@ -39,7 +38,7 @@ func (c *LeaveController) PostLeaveRequest() {
 	}
 
 	body := c.Ctx.Input.RequestBody
-	fmt.Println("Create form leave=======>", string(body))
+	fmt.Println("CREATE-LEAVE-REQUEST=======>", string(body))
 
 	errMarshal := json.Unmarshal(body, &req)
 	if errMarshal != nil {
@@ -58,14 +57,9 @@ func (c *LeaveController) PostLeaveRequest() {
 		DateTo:         req.DateTo,
 		Total:          helpers.GetTotalDay(req.DateFrom, req.DateTo),
 		BackOn:         req.BackOn,
-		Address:        req.Address,
-		ContactLeave:   req.ContactLeave,
+		ContactAddress: req.ContactAddress,
+		ContactNumber:  req.ContactNumber,
 		Status:         constant.StatusPendingInSupervisor,
-	}
-
-	errUp := dbUser.UpdateLeaveRemaning(leave.Total, leave.EmployeeNumber)
-	if errUp != nil {
-		helpers.CheckErr("err update @PostLeaveRequest", errUp)
 	}
 
 	errAddLeave := dbLeave.CreateLeaveRequest(
@@ -76,10 +70,11 @@ func (c *LeaveController) PostLeaveRequest() {
 		leave.DateTo,
 		leave.BackOn,
 		leave.Total,
-		leave.Address,
-		leave.ContactLeave,
+		leave.ContactAddress,
+		leave.ContactNumber,
 		leave.Status,
 	)
+
 	if errAddLeave != nil {
 		resp.Error = errAddLeave.Error()
 		c.Ctx.Output.SetStatus(400)
@@ -99,8 +94,8 @@ func (c *LeaveController) PostLeaveRequestSupervisor() {
 		resp    structAPI.RespData
 		req     structAPI.ReqLeave
 		dbLeave db.LeaveRequest
-		dbUser  user.Admin
 	)
+
 	idStr := c.Ctx.Input.Param(":id")
 	employeeNumber, errCon := strconv.ParseInt(idStr, 0, 64)
 	if errCon != nil {
@@ -110,7 +105,7 @@ func (c *LeaveController) PostLeaveRequestSupervisor() {
 	}
 
 	body := c.Ctx.Input.RequestBody
-	fmt.Println("Create form leave=======>", string(body))
+	fmt.Println("CREATE-LEAVE-REQUEST=======>", string(body))
 
 	errMarshal := json.Unmarshal(body, &req)
 	if errMarshal != nil {
@@ -129,14 +124,9 @@ func (c *LeaveController) PostLeaveRequestSupervisor() {
 		DateTo:         req.DateTo,
 		Total:          helpers.GetTotalDay(req.DateFrom, req.DateTo),
 		BackOn:         req.BackOn,
-		Address:        req.Address,
-		ContactLeave:   req.ContactLeave,
+		ContactAddress: req.ContactAddress,
+		ContactNumber:  req.ContactNumber,
 		Status:         constant.StatusPendingInDirector,
-	}
-
-	errUp := dbUser.UpdateLeaveRemaning(leave.Total, leave.EmployeeNumber)
-	if errUp != nil {
-		helpers.CheckErr("err update @PostLeaveRequest", errUp)
 	}
 
 	errAddLeave := dbLeave.CreateLeaveRequestSupervisor(
@@ -147,10 +137,11 @@ func (c *LeaveController) PostLeaveRequestSupervisor() {
 		leave.DateTo,
 		leave.BackOn,
 		leave.Total,
-		leave.Address,
-		leave.ContactLeave,
+		leave.ContactAddress,
+		leave.ContactNumber,
 		leave.Status,
 	)
+
 	if errAddLeave != nil {
 		resp.Error = errAddLeave.Error()
 		c.Ctx.Output.SetStatus(400)
@@ -173,7 +164,7 @@ func (c *LeaveController) UpdateRequest() {
 	)
 
 	body := c.Ctx.Input.RequestBody
-	fmt.Println("REGISTER=======>", string(body))
+	fmt.Println("UPDATE-LEAVE-REQUEST=======>", string(body))
 
 	err := json.Unmarshal(body, &leave)
 	if err != nil {
@@ -195,7 +186,7 @@ func (c *LeaveController) UpdateRequest() {
 	if errUpdate != nil {
 		resp.Error = errUpdate.Error()
 	} else {
-		resp.Body = "update leave success"
+		resp.Body = "Update leave success"
 	}
 
 	err = c.Ctx.Output.JSON(resp, false, false)

@@ -1,6 +1,9 @@
 package leave
 
-import structDB "server/structs/db"
+import (
+	structDB "server/structs/db"
+	structLogic "server/structs/logic"
+)
 
 // IBaseLeaveRequest ...
 type IBaseLeaveRequest interface {
@@ -30,4 +33,9 @@ type IBaseLeaveRequest interface {
 	UpdateRequest(e *structDB.LeaveRequest, id int64) (err error)
 	// DeleteRequest
 	DeleteRequest(id int64) (err error)
+	// GetLeave
+	GetLeave(id int64) (
+		result structLogic.GetLeave,
+		err error,
+	)
 }

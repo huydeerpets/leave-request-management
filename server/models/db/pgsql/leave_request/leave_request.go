@@ -4,6 +4,7 @@ import (
 	"errors"
 	"server/helpers"
 	structDB "server/structs/db"
+	structLogic "server/structs/logic"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
@@ -41,8 +42,8 @@ func (l *LeaveRequest) CreateLeaveRequest(employeeNumber int64,
 		"date_to",
 		"back_on",
 		"total",
-		"address",
-		"contact_leave",
+		"contact_address",
+		"contact_number",
 		"status").
 		Values("?, ?, ?, ?, ?, ?, ?, ?, ?, ?")
 	sql := qb.String()
@@ -93,8 +94,8 @@ func (l *LeaveRequest) CreateLeaveRequestSupervisor(employeeNumber int64,
 		"date_to",
 		"back_on",
 		"total",
-		"address",
-		"contact_leave",
+		"contact_address",
+		"contact_number",
 		"status").
 		Values("?, ?, ?, ?, ?, ?, ?, ?, ?, ?")
 	sql := qb.String()
@@ -131,8 +132,8 @@ func (l *LeaveRequest) UpdateRequest(e *structDB.LeaveRequest, id int64) (err er
 			"date_from = ?",
 			"date_to = ?",
 			"back_on = ?",
-			"address = ?",
-			"contact_leave = ?").Where("id = ? ")
+			"contact_address = ?",
+			"contact_number = ?").Where("id = ? ")
 	sql := qb.String()
 
 	res, errRaw := o.Raw(sql,
@@ -141,8 +142,8 @@ func (l *LeaveRequest) UpdateRequest(e *structDB.LeaveRequest, id int64) (err er
 		e.DateFrom,
 		e.DateTo,
 		e.BackOn,
-		e.Address,
-		e.ContactLeave,
+		e.ContactAddress,
+		e.ContactNumber,
 		id).Exec()
 
 	if errRaw != nil {
@@ -179,4 +180,30 @@ func (l *LeaveRequest) DeleteRequest(id int64) (err error) {
 		return errors.New("Delete failed, id not exist")
 	}
 	return err
+}
+
+// GetLeave ...
+func (l *LeaveRequest) GetLeave(id int64) (result structLogic.GetLeave, err error) {
+	var dbLeave structDB.LeaveRequest
+
+	o := orm.NewOrm()
+	qb, errQB := orm.NewQueryBuilder("mysql")
+	if errQB != nil {
+		helpers.CheckErr("Query builder failed @GetLeave", errQB)
+		return result, errQB
+	}
+
+	qb.Select(
+		dbLeave.TableName() + ".id").
+		From(dbLeave.TableName()).
+		Where(dbLeave.TableName() + `.id = ? `)
+	qb.Limit(1)
+	sql := qb.String()
+
+	errRaw := o.Raw(sql, id).QueryRow(&result)
+	if errRaw != nil {
+		helpers.CheckErr("Failed Query Select @GetLeave", errRaw)
+		return result, errors.New("id not exist")
+	}
+	return result, err
 }

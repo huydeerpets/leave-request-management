@@ -5,9 +5,9 @@ var (
 	StatusPendingInSupervisor = "Pending in Supervisor"
 	StatusPendingInDirector   = "Pending in Director"
 
-	StatusSuccessInSupervisor = "Success in Supervisor"
-	StatusSuccessInDirector   = "Success in Director"
+	StatusSuccessInSupervisor = "Approved by Supervisor"
+	StatusSuccessInDirector   = "Approved by Director"
 
-	StatusRejectInSuperVisor = "Reject in Supervisor"
-	StatusRejectInDirector   = "Reject in Director"
+	StatusRejectInSuperVisor = "Rejected by Supervisor"
+	StatusRejectInDirector   = "Rejected by Director"
 )

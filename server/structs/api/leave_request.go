@@ -9,8 +9,8 @@ type CreateLeaveRequest struct {
 	DateTo         string `json:"date_to" orm:"column(date_to)"`
 	Total          int64  `json:"total" orm:"column(total)"`
 	BackOn         string `json:"back_on" orm:"column(back_on)"`
-	Address        string `json:"address" orm:"column(address)"`
-	ContactLeave   string `json:"contact_leave" orm:"column(contact_leave)"`
+	ContactAddress string `json:"contact_address" orm:"column(contact_address)"`
+	ContactNumber  string `json:"contact_number" orm:"column(contact_number)"`
 	Status         string `json:"status" orm:"column(status)"`
 }
 

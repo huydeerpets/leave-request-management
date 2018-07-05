@@ -12,6 +12,22 @@ type IBaseUser interface {
 		result structAPI.RespLogin,
 		err error,
 	)
+	// GetDirector
+	GetDirector() (
+		result structLogic.GetDirector,
+		err error,
+	)
+	// GetSupervisor
+	GetSupervisor(employeeNumber int64) (
+		result structLogic.GetSupervisor,
+		err error,
+	)
+	// GetEmployee
+	GetEmployee(employeeNumber int64) (
+		result structLogic.GetEmployee,
+		err error,
+	)
+
 	// GetPendingRequest
 	GetPendingRequest(employeeNumber int64) (
 		[]structLogic.RequestPending,
@@ -27,23 +43,4 @@ type IBaseUser interface {
 		[]structLogic.RequestReject,
 		error,
 	)
-	// GetUserPending
-	GetUserPending(supervisorID int64) (
-		[]structLogic.LeavePending,
-		error,
-	)
-	// GetUserAccept
-	GetUserAccept(supervisorID int64) (
-		[]structLogic.LeaveAccept,
-		error,
-	)
-	// GetUserReject
-	GetUserReject(supervisorID int64) (
-		[]structLogic.LeaveReject,
-		error,
-	)
-	// AcceptBySupervisor
-	AcceptBySupervisor(id int64, employeeNumber int64) error
-	// RejectBySupervisor
-	RejectBySupervisor(reason string, id int64, employeeNumber int64) error
 }

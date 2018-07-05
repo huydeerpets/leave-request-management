@@ -3,16 +3,16 @@ package helpers
 import (
 	"bytes"
 	"html/template"
-	"os"
 	"path/filepath"
+	"server/helpers/constant"
 
 	gomail "gopkg.in/gomail.v2"
 )
 
-type info struct {
-	Name       string
-	ID         string
-	Supervisor string
+type employeeMail struct {
+	LeaveID        string
+	EmployeeName   string
+	SupervisorName string
 }
 
 type supervisorMailReject struct {
@@ -41,7 +41,7 @@ func GoMailEmployee(mailTo string, leaveID string, employeeName string, supervis
 
 	filePrefix, _ := filepath.Abs("./views")
 	t := template.New("template.html")
-	infoHTML := info{employeeName, leaveID, supervisorName}
+	infoHTML := employeeMail{leaveID, employeeName, supervisorName}
 	t, errParse = t.ParseFiles(filePrefix + "/template.html")
 	if errParse != nil {
 		CheckErr("errParse ", errParse)
@@ -54,7 +54,7 @@ func GoMailEmployee(mailTo string, leaveID string, employeeName string, supervis
 	mailHTML := tpl.String()
 
 	authEmail := "tnis.noreply@gmail.com"
-	authPassword := os.Getenv("GOPWD")
+	authPassword := constant.GOPWD
 	authHost := "smtp.gmail.com"
 	port := 587
 
@@ -92,7 +92,7 @@ func GoMailDirector(mailTo string, leaveID string, employeeName string, supervis
 	mailHTML := tpl.String()
 
 	authEmail := "tnis.noreply@gmail.com"
-	authPassword := os.Getenv("GOPWD")
+	authPassword := constant.GOPWD
 	authHost := "smtp.gmail.com"
 	port := 587
 
@@ -100,7 +100,7 @@ func GoMailDirector(mailTo string, leaveID string, employeeName string, supervis
 	m.SetHeader("From", authEmail)
 	m.SetHeader("To", mailTo)
 	m.SetHeader("Subject", "Request Leave Request")
-	m.Embed("/tnis.png")
+	m.Embed(filePrefix + "/tnis.png")
 	m.SetBody("text/html", mailHTML)
 
 	d := gomail.NewDialer(authHost, port, authEmail, authPassword)
@@ -130,7 +130,7 @@ func GoMailSupervisorReject(mailTo string, leaveID string, employeeName string, 
 	mailHTML := tpl.String()
 
 	authEmail := "tnis.noreply@gmail.com"
-	authPassword := "tnis1234"
+	authPassword := constant.GOPWD
 	authHost := "smtp.gmail.com"
 	port := 587
 
@@ -168,14 +168,14 @@ func GoMailDirectorAccept(mailTo string, leaveID string, employeeName string, di
 	mailHTML := tpl.String()
 
 	authEmail := "tnis.noreply@gmail.com"
-	authPassword := "tnis1234"
+	authPassword := constant.GOPWD
 	authHost := "smtp.gmail.com"
 	port := 587
 
 	m := gomail.NewMessage()
 	m.SetHeader("From", authEmail)
 	m.SetHeader("To", mailTo)
-	m.SetHeader("Subject", "Reject Leave Request")
+	m.SetHeader("Subject", "Accept Leave Request")
 	m.Embed(filePrefix + "/tnis.png")
 	m.SetBody("text/html", mailHTML)
 	d := gomail.NewDialer(authHost, port, authEmail, authPassword)
@@ -205,7 +205,7 @@ func GoMailDirectorReject(mailTo string, leaveID string, employeeName string, di
 	mailHTML := tpl.String()
 
 	authEmail := "tnis.noreply@gmail.com"
-	authPassword := "tnis1234"
+	authPassword := constant.GOPWD
 	authHost := "smtp.gmail.com"
 	port := 587
 

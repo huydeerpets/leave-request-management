@@ -1,3 +1,8 @@
+CREATE TYPE date_range AS(
+  "date" text,
+  "status_date" boolean
+);
+
 CREATE TABLE IF NOT EXISTS leave_request
 (
   "id" int PRIMARY KEY NOT NULL,
@@ -6,12 +11,13 @@ CREATE TABLE IF NOT EXISTS leave_request
   "reason" text NOT NULL,
   "date_from" text NOT NULL,
   "date_to" text NOT NULL,
+  "date_ranges" date_range[],
   "back_on" text NOT NULL,
   "total" int NOT NULL,
-  "address" text NOT NULL,
-  "contact_leave" text,
+  "contact_address" text NOT NULL,
+  "contact_number" text NOT NULL,
   "status" text NOT NULL,
-  "approved_by" text,
+  "action_by" text,
   "reject_reason" text,
   "errand_reason" text
 );

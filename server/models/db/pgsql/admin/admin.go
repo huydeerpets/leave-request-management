@@ -156,9 +156,11 @@ func (u *Admin) UpdateUser(e *structDB.User, employeeNumber int64) (err error) {
 // GetLeaveRequest ...
 func (u *Admin) GetLeaveRequest() ([]structLogic.RequestAccept, error) {
 	var (
-		reqAccept []structLogic.RequestAccept
-		leave     structDB.LeaveRequest
-		user      structDB.User
+		reqAccept     []structLogic.RequestAccept
+		user          structDB.User
+		leave         structDB.LeaveRequest
+		typeLeave     structDB.TypeLeave
+		userTypeLeave structDB.UserTypeLeave
 	)
 	statAcceptDirector := constant.StatusSuccessInDirector
 
@@ -179,27 +181,32 @@ func (u *Admin) GetLeaveRequest() ([]structLogic.RequestAccept, error) {
 		user.TableName()+".mobile_phone",
 		user.TableName()+".email",
 		user.TableName()+".role",
-		leave.TableName()+".type_of_leave",
+		typeLeave.TableName()+".type_name",
+		userTypeLeave.TableName()+".leave_remaining",
 		leave.TableName()+".reason",
 		leave.TableName()+".date_from",
 		leave.TableName()+".date_to",
 		leave.TableName()+".total",
-		user.TableName()+".leave_remaining",
 		leave.TableName()+".back_on",
-		leave.TableName()+".address",
-		leave.TableName()+".contact_leave",
+		leave.TableName()+".contact_address",
+		leave.TableName()+".contact_number",
 		leave.TableName()+".status",
-		leave.TableName()+".approved_by").
+		leave.TableName()+".action_by").
 		From(user.TableName()).
 		InnerJoin(leave.TableName()).
 		On(user.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
+		InnerJoin(typeLeave.TableName()).
+		On(typeLeave.TableName() + ".id" + "=" + leave.TableName() + ".type_leave_id").
+		InnerJoin(userTypeLeave.TableName()).
+		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
+		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
 		Where(`status = ? `)
 	sql := qb.String()
 
 	count, errRaw := o.Raw(sql, statAcceptDirector).QueryRows(&reqAccept)
 	if errRaw != nil {
 		helpers.CheckErr("Failed Query Select @GetLeaveRequest", errRaw)
-		return reqAccept, errors.New("employee number not exist")
+		return reqAccept, errors.New("error get leave")
 	}
 	beego.Debug("Total accept request =", count)
 
@@ -232,5 +239,38 @@ func (u *Admin) UpdateLeaveRemaning(total int64, employeeNumber int64) (err erro
 		return errRow
 	}
 
+	return err
+}
+
+// CreateUserTypeLeave ...
+func (u *Admin) CreateUserTypeLeave(employeeNumber int64,
+	typeLeaveID int64,
+	leaveRemaining int64) error {
+
+	var typeLeave structDB.UserTypeLeave
+
+	o := orm.NewOrm()
+	qb, errQB := orm.NewQueryBuilder("mysql")
+	if errQB != nil {
+		helpers.CheckErr("Query builder failed @CreateUserTypeLeave", errQB)
+		return errQB
+	}
+
+	qb.InsertInto(
+		typeLeave.TableName(),
+		"employee_number",
+		"type_leave_id",
+		"leave_remaining").
+		Values("?, ?, ?")
+	sql := qb.String()
+
+	values := []interface{}{employeeNumber,
+		typeLeaveID,
+		leaveRemaining}
+	_, err := o.Raw(sql, values).Exec()
+	if err != nil {
+		helpers.CheckErr("error insert @CreateUserTypeLeave", err)
+		return errors.New("insert create leave request failed")
+	}
 	return err
 }
