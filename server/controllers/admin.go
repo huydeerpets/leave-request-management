@@ -171,6 +171,24 @@ func (c *AdminController) UpdateUser() {
 	}
 }
 
+// GetRequestPending ...
+func (c *AdminController) GetRequestPending() {
+	var resp structAPI.RespData
+
+	resGet, errGetPending := logic.DBPostAdmin.GetLeaveRequestPending()
+	if errGetPending != nil {
+		resp.Error = errGetPending.Error()
+		c.Ctx.Output.SetStatus(400)
+	} else {
+		resp.Body = resGet
+	}
+
+	err := c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		helpers.CheckErr("failed giving output @GetRequestPending", err)
+	}
+}
+
 // GetRequestAccept ...
 func (c *AdminController) GetRequestAccept() {
 	var resp structAPI.RespData
@@ -186,5 +204,23 @@ func (c *AdminController) GetRequestAccept() {
 	err := c.Ctx.Output.JSON(resp, false, false)
 	if err != nil {
 		helpers.CheckErr("failed giving output @GetRequestAccept", err)
+	}
+}
+
+// GetRequestReject ...
+func (c *AdminController) GetRequestReject() {
+	var resp structAPI.RespData
+
+	resGet, errGetReject := logic.DBPostAdmin.GetLeaveRequestReject()
+	if errGetReject != nil {
+		resp.Error = errGetReject.Error()
+		c.Ctx.Output.SetStatus(400)
+	} else {
+		resp.Body = resGet
+	}
+
+	err := c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		helpers.CheckErr("failed giving output @GetRequestReject", err)
 	}
 }

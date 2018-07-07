@@ -4,6 +4,8 @@ import (
 	"errors"
 	"server/helpers"
 	"server/helpers/constant"
+	logicLeave "server/models/db/pgsql/leave_request"
+	logicUser "server/models/db/pgsql/user"
 	structDB "server/structs/db"
 	structLogic "server/structs/logic"
 
@@ -200,40 +202,18 @@ func (u *Supervisor) GetUserReject(supervisorID int64) ([]structLogic.LeaveRejec
 // AcceptBySupervisor ...
 func (u *Supervisor) AcceptBySupervisor(id int64, employeeNumber int64) error {
 	var (
-		dbLeave       structDB.LeaveRequest
-		dbUser        structDB.User
-		superID       structLogic.GetSupervisorID
-		getEmployee   structLogic.GetEmployee
-		getSupervisor structLogic.GetSupervisor
-		getDirector   structLogic.GetDirector
-		getLeave      structLogic.GetLeave
+		dbLeave structDB.LeaveRequest
+		user    logicUser.User
+		leave   logicLeave.LeaveRequest
 	)
 
 	o := orm.NewOrm()
-	qb, errQB := orm.NewQueryBuilder("mysql")
-	if errQB != nil {
-		helpers.CheckErr("Query builder failed @AcceptBySupervisor", errQB)
-		return errQB
-	}
 
-	qb.Select(dbUser.TableName() + ".supervisor_id").
-		From(dbUser.TableName()).
-		InnerJoin(dbLeave.TableName()).
-		On(dbUser.TableName() + ".employee_number" + "=" + dbLeave.TableName() + ".employee_number").
-		Where(dbUser.TableName() + `.employee_number = ? `)
-	sql := qb.String()
-
-	errRawGet := o.Raw(sql, employeeNumber).QueryRow(&superID)
-	if errRawGet != nil {
-		helpers.CheckErr("Failed Query Select item @AcceptBySupervisor", errRawGet)
-		return errRawGet
-	}
-
-	role := "director"
-	o.Raw("SELECT name, email FROM users WHERE employee_number = ?", employeeNumber).QueryRow(&getEmployee)
-	o.Raw("SELECT name, email FROM users WHERE employee_number = ?", superID.SupervisorID).QueryRow(&getSupervisor)
-	o.Raw("SELECT id FROM leave_request WHERE id = ?", id).QueryRow(&getLeave)
-	o.Raw("SELECT name, email FROM users WHERE role = ?", role).QueryRow(&getDirector)
+	getEmployee, _ := user.GetEmployee(employeeNumber)
+	getSupervisorID, _ := user.GetSupervisor(employeeNumber)
+	getSupervisor, _ := user.GetEmployee(getSupervisorID.SupervisorID)
+	getDirector, _ := user.GetDirector()
+	getLeave, _ := leave.GetLeave(id)
 
 	statPendingDirector := constant.StatusPendingInDirector
 	actionBy := getSupervisor.Name
@@ -249,48 +229,56 @@ func (u *Supervisor) AcceptBySupervisor(id int64, employeeNumber int64) error {
 	return errRAW
 }
 
-// // RejectBySupervisor ...
-// func (u *Supervisor) RejectBySupervisor(reason string, id int64, employeeNumber int64) error {
-// 	var (
-// 		dbUser          structDB.User
-// 		dbLeave         structDB.LeaveRequest
-// 		getSupervisorID structLogic.GetSupervisorID
-// 		getEmployee     structLogic.GetEmployee
-// 		getSupervisor   structLogic.GetSupervisor
-// 		getLeave        structLogic.GetLeave
-// 	)
-// 	statRejectSupervisor := constant.StatusRejectInSuperVisor
-// 	o := orm.NewOrm()
+// RejectBySupervisor ...
+func (u *Supervisor) RejectBySupervisor(reason string, id int64, employeeNumber int64) error {
+	var (
+		dbLeave structDB.LeaveRequest
+		user    logicUser.User
+		leave   logicLeave.LeaveRequest
+	)
+	o := orm.NewOrm()
 
-// 	qb, errQB := orm.NewQueryBuilder("mysql")
-// 	if errQB != nil {
-// 		helpers.CheckErr("Query builder failed @AcceptBySupervisor", errQB)
-// 		return errQB
-// 	}
+	getEmployee, _ := user.GetEmployee(employeeNumber)
+	getSupervisorID, _ := user.GetSupervisor(employeeNumber)
+	getSupervisor, _ := user.GetEmployee(getSupervisorID.SupervisorID)
+	getLeave, _ := leave.GetLeave(id)
 
-// 	qb.Select(dbUser.TableName() + ".supervisor_id").
-// 		From(dbUser.TableName()).
-// 		InnerJoin(dbLeave.TableName()).
-// 		On(dbUser.TableName() + ".employee_number" + "=" + dbLeave.TableName() + ".employee_number").
-// 		Where(dbUser.TableName() + `.employee_number = ? `)
-// 	sql := qb.String()
+	statRejectSupervisor := constant.StatusRejectInSuperVisor
 
-// 	errRawGet := o.Raw(sql, employeeNumber).QueryRow(&getSupervisorID)
-// 	if errRawGet != nil {
-// 		helpers.CheckErr("Failed Query Select item @AcceptBySupervisor", errRawGet)
-// 		return errRawGet
-// 	}
+	_, errRAW := o.Raw(`UPDATE `+dbLeave.TableName()+` SET status = ?, reject_reason = ? WHERE id = ? AND employee_number = ?`, statRejectSupervisor, reason, id, employeeNumber).Exec()
+	if errRAW != nil {
+		helpers.CheckErr("error update status @RejectBySupervisor", errRAW)
+	}
 
-// 	o.Raw("SELECT name, email FROM users WHERE employee_number = ?", getSupervisorID.SupervisorID).QueryRow(&getSupervisor)
-// 	o.Raw("SELECT name, email FROM users WHERE employee_number = ?", employeeNumber).QueryRow(&getEmployee)
+	helpers.GoMailSupervisorReject(getEmployee.Email, getLeave.ID, getEmployee.Name, getSupervisor.Name, reason)
 
-// 	o.Raw("SELECT id FROM leave_request WHERE id = ?", id).QueryRow(&getLeave)
+	return errRAW
+}
 
-// 	helpers.GoMailSupervisorReject(getEmployee.Email, getLeave.ID, getEmployee.Name, getSupervisor.Name, reason)
+// RejectBySv ...
+func (u *Supervisor) RejectBySv(l *structDB.LeaveRequest, id int64, employeeNumber int64) error {
+	var (
+		dbLeave structDB.LeaveRequest
+		user    logicUser.User
+		leave   logicLeave.LeaveRequest
+	)
+	o := orm.NewOrm()
 
-// 	_, errRAW := o.Raw(`UPDATE `+dbLeave.TableName()+` SET status = ?, reject_reason = ? WHERE id = ? AND employee_number = ?`, statRejectSupervisor, reason, id, employeeNumber).Exec()
-// 	if errRAW != nil {
-// 		helpers.CheckErr("error update status @RejectBySupervisor", errRAW)
-// 	}
-// 	return errRAW
-// }
+	getEmployee, _ := user.GetEmployee(employeeNumber)
+	getSupervisorID, _ := user.GetSupervisor(employeeNumber)
+	getSupervisor, _ := user.GetEmployee(getSupervisorID.SupervisorID)
+	getLeave, _ := leave.GetLeave(id)
+
+	statRejectSupervisor := constant.StatusRejectInSuperVisor
+	rejectReason := l.RejectReason
+	actionBy := getSupervisor.Name
+
+	_, errRAW := o.Raw(`UPDATE `+dbLeave.TableName()+` SET status = ?, reject_reason = ?, action_by = ? WHERE id = ? AND employee_number = ?`, statRejectSupervisor, rejectReason, actionBy, id, employeeNumber).Exec()
+	if errRAW != nil {
+		helpers.CheckErr("error update status @RejectBySv", errRAW)
+	}
+
+	helpers.GoMailSupervisorReject(getEmployee.Email, getLeave.ID, getEmployee.Name, getSupervisor.Name, rejectReason)
+
+	return errRAW
+}

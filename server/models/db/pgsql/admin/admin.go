@@ -153,6 +153,67 @@ func (u *Admin) UpdateUser(e *structDB.User, employeeNumber int64) (err error) {
 	return err
 }
 
+// GetLeaveRequestPending ...
+func (u *Admin) GetLeaveRequestPending() ([]structLogic.RequestPending, error) {
+	var (
+		reqPending    []structLogic.RequestPending
+		user          structDB.User
+		leave         structDB.LeaveRequest
+		typeLeave     structDB.TypeLeave
+		userTypeLeave structDB.UserTypeLeave
+	)
+	statPendingInSupervisor := constant.StatusPendingInSupervisor
+	statPendingInDirector := constant.StatusPendingInDirector
+
+	o := orm.NewOrm()
+	qb, errQB := orm.NewQueryBuilder("mysql")
+	if errQB != nil {
+		helpers.CheckErr("Query builder failed @GetLeaveRequestPending", errQB)
+		return reqPending, errQB
+	}
+
+	qb.Select(
+		leave.TableName()+".id",
+		user.TableName()+".employee_number",
+		user.TableName()+".name",
+		user.TableName()+".gender",
+		user.TableName()+".position",
+		user.TableName()+".start_working_date",
+		user.TableName()+".mobile_phone",
+		user.TableName()+".email",
+		user.TableName()+".role",
+		typeLeave.TableName()+".type_name",
+		userTypeLeave.TableName()+".leave_remaining",
+		leave.TableName()+".reason",
+		leave.TableName()+".date_from",
+		leave.TableName()+".date_to",
+		leave.TableName()+".total",
+		leave.TableName()+".back_on",
+		leave.TableName()+".contact_address",
+		leave.TableName()+".contact_number",
+		leave.TableName()+".status",
+		leave.TableName()+".action_by").
+		From(user.TableName()).
+		InnerJoin(leave.TableName()).
+		On(user.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
+		InnerJoin(typeLeave.TableName()).
+		On(typeLeave.TableName() + ".id" + "=" + leave.TableName() + ".type_leave_id").
+		InnerJoin(userTypeLeave.TableName()).
+		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
+		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
+		Where(`(status = ? OR status = ? )`)
+	sql := qb.String()
+
+	count, errRaw := o.Raw(sql, statPendingInSupervisor, statPendingInDirector).QueryRows(&reqPending)
+	if errRaw != nil {
+		helpers.CheckErr("Failed Query Select @GetLeaveRequestPending", errRaw)
+		return reqPending, errors.New("error get leave")
+	}
+	beego.Debug("Total pending request =", count)
+
+	return reqPending, errRaw
+}
+
 // GetLeaveRequest ...
 func (u *Admin) GetLeaveRequest() ([]structLogic.RequestAccept, error) {
 	var (
@@ -211,6 +272,67 @@ func (u *Admin) GetLeaveRequest() ([]structLogic.RequestAccept, error) {
 	beego.Debug("Total accept request =", count)
 
 	return reqAccept, errRaw
+}
+
+// GetLeaveRequestReject ...
+func (u *Admin) GetLeaveRequestReject() ([]structLogic.RequestReject, error) {
+	var (
+		reqReject     []structLogic.RequestReject
+		user          structDB.User
+		leave         structDB.LeaveRequest
+		typeLeave     structDB.TypeLeave
+		userTypeLeave structDB.UserTypeLeave
+	)
+	statRejectInSuperVisor := constant.StatusRejectInSuperVisor
+	statRejectInDirector := constant.StatusRejectInDirector
+
+	o := orm.NewOrm()
+	qb, errQB := orm.NewQueryBuilder("mysql")
+	if errQB != nil {
+		helpers.CheckErr("Query builder failed @GetLeaveRequestReject", errQB)
+		return reqReject, errQB
+	}
+
+	qb.Select(
+		leave.TableName()+".id",
+		user.TableName()+".employee_number",
+		user.TableName()+".name",
+		user.TableName()+".gender",
+		user.TableName()+".position",
+		user.TableName()+".start_working_date",
+		user.TableName()+".mobile_phone",
+		user.TableName()+".email",
+		user.TableName()+".role",
+		typeLeave.TableName()+".type_name",
+		userTypeLeave.TableName()+".leave_remaining",
+		leave.TableName()+".reason",
+		leave.TableName()+".date_from",
+		leave.TableName()+".date_to",
+		leave.TableName()+".total",
+		leave.TableName()+".back_on",
+		leave.TableName()+".contact_address",
+		leave.TableName()+".contact_number",
+		leave.TableName()+".status",
+		leave.TableName()+".action_by").
+		From(user.TableName()).
+		InnerJoin(leave.TableName()).
+		On(user.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
+		InnerJoin(typeLeave.TableName()).
+		On(typeLeave.TableName() + ".id" + "=" + leave.TableName() + ".type_leave_id").
+		InnerJoin(userTypeLeave.TableName()).
+		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
+		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
+		Where(`(status = ? OR status = ? )`)
+	sql := qb.String()
+
+	count, errRaw := o.Raw(sql, statRejectInSuperVisor, statRejectInDirector).QueryRows(&reqReject)
+	if errRaw != nil {
+		helpers.CheckErr("Failed Query Select @GetLeaveRequestReject", errRaw)
+		return reqReject, errors.New("error get leave")
+	}
+	beego.Debug("Total reject request =", count)
+
+	return reqReject, errRaw
 }
 
 // UpdateLeaveRemaning ...

@@ -114,6 +114,7 @@ func (l *LeaveRequest) CreateLeaveRequestSupervisor(employeeNumber int64,
 		helpers.CheckErr("error insert @CreateLeaveRequestSupervisor", err)
 		return errors.New("insert create leave request failed")
 	}
+
 	return err
 }
 

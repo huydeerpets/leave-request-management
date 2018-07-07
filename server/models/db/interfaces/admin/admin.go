@@ -28,6 +28,10 @@ type IBaseAdmin interface {
 	) (err error)
 	// GetLeaveRequest
 	GetLeaveRequest() ([]structLogic.RequestAccept, error)
+	// GetLeaveRequest
+	GetLeaveRequestPending() ([]structLogic.RequestPending, error)
+	// GetLeaveRequest
+	GetLeaveRequestReject() ([]structLogic.RequestReject, error)
 	// CreateUserTypeLeave
 	CreateUserTypeLeave(
 		employeeNumber int64,

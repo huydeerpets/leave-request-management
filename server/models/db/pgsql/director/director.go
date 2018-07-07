@@ -43,7 +43,7 @@ func (u *Director) AcceptByDirector(id int64, employeeNumber int64) error {
 }
 
 // RejectByDirector ...
-func (u *Director) RejectByDirector(id int64, employeeNumber int64) error {
+func (u *Director) RejectByDirector(l *structDB.LeaveRequest, id int64, employeeNumber int64) error {
 
 	var (
 		dbLeave structDB.LeaveRequest
@@ -59,12 +59,13 @@ func (u *Director) RejectByDirector(id int64, employeeNumber int64) error {
 
 	statRejectDirector := constant.StatusRejectInDirector
 	actionBy := getDirector.Name
+	rejectReason := l.RejectReason
 
-	_, errRAW := o.Raw(`UPDATE `+dbLeave.TableName()+` SET status = ?, action_by = ? WHERE id = ? AND employee_number = ?`, statRejectDirector, actionBy, id, employeeNumber).Exec()
+	_, errRAW := o.Raw(`UPDATE `+dbLeave.TableName()+` SET status = ?, reject_reason = ?, action_by = ? WHERE id = ? AND employee_number = ?`, statRejectDirector, rejectReason, actionBy, id, employeeNumber).Exec()
 	if errRAW != nil {
 		helpers.CheckErr("error update status @RejectByDirector", errRAW)
 	}
-	helpers.GoMailDirectorReject(getEmployee.Email, getLeave.ID, getEmployee.Name, getDirector.Name)
+	helpers.GoMailDirectorReject(getEmployee.Email, getLeave.ID, getEmployee.Name, getDirector.Name, rejectReason)
 
 	return errRAW
 }

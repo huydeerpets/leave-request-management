@@ -1,6 +1,7 @@
 package director
 
 import (
+	structDB "server/structs/db"
 	structLogic "server/structs/logic"
 )
 
@@ -10,7 +11,7 @@ type IBaseDirector interface {
 	// AcceptByDirector
 	AcceptByDirector(id int64, employeeNumber int64) error
 	// RejectByDirector
-	RejectByDirector(id int64, employeeNumber int64) error
+	RejectByDirector(l *structDB.LeaveRequest, id int64, employeeNumber int64) error
 	// GetDirectorPendingRequest
 	GetDirectorPendingRequest() ([]structLogic.RequestPending, error)
 	// GetDirectorAcceptRequest

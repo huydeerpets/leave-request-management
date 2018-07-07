@@ -1,12 +1,15 @@
 package controllers
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"server/helpers"
 	"strconv"
 
 	db "server/models/db/pgsql/director"
 	structAPI "server/structs/api"
+	structDB "server/structs/db"
 
 	"github.com/astaxie/beego"
 )
@@ -57,12 +60,25 @@ func (c *DirectorController) RejectStatusByDirector() {
 	var (
 		resp       structAPI.RespData
 		dbDirector db.Director
+		leave      structDB.LeaveRequest
 	)
+
+	body := c.Ctx.Input.RequestBody
+	fmt.Println("REJECT-REASON=======>", string(body))
+
+	errMarshal := json.Unmarshal(body, &leave)
+	if errMarshal != nil {
+		helpers.CheckErr("unmarshall req body failed @RejectStatusByDirector", errMarshal)
+		resp.Error = errors.New("type request malform").Error()
+		c.Ctx.Output.SetStatus(400)
+		c.Ctx.Output.JSON(resp, false, false)
+		return
+	}
 
 	idStr := c.Ctx.Input.Param(":id")
 	id, errCon := strconv.ParseInt(idStr, 0, 64)
 	if errCon != nil {
-		helpers.CheckErr("convert id failed @AcceptStatusBySupervisor", errCon)
+		helpers.CheckErr("convert id failed @RejectStatusByDirector", errCon)
 		resp.Error = errors.New("convert id failed").Error()
 		return
 	}
@@ -70,12 +86,12 @@ func (c *DirectorController) RejectStatusByDirector() {
 	employeeStr := c.Ctx.Input.Param(":enumber")
 	employeeNumber, errCon := strconv.ParseInt(employeeStr, 0, 64)
 	if errCon != nil {
-		helpers.CheckErr("convert enum failed @AcceptStatusBySupervisor", errCon)
+		helpers.CheckErr("convert enum failed @RejectStatusByDirector", errCon)
 		resp.Error = errors.New("convert id failed").Error()
 		return
 	}
 
-	errUpStat := dbDirector.RejectByDirector(id, employeeNumber)
+	errUpStat := dbDirector.RejectByDirector(&leave, id, employeeNumber)
 	if errUpStat != nil {
 		resp.Error = errUpStat.Error()
 	} else {
