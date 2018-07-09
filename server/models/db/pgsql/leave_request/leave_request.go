@@ -3,6 +3,7 @@ package leave
 import (
 	"errors"
 	"server/helpers"
+	logicUser "server/models/db/pgsql/user"
 	structDB "server/structs/db"
 	structLogic "server/structs/logic"
 
@@ -26,6 +27,7 @@ func (l *LeaveRequest) CreateLeaveRequest(employeeNumber int64,
 	status string) error {
 
 	var leave structDB.LeaveRequest
+	var user logicUser.User
 	o := orm.NewOrm()
 	qb, errQB := orm.NewQueryBuilder("mysql")
 	if errQB != nil {
@@ -62,6 +64,13 @@ func (l *LeaveRequest) CreateLeaveRequest(employeeNumber int64,
 		helpers.CheckErr("error insert @CreateLeaveRequestEmployee", err)
 		return errors.New("insert create leave request failed")
 	}
+
+	getEmployee, _ := user.GetEmployee(employeeNumber)
+	getSupervisorID, _ := user.GetSupervisor(employeeNumber)
+	getSupervisor, _ := user.GetEmployee(getSupervisorID.SupervisorID)
+
+	helpers.GoMailSupervisor(getSupervisor.Email, getEmployee.Name, getSupervisor.Name)
+
 	return err
 }
 
@@ -78,6 +87,8 @@ func (l *LeaveRequest) CreateLeaveRequestSupervisor(employeeNumber int64,
 	status string) error {
 
 	var leave structDB.LeaveRequest
+	var user logicUser.User
+
 	o := orm.NewOrm()
 	qb, errQB := orm.NewQueryBuilder("mysql")
 	if errQB != nil {
@@ -114,6 +125,11 @@ func (l *LeaveRequest) CreateLeaveRequestSupervisor(employeeNumber int64,
 		helpers.CheckErr("error insert @CreateLeaveRequestSupervisor", err)
 		return errors.New("insert create leave request failed")
 	}
+
+	getEmployee, _ := user.GetEmployee(employeeNumber)
+	getDirector, _ := user.GetDirector()
+
+	helpers.GoMailSupervisor(getDirector.Email, getEmployee.Name, getDirector.Name)
 
 	return err
 }

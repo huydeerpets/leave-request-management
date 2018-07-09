@@ -16,7 +16,7 @@ type employeeMail struct {
 }
 
 type supervisorMail struct {
-	LeaveID        string
+	// LeaveID        string
 	EmployeeName   string
 	SupervisorName string
 }
@@ -86,13 +86,13 @@ func GoMailEmployee(mailTo string, leaveID string, employeeName string, supervis
 }
 
 // GoMailSupervisor ...
-func GoMailSupervisor(mailTo string, leaveID string, employeeName string, supervisorName string) {
+func GoMailSupervisor(mailTo string, employeeName string, supervisorName string) {
 
 	var errParse error
 
 	filePrefix, _ := filepath.Abs("./views")
 	t := template.New("supervisor.html")
-	infoHTML := supervisorMail{leaveID, employeeName, supervisorName}
+	infoHTML := supervisorMail{employeeName, supervisorName}
 	t, errParse = t.ParseFiles(filePrefix + "/supervisor.html")
 	if errParse != nil {
 		CheckErr("errParse ", errParse)

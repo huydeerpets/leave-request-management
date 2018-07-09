@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { formOnChange, SumbitLeave } from "../store/Actions/leaveRequestAction";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
-import moment from "moment";
+import moment from "moment-business-days";
 import {
   Layout,
   Form,
@@ -25,12 +25,16 @@ class LeaveRequestPage extends Component {
     this.state = {
       from: null,
       to: null,
-      endOpen: false
+      endOpen: false,
+      contactID: "+62"
     };
 
     this.handleOnChange = this.handleOnChange.bind(this);
     this.handleChangeTypeOfLeave = this.handleChangeTypeOfLeave.bind(this);
     this.disabledDateBack = this.disabledDateBack.bind(this);
+    this.handleOnChangeNumber = this.handleOnChangeNumber.bind(this);
+    this.handleOnChangeID = this.handleOnChangeID.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
   }
 
   componentWillMount() {
@@ -64,6 +68,7 @@ class LeaveRequestPage extends Component {
     };
     this.props.formOnChange(typeLeave);
   }
+
 
   handleChangeSelect(value) {
     let hiddenDiv = document.getElementById("showMe");
@@ -151,11 +156,12 @@ class LeaveRequestPage extends Component {
   };
 
   disabledDate(current) {
-    return current && current < moment().endOf("day");
+    return current && current < moment().endOf("day")
+    console.log("curent=====>", current)
   }
 
   disabledDateBack(current) {
-    return current && current < moment().endOf("day");
+    return this.state.to && this.state.to > current;
   }
 
   handleStartOpenChange = open => {
@@ -197,13 +203,31 @@ class LeaveRequestPage extends Component {
     console.log(`checked is half day= ${e.target.checked}`);
   }
 
+  handleOnChangeID = value => {
+    this.onChange("contactID", value);
+  };
+  
+  handleOnChangeNumber = e => {
+    let newLeave = {
+      ...this.props.leaveForm,
+      contact_number: `${this.state.contactID}` + e.target.value
+    };
+    this.props.formOnChange(newLeave);
+    console.log(newLeave);
+  };
+
+
   handleBlur() {
     console.log("blur");
+
+    let test = moment().startOf('month').monthBusinessDays()    
+    console.log("bussiess day=======>",test);
   }
 
   handleFocus() {
     console.log("focus");
   }
+  
 
   render() {
     const { getFieldDecorator } = this.props.form;
@@ -211,7 +235,8 @@ class LeaveRequestPage extends Component {
     const dates = this.getDates(new Date(from), new Date(to));
     const arr = [];
     const elements = [];
-    const dateFormat = "DD-MM-YYYY";
+    const dateFormat = "DD-MM-YYYY";    
+    const now = moment().startOf('month').monthBusinessDays()    ;
 
     dates.map((fulldate, i) => {
       const date = new Date(fulldate),
@@ -262,7 +287,7 @@ class LeaveRequestPage extends Component {
     const prefixSelector = getFieldDecorator("prefix", {
       initialValue: "+62"
     })(
-      <Select style={{ width: 70 }}>
+      <Select onChange={this.handleOnChangeID} style={{ width: 70 }}>
         <Option value="+62">+62</Option>
         <Option value="+66">+66</Option>
       </Select>
@@ -341,7 +366,7 @@ class LeaveRequestPage extends Component {
                 <DatePicker
                   id="date_from"
                   name="date_from"
-                  disabledDate={this.disabledDate}
+                  disabledDate={this.disabledDate}                        
                   format={dateFormat}
                   value={from}
                   placeholder="Start"
@@ -413,8 +438,8 @@ class LeaveRequestPage extends Component {
                   name="contact_number"
                   placeholder="Phone number"
                   addonBefore={prefixSelector}
-                  value={this.props.leaveForm.contact_number}
-                  onChange={this.handleOnChange}
+                  // value={this.props.leaveForm.contact_number}
+                  onChange={this.handleOnChangeNumber}
                   style={formStyle}
                 />
               </FormItem>

@@ -54,8 +54,9 @@ class LeaveRequestPage extends Component {
       ...this.props.leaveForm,
       [e.target.name]: e.target.value
     };
-    this.props.formOnChange(newLeave);
+    this.props.formOnChange(newLeave);    
   };
+  
 
   handleChangeTypeOfLeave(value) {
     let typeLeave = {
@@ -155,7 +156,7 @@ class LeaveRequestPage extends Component {
   }
 
   disabledDateBack(current) {
-    return current && current < moment().endOf("day");
+    return this.state.to && this.state.to > current;    
   }
 
   handleStartOpenChange = open => {
@@ -196,6 +197,20 @@ class LeaveRequestPage extends Component {
   onChangeIsHalfDay(e) {
     console.log(`checked is half day= ${e.target.checked}`);
   }
+
+  handleOnChangeID = value => {
+    this.onChange("contactID", value);
+  };
+  
+  handleOnChangeNumber = e => {
+    let newLeave = {
+      ...this.props.leaveForm,
+      contact_number: `${this.state.contactID}` + e.target.value
+    };
+    this.props.formOnChange(newLeave);
+    console.log(newLeave);
+  };
+
 
   handleBlur() {
     console.log("blur");
@@ -262,7 +277,7 @@ class LeaveRequestPage extends Component {
     const prefixSelector = getFieldDecorator("prefix", {
       initialValue: "+62"
     })(
-      <Select style={{ width: 70 }}>
+      <Select onChange={this.handleOnChangeID} style={{ width: 70 }}>
         <Option value="+62">+62</Option>
         <Option value="+66">+66</Option>
       </Select>
@@ -411,10 +426,9 @@ class LeaveRequestPage extends Component {
                   type="text"
                   id="contact_number"
                   name="contact_number"
-                  placeholder="Phone number"
-                  addonBefore={prefixSelector}
-                  value={this.props.leaveForm.contact_number}
-                  onChange={this.handleOnChange}
+                  placeholder="contact number"
+                  addonBefore={prefixSelector}                  
+                  onChange={this.handleOnChangeNumber}
                   style={formStyle}
                 />
               </FormItem>

@@ -93,11 +93,6 @@ func init() {
 			&controllers.SupervisorController{},
 			"put:RejectStatusBySv",
 		),
-		// reject status by supervisor
-		beego.NSRouter("/employee/reject/:id:int/:enumber:int/:reason:string",
-			&controllers.SupervisorController{},
-			"put:RejectStatusBySupervisor",
-		),
 		// get status pending in supervisor
 		beego.NSRouter("/supervisor/pending/:id:int ",
 			&controllers.SupervisorController{},

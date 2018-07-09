@@ -19,5 +19,5 @@ CREATE TABLE IF NOT EXISTS leave_request
   "status" text NOT NULL,
   "action_by" text,
   "reject_reason" text,
-  "errand_reason" text
-);
+  "errand_reason" text,
+  "created_at" timestamp with time zone not null default CURRENT_TIMESTAMP
