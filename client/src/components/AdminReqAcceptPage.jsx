@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { leaveFetchData } from "../store/Actions/adminActions";
+import { acceptFetchData } from "../store/Actions/adminActions";
 import HeaderNav from "./menu/HeaderAdmin";
 import Footer from "./menu/Footer";
 import { Layout, Table, Modal, Button } from "antd";
 const { Content } = Layout;
 
-class AdminLeaveRequestPage extends Component {
+class AdminReqAcceptPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -49,8 +49,8 @@ class AdminLeaveRequestPage extends Component {
       },
       {
         title: "Type Of Leave",
-        dataIndex: "type_of_leave",
-        key: "type_of_leave",
+        dataIndex: "type_name",
+        key: "type_name",
         width: 150
       },
       {
@@ -101,7 +101,7 @@ class AdminLeaveRequestPage extends Component {
     } else if (localStorage.getItem("role") !== "admin") {
       this.props.history.push("/");
     }
-    this.props.leaveFetchData();
+    this.props.acceptFetchData();
   }
   render() {
     const { visible, loading } = this.state;
@@ -151,20 +151,20 @@ class AdminLeaveRequestPage extends Component {
                 Name : {this.state.user && this.state.user.name} <br />
                 Gender : {this.state.user && this.state.user.gender} <br />
                 Email : {this.state.user && this.state.user.email} <br />
-                Type Of Leave :
-                {this.state.user && this.state.user.type_of_leave} <br />
+                Type Of Leave : {this.state.user &&
+                  this.state.user.type_name}{" "}
+                <br />
                 Reason : {this.state.user && this.state.user.reason} <br />
                 From : {this.state.user && this.state.user.date_from} <br />
                 To : {this.state.user && this.state.user.date_to} <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
-                Total : {this.state.user && this.state.user.total} <br />
-                Leave Remaining :
-                {this.state.user && this.state.user.leave_remaining} <br />
-                Address Leave : {this.state.user && this.state.user.address}
-                <br />
-                Phone Leave : {this.state.user && this.state.user.contact_leave}
-                <br />
-                Status : {this.state.user && this.state.user.status}
+                Total : {this.state.user && this.state.user.total} day <br />
+                Leave Remaining :{" "}
+                {this.state.user && this.state.user.leave_remaining} day <br />
+                Contact Address :{" "}
+                {this.state.user && this.state.user.contact_address} <br />
+                Contact Number :{" "}
+                {this.state.user && this.state.user.contact_number}
               </div>
             </Modal>
           </Content>
@@ -183,7 +183,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      leaveFetchData
+      acceptFetchData
     },
     dispatch
   );
@@ -192,4 +192,4 @@ console.log(mapStateToProps);
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(AdminLeaveRequestPage);
+)(AdminReqAcceptPage);

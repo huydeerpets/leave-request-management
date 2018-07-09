@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { Layout, Button, Form, Input, Select } from "antd";
 import { profileFetchData } from "../store/Actions/profileAction";
-import HeaderNav from "./menu/HeaderAdmin";
+import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
 const { Content } = Layout;
 const FormItem = Form.Item;
@@ -14,7 +14,11 @@ class ProfileEditPage extends Component {
     super(props);
   }
   componentDidMount() {
-    if (localStorage.getItem("role") !== "employee") {
+    if (
+      localStorage.getItem("role") !== "employee" &&
+      localStorage.getItem("role") !== "supervisor" &&
+      localStorage.getItem("role") !== "director"
+    ) {
       this.props.history.push("/");
     }
     this.props.profileFetchData();

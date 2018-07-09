@@ -135,14 +135,14 @@ class LeaveEditPage extends Component {
                           .toLowerCase()
                           .indexOf(input.toLowerCase()) >= 0
                       }
-                      value={this.props.leave.type_of_leave}
+                      value={this.props.leave.type_name}
                     >
-                      <Option value="Errand Leave">Errand Leave</Option>
-                      <Option value="Sick Leave">Sick Leave</Option>
-                      <Option value="Annual Leave">Annual Leave</Option>
-                      <Option value="Marriage Leave">Marriage Leave</Option>
-                      <Option value="Maternity Leave">Maternity Leave</Option>
-                      <Option value="Other Leave">Other Leave</Option>
+                      <Option value={11}>Errand Leave</Option>
+                      <Option value={22}>Sick Leave</Option>
+                      <Option value={33}>Annual Leave</Option>
+                      <Option value={44}>Marriage Leave</Option>
+                      <Option value={55}>Maternity Leave</Option>
+                      <Option value={66}>Other Leave</Option>
                     </Select>
                   </FormItem>
 
@@ -190,10 +190,9 @@ class LeaveEditPage extends Component {
                   <FormItem {...formItemLayout} label="Contact Address">
                     <TextArea
                       type="text"
-                      id="address"
-                      name="address"
-                      placeholder="Contact address"
-                      value={this.props.leave.address}
+                      id="contact_address"
+                      name="contact_address"                      
+                      value={this.props.leave.contact_address}
                       onChange={this.handleOnChange}
                       autosize={{ minRows: 2, maxRows: 6 }}
                     />
@@ -202,12 +201,11 @@ class LeaveEditPage extends Component {
                   <FormItem {...formItemLayout} label="Contact Number">
                     <Input
                       type="text"
-                      id="contact_leave"
-                      name="contact_leave"
-                      placeholder="phone leave"
+                      id="contact_number"
+                      name="contact_number"                      
                       addonBefore={"+628"}
                       style={{ width: "100%" }}
-                      value={this.props.leave.contact_leave}
+                      value={this.props.leave.contact_number}
                       onChange={this.handleOnChange}
                     />
                   </FormItem>

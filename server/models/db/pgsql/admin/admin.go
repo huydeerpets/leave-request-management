@@ -336,22 +336,23 @@ func (u *Admin) GetLeaveRequestReject() ([]structLogic.RequestReject, error) {
 }
 
 // UpdateLeaveRemaning ...
-func (u *Admin) UpdateLeaveRemaning(total int64, employeeNumber int64) (err error) {
-	var e *structDB.User
+func (u *Admin) UpdateLeaveRemaning(total int64, employeeNumber int64, typeID int64) (err error) {
+	var e *structDB.UserTypeLeave
 	o := orm.NewOrm()
 	qb, errQB := orm.NewQueryBuilder("mysql")
 	if errQB != nil {
-		helpers.CheckErr("Query builder failed @UpdateUser", errQB)
+		helpers.CheckErr("Query builder failed @UpdateLeaveRemaning", errQB)
 		return errQB
 	}
 
-	qb.Update(e.TableName()).Set("leave_remaining = leave_remaining - ?").Where("employee_number = ? ")
+	qb.Update(e.TableName()).Set("leave_remaining = leave_remaining - ?").
+		Where(`(employee_number = ? AND type_leave_id = ? )`)
 	sql := qb.String()
 
-	res, errRaw := o.Raw(sql, total, employeeNumber).Exec()
+	res, errRaw := o.Raw(sql, total, employeeNumber, typeID).Exec()
 
 	if errRaw != nil {
-		helpers.CheckErr("err update @UpdateUser", errRaw)
+		helpers.CheckErr("err update @UpdateLeaveRemaning", errRaw)
 		return errors.New("update leave remaining failed")
 	}
 

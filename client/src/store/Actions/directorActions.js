@@ -129,20 +129,21 @@ export function updateStatusAccept(users, id, enumber) {
 	}
 }
 
-export function updateStatusReject(users, id, enumber) {
+export function updateStatusReject(users, id, enumber, payload) {
 	return (dispatch) => {
 		fetch(`http://localhost:8080/api/director/reject/${id}/${enumber}`, {
 				method: 'PUT',
+				body: JSON.stringify(payload)
 			})
 			.then(response => {
 				let newUserlist = users.filter(el => el.id !== id)
-				let payload = {
+				let payloads = {
 					loading: false,
 					users: [
 						...newUserlist
 					]
 				}
-				dispatch(rejectRequest(payload))
+				dispatch(rejectRequest(payloads))
 
 			}).catch(err => {
 				console.log(err)

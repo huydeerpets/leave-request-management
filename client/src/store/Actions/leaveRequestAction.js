@@ -17,7 +17,7 @@ export function SumbitLeave(payload) {
 	const employeeNumber = localStorage.getItem('id')
 	console.log("===============", employeeNumber)
 	return (dispatch) => {
-		fetch('http://localhost:8080/api/leave/' + employeeNumber, {
+		fetch('http://localhost:8080/api/employee/leave/' + employeeNumber, {
 				method: 'POST',
 				body: JSON.stringify(payload)
 			})
@@ -59,6 +59,7 @@ export function SumbitLeaveSupervisor(payload) {
 					alert('create failed, please field out all field')
 				} else {
 					dispatch(clearField())
+					window.location.href = "/request-pending";
 					alert('create leave request success')
 				}
 			}).catch(err => {

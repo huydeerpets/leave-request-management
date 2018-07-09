@@ -39,5 +39,5 @@ type IBaseAdmin interface {
 		total int64,
 	) error
 	// UpdateLeaveRemaning
-	UpdateLeaveRemaning(total int64, employeeNumber int64) (err error)
+	UpdateLeaveRemaning(total int64, employeeNumber int64, typeID int64) (err error)
 }

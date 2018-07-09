@@ -1,7 +1,6 @@
 package supervisor
 
 import (
-	structDB "server/structs/db"
 	structLogic "server/structs/logic"
 )
 
@@ -27,5 +26,5 @@ type IBaseSupervisor interface {
 	AcceptBySupervisor(id int64, employeeNumber int64) error
 	// RejectBySupervisor
 	RejectBySupervisor(reason string, id int64, employeeNumber int64) error
-	RejectBySv(l *structDB.LeaveRequest, id int64, employeeNumber int64) error
+	RejectBySv(l *structLogic.LeaveReason, id int64, employeeNumber int64) error
 }

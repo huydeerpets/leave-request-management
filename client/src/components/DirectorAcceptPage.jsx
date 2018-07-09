@@ -49,8 +49,8 @@ class DirectorAcceptPage extends Component {
       },
       {
         title: "Type Of Leave",
-        dataIndex: "type_of_leave",
-        key: "type_of_leave",
+        dataIndex: "type_name",
+        key: "type_name",
         width: 150
       },
       {
@@ -151,20 +151,15 @@ class DirectorAcceptPage extends Component {
                 Name : {this.state.user && this.state.user.name} <br />
                 Gender : {this.state.user && this.state.user.gender} <br />
                 Email : {this.state.user && this.state.user.email} <br />
-                Type Of Leave :
-                {this.state.user && this.state.user.type_of_leave} <br />
+                Type Of Leave : {this.state.user && this.state.user.type_name} <br />
                 Reason : {this.state.user && this.state.user.reason} <br />
                 From : {this.state.user && this.state.user.date_from} <br />
                 To : {this.state.user && this.state.user.date_to} <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
-                Total : {this.state.user && this.state.user.total} <br />
-                Leave Remaining :
-                {this.state.user && this.state.user.leave_remaining} <br />
-                Address Leave : {this.state.user && this.state.user.address}
-                <br />
-                Phone Leave : {this.state.user && this.state.user.contact_leave}
-                <br />
-                Status : {this.state.user && this.state.user.status}
+                Total : {this.state.user && this.state.user.total} day <br />
+                Leave Remaining : {this.state.user && this.state.user.leave_remaining} day <br />
+                Contact Address : {this.state.user && this.state.user.contact_address} <br />
+                Contact Number : {this.state.user && this.state.user.contact_number}                                
               </div>
             </Modal>
           </Content>

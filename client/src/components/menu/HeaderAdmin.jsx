@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink, withRouter } from "react-router-dom";
 import { Layout, Menu, Button, Icon } from "antd";
 const { Header } = Layout;
+const SubMenu = Menu.SubMenu;
 
 const ButtonLogout = withRouter(({ history }) => (
   <Button
@@ -44,13 +45,29 @@ export default class HeaderAdmin extends React.Component {
               </span>Add User
             </NavLink>
           </Menu.Item>
-          <Menu.Item key="3">
-            <NavLink to="/list-request-leave">
+          <SubMenu
+            title={
               <span>
-                <Icon type="schedule" />
-              </span>List Leave Request
-            </NavLink>
-          </Menu.Item>
+                <Icon type="schedule" />Leave Request
+              </span>
+            }
+          >
+            <Menu.Item key="schedule:1">
+              <NavLink to="/list-request-pending">
+                List Request Pending
+              </NavLink>
+            </Menu.Item>
+            <Menu.Item key="schedule:2">
+              <NavLink to="/list-request-accept">
+                List Request Accept
+              </NavLink>
+            </Menu.Item>
+            <Menu.Item key="schedule:3">
+              <NavLink to="/list-request-reject">
+                List Request Reject
+              </NavLink>
+            </Menu.Item>
+          </SubMenu>
           <Menu.Item key="4">
             <ButtonLogout />
           </Menu.Item>

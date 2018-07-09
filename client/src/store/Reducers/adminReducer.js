@@ -1,11 +1,19 @@
 let adminState = {
 	loading: true,
-	users: [],	
+	users: []
 }
 
 export default function adminReducer(state = adminState, action) {
 	switch (action.type) {
-		case 'LEAVE_LOADED':
+		case 'FETCH_LEAVE_PENDING':
+			return {
+				...action.payload
+			}
+		case 'FETCH_LEAVE_ACCEPT':
+			return {
+				...action.payload
+			}
+		case 'FETCH_LEAVE_REJECT':
 			return {
 				...action.payload
 			}

@@ -10,7 +10,7 @@ import (
 
 	logic "server/models/logic/user"
 	structAPI "server/structs/api"
-	structDB "server/structs/db"
+	structLogic "server/structs/logic"
 
 	"github.com/astaxie/beego"
 )
@@ -180,7 +180,7 @@ func (c *SupervisorController) RejectStatusBySupervisor() {
 func (c *SupervisorController) RejectStatusBySv() {
 	var (
 		resp  structAPI.RespData
-		leave structDB.LeaveRequest
+		leave structLogic.LeaveReason
 	)
 
 	body := c.Ctx.Input.RequestBody

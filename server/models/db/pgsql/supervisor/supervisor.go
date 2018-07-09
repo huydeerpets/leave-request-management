@@ -256,7 +256,7 @@ func (u *Supervisor) RejectBySupervisor(reason string, id int64, employeeNumber 
 }
 
 // RejectBySv ...
-func (u *Supervisor) RejectBySv(l *structDB.LeaveRequest, id int64, employeeNumber int64) error {
+func (u *Supervisor) RejectBySv(l *structLogic.LeaveReason, id int64, employeeNumber int64) error {
 	var (
 		dbLeave structDB.LeaveRequest
 		user    logicUser.User

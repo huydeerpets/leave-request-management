@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { rejectFetchData } from "../store/Actions/directorActions";
-import HeaderNav from "./menu/HeaderNav";
+import { rejectFetchData } from "../store/Actions/adminActions";
+import HeaderNav from "./menu/HeaderAdmin";
 import Footer from "./menu/Footer";
 import { Layout, Table, Modal, Button } from "antd";
 const { Content } = Layout;
 
-class DirectorRejectPage extends Component {
+class AdminReqRejectPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -98,7 +98,7 @@ class DirectorRejectPage extends Component {
   componentDidMount() {
     if (!localStorage.getItem("token")) {
       this.props.history.push("/");
-    } else if (localStorage.getItem("role") !== "director") {
+    } else if (localStorage.getItem("role") !== "admin") {
       this.props.history.push("/");
     }
     this.props.rejectFetchData();
@@ -146,20 +146,25 @@ class DirectorRejectPage extends Component {
                 </Button>
               ]}
             >
-              <div style={{ padding: 10, background: "#fff" }}>s
+              <div style={{ padding: 10, background: "#fff" }}>
                 ID : {this.state.user && this.state.user.id} <br />
                 Name : {this.state.user && this.state.user.name} <br />
                 Gender : {this.state.user && this.state.user.gender} <br />
                 Email : {this.state.user && this.state.user.email} <br />
-                Type Of Leave : {this.state.user && this.state.user.type_name} <br />
+                Type Of Leave : {this.state.user &&
+                  this.state.user.type_name}{" "}
+                <br />
                 Reason : {this.state.user && this.state.user.reason} <br />
                 From : {this.state.user && this.state.user.date_from} <br />
                 To : {this.state.user && this.state.user.date_to} <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
                 Total : {this.state.user && this.state.user.total} day <br />
-                Leave Remaining : {this.state.user && this.state.user.leave_remaining} day <br />
-                Contact Address : {this.state.user && this.state.user.contact_address} <br />
-                Contact Number : {this.state.user && this.state.user.contact_number}                
+                Leave Remaining :{" "}
+                {this.state.user && this.state.user.leave_remaining} day <br />
+                Contact Address :{" "}
+                {this.state.user && this.state.user.contact_address} <br />
+                Contact Number :{" "}
+                {this.state.user && this.state.user.contact_number}
               </div>
             </Modal>
           </Content>
@@ -171,8 +176,8 @@ class DirectorRejectPage extends Component {
 }
 
 const mapStateToProps = state => ({
-  loading: state.fetchDirectorReducer.loading,
-  users: state.fetchDirectorReducer.users
+  loading: state.adminReducer.loading,
+  users: state.adminReducer.users
 });
 
 const mapDispatchToProps = dispatch =>
@@ -187,4 +192,4 @@ console.log(mapStateToProps);
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DirectorRejectPage);
+)(AdminReqRejectPage);

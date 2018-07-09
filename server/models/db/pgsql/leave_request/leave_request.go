@@ -194,8 +194,9 @@ func (l *LeaveRequest) GetLeave(id int64) (result structLogic.GetLeave, err erro
 		return result, errQB
 	}
 
-	qb.Select(
-		dbLeave.TableName() + ".id").
+	qb.Select(dbLeave.TableName()+".id",
+		dbLeave.TableName()+".type_leave_id",
+		dbLeave.TableName()+".total").
 		From(dbLeave.TableName()).
 		Where(dbLeave.TableName() + `.id = ? `)
 	qb.Limit(1)

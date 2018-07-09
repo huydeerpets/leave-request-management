@@ -1,6 +1,20 @@
-function leaveloaded(payload) {
+function pendingFetch(payload) {
 	return {
-		type: 'LEAVE_LOADED',
+		type: 'FETCH_LEAVE_PENDING',
+		payload: payload
+	}
+}
+
+function acceptFetch(payload) {
+	return {
+		type: 'FETCH_LEAVE_ACCEPT',
+		payload: payload
+	}
+}
+
+function rejectFetch(payload) {
+	return {
+		type: 'FETCH_LEAVE_REJECT',
 		payload: payload
 	}
 }
@@ -68,9 +82,12 @@ export function deleteUser(users, employeeNumber) {
 	}
 }
 
-export function leaveFetchData() {
+
+
+export function pendingFetchData() {
 	return (dispatch) => {
-		fetch('http://localhost:8080/api/admin/leave', {
+		const employeeNumber = localStorage.getItem('id')
+		fetch('http://localhost:8080/api/admin/leave/pending/', {
 				method: 'GET',
 			})
 			.then((resp) => resp.json())
@@ -82,8 +99,59 @@ export function leaveFetchData() {
 				let payload = {
 					loading: false,
 					users: body
+
 				}
-				dispatch(leaveloaded(payload))
+				dispatch(pendingFetch(payload))
+			})
+			.catch(err => {
+				console.log(err)
+			})
+	}
+}
+
+export function acceptFetchData() {
+	return (dispatch) => {
+		fetch('http://localhost:8080/api/admin/leave/accept/', {
+				method: 'GET',
+			})
+			.then((resp) => resp.json())
+			.then(({
+				body
+			}) => {
+				console.log(body)
+
+				let payload = {
+					loading: false,
+					users: body
+
+				}
+				dispatch(acceptFetch(payload))
+			})
+			.catch(err => {
+				console.log(err)
+			})
+	}
+}
+
+
+export function rejectFetchData() {
+	return (dispatch) => {
+		const employeeNumber = localStorage.getItem('id')
+		fetch('http://localhost:8080/api/admin/leave/reject/', {
+				method: 'GET',
+			})
+			.then((resp) => resp.json())
+			.then(({
+				body
+			}) => {
+				console.log(body)
+
+				let payload = {
+					loading: false,
+					users: body
+
+				}
+				dispatch(rejectFetch(payload))
 			})
 			.catch(err => {
 				console.log(err)

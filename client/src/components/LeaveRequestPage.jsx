@@ -60,18 +60,18 @@ class LeaveRequestPage extends Component {
   handleChangeTypeOfLeave(value) {
     let typeLeave = {
       ...this.props.leaveForm,
-      type_of_leave: value
+      type_leave_id: value
     };
     this.props.formOnChange(typeLeave);
   }
 
   handleChangeSelect(value) {
     let hiddenDiv = document.getElementById("showMe");
-    if (value === "Errand Leave") {
+    if (value === 22) {
       hiddenDiv.style.display = "block";
-    } else if (value === "Sick Leave") {
+    } else if (value === 33) {
       hiddenDiv.style.display = "block";
-    } else if (value === "Other Leave") {
+    } else if (value === 66) {
       hiddenDiv.style.display = "block";
     } else {
       hiddenDiv.style.display = "none";
@@ -292,13 +292,13 @@ class LeaveRequestPage extends Component {
               minHeight: 360
             }}
           >
-            <h1> Form Leave Request  </h1>
+            <h1> Form Leave Request </h1>
 
             <Form onSubmit={this.handleSubmit} className="login-form">
               <FormItem {...formItemLayout} label="Type Of Leave">
                 <Select
-                  id="type_of_leave"
-                  name="type_of_leave"
+                  id="type_leave_id"
+                  name="type_leave_id"
                   placeholder="Select type of leave"
                   optionFilterProp="children"
                   onChange={this.handleChangeTypeOfLeave}
@@ -315,12 +315,12 @@ class LeaveRequestPage extends Component {
                   }
                   style={formStyle}
                 >
-                  <Option value="Errand Leave">Errand Leave</Option>
-                  <Option value="Sick Leave">Sick Leave</Option>
-                  <Option value="Annual Leave">Annual Leave</Option>
-                  <Option value="Marriage Leave">Marriage Leave</Option>
-                  <Option value="Maternity Leave">Maternity Leave</Option>
-                  <Option value="Other Leave">Other Leave</Option>
+                  <Option value={11}>Annual Leave</Option>
+                  <Option value={22}>Errand Leave</Option>
+                  <Option value={33}>Sick Leave</Option>
+                  <Option value={44}>Marriage Leave</Option>
+                  <Option value={55}>Maternity Leave</Option>
+                  <Option value={66}>Other Leave</Option>
                 </Select>
               </FormItem>
 
@@ -339,8 +339,8 @@ class LeaveRequestPage extends Component {
               </div>
               <FormItem {...formItemLayout} label="From">
                 <DatePicker
-                  id="from"
-                  name="from"
+                  id="date_from"
+                  name="date_from"
                   disabledDate={this.disabledDate}
                   format={dateFormat}
                   value={from}
@@ -352,8 +352,8 @@ class LeaveRequestPage extends Component {
               </FormItem>
               <FormItem {...formItemLayout} label="To">
                 <DatePicker
-                  id="to"
-                  name="to"
+                  id="date_to"
+                  name="date_to"
                   disabledDate={this.disabledEndDate}
                   format={dateFormat}
                   value={to}
@@ -396,10 +396,10 @@ class LeaveRequestPage extends Component {
               <FormItem {...formItemLayout} label="Contact Address">
                 <TextArea
                   type="text"
-                  id="address"
-                  name="address"
-                  placeholder="Address, email, etc"
-                  value={this.props.leaveForm.address}
+                  id="contact_address"
+                  name="contact_address"
+                  placeholder="contact_address, email, etc"
+                  value={this.props.leaveForm.contact_address}
                   onChange={this.handleOnChange}
                   autosize={{ minRows: 2, maxRows: 8 }}
                   style={formStyle}
@@ -409,11 +409,11 @@ class LeaveRequestPage extends Component {
               <FormItem {...formItemLayout} label="Contact Number">
                 <Input
                   type="text"
-                  id="contact_leave"
-                  name="contact_leave"
+                  id="contact_number"
+                  name="contact_number"
                   placeholder="Phone number"
                   addonBefore={prefixSelector}
-                  value={this.props.leaveForm.contact_leave}
+                  value={this.props.leaveForm.contact_number}
                   onChange={this.handleOnChange}
                   style={formStyle}
                 />

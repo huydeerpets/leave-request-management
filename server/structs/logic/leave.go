@@ -2,7 +2,9 @@ package logic
 
 // GetLeave ...
 type GetLeave struct {
-	ID string `json:"id" orm:"column(id)"`
+	ID          string `json:"id" orm:"column(id)"`
+	TypeLeaveID int64  `json:"type_leave_id" orm:"column(type_leave_id)"`
+	Total       int64  `json:"total" orm:"column(total)"`
 }
 
 // LeaveReason ...

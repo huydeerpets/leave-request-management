@@ -4,6 +4,7 @@ import (
 	"errors"
 	"server/helpers"
 	"server/helpers/constant"
+	logicAdmin "server/models/db/pgsql/admin"
 	logicLeave "server/models/db/pgsql/leave_request"
 	logicUser "server/models/db/pgsql/user"
 	structDB "server/structs/db"
@@ -22,6 +23,7 @@ func (u *Director) AcceptByDirector(id int64, employeeNumber int64) error {
 		dbLeave structDB.LeaveRequest
 		user    logicUser.User
 		leave   logicLeave.LeaveRequest
+		admin   logicAdmin.Admin
 	)
 
 	o := orm.NewOrm()
@@ -37,6 +39,12 @@ func (u *Director) AcceptByDirector(id int64, employeeNumber int64) error {
 	if errRAW != nil {
 		helpers.CheckErr("error update status @AcceptByDirector", errRAW)
 	}
+
+	errUp := admin.UpdateLeaveRemaning(getLeave.Total, employeeNumber, getLeave.TypeLeaveID)
+	if errUp != nil {
+		helpers.CheckErr("error update status @AcceptByDirector", errUp)
+	}
+
 	helpers.GoMailDirectorAccept(getEmployee.Email, getLeave.ID, getEmployee.Name, getDirector.Name)
 
 	return errRAW

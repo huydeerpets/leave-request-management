@@ -1,11 +1,11 @@
 const leave = {
-	type_of_leave: '',
+	type_leave_id: '',
 	reason: '',
 	date_from: '',
 	date_to: '',
 	back_on: '',
-	address: '',
-	contact_leave: ''
+	contact_address: '',
+	contact_number: ''
 }
 
 export default function leaveRequestReducer(state = leave, action) {

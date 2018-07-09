@@ -8,7 +8,9 @@ import store from './store/index.js';
 import Landingpage from './components/Landingpage.jsx';
 import Adminpage from './components/AdminPage.jsx';
 import RegisterPage from './components/RegisterPage.jsx';
-import AdminLeaveRequestPage from './components/AdminLeaveRequestPage.jsx';
+import AdminReqPendingPage from './components/AdminReqPendingPage.jsx';
+import AdminReqAcceptPage from './components/AdminReqAcceptPage.jsx';
+import AdminReqRejectPage from './components/AdminReqRejectPage.jsx';
 import AdminEditPage from './components/AdminEditPage.jsx';
 import LeaveEditPage from './components/LeaveEditPage';
 
@@ -43,26 +45,34 @@ class App extends Component {
               <Route exact path="/" component={Landingpage} />
               <Route exact path="/login" component={Landingpage} />
 
+
               <Route path="/admin" component={Adminpage} />
-              <Route exact path="/register" component={RegisterPage} />              
-              <Route path="/list-request-leave" component={AdminLeaveRequestPage} />
+              <Route exact path="/register" component={RegisterPage} />            
+              <Route path="/list-request-pending" component={AdminReqPendingPage} />
+              <Route path="/list-request-accept" component={AdminReqAcceptPage} />              
+              <Route path="/list-request-reject" component={AdminReqRejectPage} />
               <Route path={`/edituser/:id`} component={AdminEditPage}/>
-              
+
+
               <Route path="/request-leave" component={LeaveRequestPage} />
               <Route path="/supervisor-request-leave" component={LeaveRequestSupervisorPage} />
+
 
               <Route path="/employee" component={LandingEmployeePage} />
               <Route path={`/editrequest/:id`} component={LeaveEditPage}/>
               <Route path="/profile" component={ProfileEditPage} />
-              
+
+
               <Route path="/request-pending" component={EmployeeReqPendingPage} />
               <Route path="/request-accept" component={EmployeeReqAcceptPage} />
               <Route path="/request-reject" component={EmployeeReqRejectPage} />
+
 
               <Route path="/supervisor" component={SupervisorLandingPage} />
               <Route path="/list-request" component={SupervisorPendingPage} />
               <Route path="/list-accept" component={SupervisorAcceptPage} />
               <Route path="/list-reject" component={SupervisorRejectPage} />
+
 
               <Route path="/director" component={DirectorLandingPage} />
               <Route path="/list-pending-request" component={DirectorPendingPage} />

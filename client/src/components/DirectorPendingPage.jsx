@@ -17,6 +17,7 @@ class DirectorPendingPage extends Component {
     super(props);
     this.state = {
       user: null,
+      reason: null,
       data: this.props.users,
       loadingA: false,
       loadingR: false,
@@ -25,7 +26,8 @@ class DirectorPendingPage extends Component {
       filterDropdownNameVisible: false,
       filtered: false,
       searchText: "",
-      searchID: ""
+      searchID: "",
+      visibleReject: false
     };
   }
 
@@ -88,7 +90,6 @@ class DirectorPendingPage extends Component {
   onSearchID = () => {
     const { searchID } = this.state;
     const reg = new RegExp(searchID, "gi");
-    // const reg = new RegExp(searchID,'^\d*\.?\d+$');
     this.setState({
       filterDropdownIDVisible: false,
       filtered: !!searchID,
@@ -103,7 +104,6 @@ class DirectorPendingPage extends Component {
             ...record,
             ID: (
               <span>
-                {console.log("recordisssssssssss", searchID)}
                 {this.state.data.map(
                   (text, i) =>
                     String(text.id) === searchID ? (
@@ -120,6 +120,12 @@ class DirectorPendingPage extends Component {
           };
         })
         .filter(record => !!record)
+    });
+  };
+
+  showReject = () => {
+    this.setState({
+      visibleReject: true
     });
   };
 
@@ -164,9 +170,14 @@ class DirectorPendingPage extends Component {
 
     this.setState({ loadingR: true });
     setTimeout(() => {
-      this.setState({ loadingR: false, visible: false });
-      this.updateStatusReject(this.props.users, id, employeeNumber);
-      window.location.reload();
+      this.setState({ loadingR: false, visible: false, visibleReject: false });
+      this.updateStatusReject(
+        this.props.users,
+        id,
+        employeeNumber,
+        this.state.reason
+      );
+      // window.location.reload();
     }, 1000);
   };
 
@@ -178,12 +189,20 @@ class DirectorPendingPage extends Component {
     this.props.updateStatusAccept(users, id, enumber);
   };
 
-  updateStatusReject = (users, id, enumber) => {
-    this.props.updateStatusReject(users, id, enumber);
+  updateStatusReject = (users, id, enumber, reason) => {
+    this.props.updateStatusReject(users, id, enumber, reason);
+  };
+
+  handleOnChange = e => {
+    let newLeave = {
+      ...this.props.leave,
+      [e.target.name]: e.target.value
+    };
+    this.setState({ reason: newLeave });
   };
 
   render() {
-    const { visible, loadingA, loadingR } = this.state;
+    const { visible, visibleReject, loadingA, loadingR } = this.state;
     const columns = [
       {
         title: "ID",
@@ -206,7 +225,7 @@ class DirectorPendingPage extends Component {
         ),
         filterIcon: (
           <Icon
-            type="smile-o"
+            type="search"
             style={{ color: this.state.filtered ? "#108ee9" : "#aaa" }}
           />
         ),
@@ -247,7 +266,7 @@ class DirectorPendingPage extends Component {
         ),
         filterIcon: (
           <Icon
-            type="smile-o"
+            type="search"
             style={{ color: this.state.filtered ? "#108ee9" : "#aaa" }}
           />
         ),
@@ -276,8 +295,8 @@ class DirectorPendingPage extends Component {
       },
       {
         title: "Type Of Leave",
-        dataIndex: "type_of_leave",
-        key: "type_of_leave",
+        dataIndex: "type_name",
+        key: "type_name",
         width: 150
       },
       {
@@ -332,9 +351,41 @@ class DirectorPendingPage extends Component {
               />
             </div>
 
+            <div>
+              <Modal
+                visible={visibleReject}
+                title="Reject Reason"
+                onOk={this.handleReject}
+                onCancel={this.handleCancelReject}
+                style={{ top: "20" }}
+                bodyStyle={{ padding: "0" }}
+                footer={[
+                  <Button
+                    key="reject"
+                    type="danger"
+                    loading={loadingR}
+                    onClick={this.handleReject}
+                  >
+                    Reject
+                  </Button>,
+                  <Button key="cancel" onClick={this.handleCancelReject}>
+                    Return
+                  </Button>
+                ]}
+              >
+                <Input
+                  type="text"
+                  id="reject_reason"
+                  name="reject_reason"
+                  placeholder="reject reason"
+                  onChange={this.handleOnChange}
+                />
+              </Modal>
+            </div>
+
             <Modal
               visible={visible}
-              title="Detail Leave Request Pending"
+              title="Det12345il Leave Request Pending"
               onOk={this.handleOk}
               onCancel={this.handleCancel}
               style={{ top: "20" }}
@@ -352,7 +403,7 @@ class DirectorPendingPage extends Component {
                   key="reject"
                   type="danger"
                   loading={loadingR}
-                  onClick={this.handleReject}
+                  onClick={this.showReject}
                 >
                   Reject
                 </Button>
@@ -363,20 +414,20 @@ class DirectorPendingPage extends Component {
                 Name : {this.state.user && this.state.user.name} <br />
                 Gender : {this.state.user && this.state.user.gender} <br />
                 Email : {this.state.user && this.state.user.email} <br />
-                Type Of Leave :
-                {this.state.user && this.state.user.type_of_leave} <br />
+                Type Of Leave : {this.state.user &&
+                  this.state.user.type_name}{" "}
+                <br />
                 Reason : {this.state.user && this.state.user.reason} <br />
                 From : {this.state.user && this.state.user.date_from} <br />
                 To : {this.state.user && this.state.user.date_to} <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
-                Total : {this.state.user && this.state.user.total} <br />
-                Leave Remaining :
-                {this.state.user && this.state.user.leave_remaining} <br />
-                Address Leave : {this.state.user && this.state.user.address}
-                <br />
-                Phone Leave : {this.state.user && this.state.user.contact_leave}
-                <br />
-                Status : {this.state.user && this.state.user.status}
+                Total : {this.state.user && this.state.user.total} day <br />
+                Leave Remaining :{" "}
+                {this.state.user && this.state.user.leave_remaining} day <br />
+                Contact Address :{" "}
+                {this.state.user && this.state.user.contact_address} <br />
+                Contact Number :{" "}
+                {this.state.user && this.state.user.contact_number}                
               </div>
             </Modal>
           </Content>
