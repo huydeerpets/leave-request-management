@@ -109,7 +109,7 @@ export function rejectFetchData() {
 
 export function deleteRequest(users, id) {
 	return (dispatch) => {
-		fetch('http://localhost:8080/api/leave/' + id, {
+		fetch('http://localhost:8080/api/employee/leave/' + id, {
 				method: 'DELETE',
 			})
 			.then((resp) => resp.json())

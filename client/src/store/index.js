@@ -15,6 +15,8 @@ import fetchEmployeeReducer from './Reducers/fetchEmployeeReducer'
 import fetchSupervisorReducer from './Reducers/fetchSupervisorReducer'
 import fetchDirectorReducer from './Reducers/fetchDirectorReducer'
 import profileReducer from './Reducers/profileReducer'
+import passwordReducer from './Reducers/passwordReducer'
+
 
 const appStore = combineReducers({
 	loginReducer,
@@ -24,6 +26,7 @@ const appStore = combineReducers({
 	editUserReducer,
 	editRequestReducer,
 	profileReducer,
+	passwordReducer,
 
 	fetchEmployeeReducer,
 	fetchSupervisorReducer,

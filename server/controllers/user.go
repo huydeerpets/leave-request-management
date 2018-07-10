@@ -9,6 +9,7 @@ import (
 
 	logic "server/models/logic/user"
 	structAPI "server/structs/api"
+	structLogic "server/structs/logic"
 
 	"github.com/astaxie/beego"
 )
@@ -125,5 +126,45 @@ func (c *UserController) GetRequestReject() {
 	err := c.Ctx.Output.JSON(resp, false, false)
 	if err != nil {
 		helpers.CheckErr("failed giving output @GetRequestReject", err)
+	}
+}
+
+// UpdateNewPassword ...
+func (c *UserController) UpdateNewPassword() {
+	var (
+		resp   structAPI.RespData
+		newPwd structLogic.NewPassword
+	)
+
+	body := c.Ctx.Input.RequestBody
+	fmt.Println("NEW-PASSWORD=======>", string(body))
+
+	errMarshal := json.Unmarshal(body, &newPwd)
+	if errMarshal != nil {
+		helpers.CheckErr("unmarshall req body failed @UpdateNewPassword", errMarshal)
+		resp.Error = errors.New("type request malform").Error()
+		c.Ctx.Output.SetStatus(400)
+		c.Ctx.Output.JSON(resp, false, false)
+		return
+	}
+
+	employeeStr := c.Ctx.Input.Param(":id")
+	employeeNumber, errCon := strconv.ParseInt(employeeStr, 0, 64)
+	if errCon != nil {
+		helpers.CheckErr("convert enum failed @UpdateNewPassword", errCon)
+		resp.Error = errors.New("convert id failed").Error()
+		return
+	}
+
+	errUpPassword := logic.DBPostUser.UpdatePassword(&newPwd, employeeNumber)
+	if errUpPassword != nil {
+		resp.Error = errUpPassword.Error()
+	} else {
+		resp.Body = "update password success"
+	}
+
+	err := c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		helpers.CheckErr("failed giving output @UpdateNewPassword", err)
 	}
 }

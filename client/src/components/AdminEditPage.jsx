@@ -232,8 +232,7 @@ class AdminEditPage extends Component {
                     <Input
                       type="date"
                       id="start_working_date"
-                      name="start_working_date"
-                      placeholder="start_working_date"
+                      name="start_working_date"                      
                       value={this.props.user.start_working_date}
                       onChange={this.handleOnChange}
                     />
@@ -258,7 +257,7 @@ class AdminEditPage extends Component {
                       optionFilterProp="children"
                       onChange={this.handleChangeRole}
                       onSelect={(value, event) =>
-                        this.handleChangeSelectRole(value, event)
+                        this.handleChangeSelect(value, event)
                       }
                       showSearch
                       onFocus={this.handleFocus}
@@ -299,18 +298,6 @@ class AdminEditPage extends Component {
                       <Option value={12345}>Supervisor</Option>
                       <Option value={54321}>Visor</Option>
                     </Select>
-                  </FormItem>
-
-                  
-                  <FormItem {...formItemLayout} label="Password">
-                    <Input
-                      type="text"
-                      id="password"
-                      name="password"
-                      placeholder="password"
-                      value={this.props.user.password}
-                      onChange={this.handleOnChange}
-                    />
                   </FormItem>
 
                   <FormItem>

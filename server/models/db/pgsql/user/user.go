@@ -1,9 +1,11 @@
 package user
 
 import (
+	"encoding/base64"
 	"errors"
 	"server/helpers"
 	"server/helpers/constant"
+	userLogic "server/models/db/pgsql/admin"
 	structAPI "server/structs/api"
 	structDB "server/structs/db"
 	structLogic "server/structs/logic"
@@ -29,8 +31,9 @@ func (u *User) GetJWT(loginData structAPI.ReqLogin) (result structAPI.RespLogin,
 		helpers.CheckErr("error get users @GetJWT", errRaw)
 		return RespLogin, errors.New("Failed get user, email not register")
 	}
+	hashBytes, _ := base64.StdEncoding.DecodeString(user.Password)
 
-	errCompare := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(loginData.Password))
+	errCompare := bcrypt.CompareHashAndPassword(hashBytes, []byte(loginData.Password))
 	if errCompare != nil {
 		helpers.CheckErr("error compare password @GetJWT", errCompare)
 		return RespLogin, errors.New("Wrong Password")
@@ -322,4 +325,53 @@ func (u *User) GetSupervisor(employeeNumber int64) (result structLogic.GetSuperv
 		return result, errors.New("employee number not exist")
 	}
 	return result, err
+}
+
+// UpdatePassword ...
+func (u *User) UpdatePassword(p *structLogic.NewPassword, employeeNumber int64) (err error) {
+	var user structDB.User
+	var admin userLogic.Admin
+
+	o := orm.NewOrm()
+	qb, errQB := orm.NewQueryBuilder("mysql")
+	if errQB != nil {
+		helpers.CheckErr("Query builder failed @UpdatePassword", errQB)
+		return errQB
+	}
+
+	resGet, _ := admin.GetUser(employeeNumber)
+	resComparePassword := helpers.ComparePassword(resGet.Password, p.OldPassword)
+
+	if resComparePassword == true {
+		if p.NewPassword == p.ConfirmPassword {
+			qb.Update(user.TableName()).Set("password = ?").
+				Where(`employee_number = ?`)
+			sql := qb.String()
+
+			resPassword, errHash := helpers.HashPassword(p.NewPassword)
+			if errHash != nil {
+				helpers.CheckErr("err hash password @UpdatePassword", errHash)
+			}
+
+			res, errRaw := o.Raw(sql, resPassword, employeeNumber).Exec()
+
+			if errRaw != nil {
+				helpers.CheckErr("err update password @UpdatePassword", errRaw)
+				return errors.New("update password failed")
+			}
+
+			_, errRow := res.RowsAffected()
+			if errRow != nil {
+				helpers.CheckErr("error get rows affected", errRow)
+				return errRow
+			}
+		} else {
+			return errors.New("wrong confirm password")
+		}
+
+	} else {
+		return errors.New("wrong old password")
+	}
+
+	return err
 }

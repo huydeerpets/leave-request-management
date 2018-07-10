@@ -39,7 +39,7 @@ export function fetchedEdit(leave) {
 export function saveEditLeave(savedLeave, pusher) {
 	console.log("user==========>", JSON.stringify(savedLeave))
 	return (dispatch) => {
-		fetch(`http://localhost:8080/api/leave/${savedLeave.id}`, {
+		fetch(`http://localhost:8080/api/employee/leave/${savedLeave.id}`, {
 				method: 'PUT',
 				body: JSON.stringify(savedLeave)
 			})
@@ -48,9 +48,9 @@ export function saveEditLeave(savedLeave, pusher) {
 				body,
 				error
 			}) => {
-				console.log("err==========>", error)
-				if (body === "update leave success") {
-					pusher('/request-pending')
+				console.log("err==========>", body)
+				if (body === "Update leave success") {
+					pusher('/request-pending')					
 				}
 			}).catch(err => {
 				console.log(err)

@@ -1,7 +1,9 @@
 package admin
 
 import (
+	"encoding/base64"
 	"errors"
+	"fmt"
 	"server/helpers"
 	"server/helpers/constant"
 	structDB "server/structs/db"
@@ -27,13 +29,13 @@ func (u *Admin) AddUser(user structDB.User) error {
 	if count > 0 {
 		return errors.New("Email already register")
 	} else {
-		hash, errHash := bcrypt.GenerateFromPassword([]byte(user.Password), 5)
+		hashedBytes, errHash := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 		if errHash != nil {
 			helpers.CheckErr("error hash password @AddUser", errHash)
 		}
 
 		user.Email = strings.ToLower(user.Email)
-		user.Password = string(hash)
+		user.Password = base64.StdEncoding.EncodeToString(hashedBytes)
 
 		_, err := o.Insert(&user)
 		if err != nil {
@@ -99,6 +101,9 @@ func (u *Admin) GetUser(employeeNumber int64) (result structDB.User, err error) 
 		Where(`employee_number = ? `)
 	qb.Limit(1)
 	sql := qb.String()
+
+	res, _ := helpers.HashPassword(result.Password)
+	fmt.Println("hash================>", res)
 
 	errRaw := o.Raw(sql, employeeNumber).QueryRow(&result)
 	if errRaw != nil {

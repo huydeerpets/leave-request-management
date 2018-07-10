@@ -1,6 +1,6 @@
 let profileState = {
 	loading: true,
-	user: [],
+	user: []
 }
 
 export default function profileReducer(state = profileState, action) {

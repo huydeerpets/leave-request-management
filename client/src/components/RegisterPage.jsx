@@ -38,6 +38,7 @@ class RegisterPage extends Component {
     });
     this.props.SumbitSignUp(this.props.signupForm);
   };
+
   handleOnChange = e => {
     let newUser = {
       ...this.props.signupForm,
@@ -48,8 +49,9 @@ class RegisterPage extends Component {
     this.props.form.setFieldsValue({
       [e.target.name]: e.target.value
     });
+    
 
-    console.log(newUser);
+    console.log("-----------------------------",newUser);
   };
 
   handleOnChangeNumber = e => {
@@ -378,7 +380,7 @@ class RegisterPage extends Component {
                         name="password"
                         placeholder="password"
                         value={this.makeid()}
-                        value={this.props.signupForm.password}
+                        // value={this.props.signupForm.password}
                         onChange={this.handleOnChange}
                       />                                      
                   </FormItem>

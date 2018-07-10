@@ -1,10 +1,13 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { formOnChange, SumbitLeaveSupervisor } from "../store/Actions/leaveRequestAction";
+import {
+  formOnChange,
+  SumbitLeaveSupervisor
+} from "../store/Actions/leaveRequestAction";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
-import moment from "moment";
+import moment from "moment-business-days";
 import {
   Layout,
   Form,
@@ -19,18 +22,22 @@ const FormItem = Form.Item;
 const { TextArea } = Input;
 const Option = Select.Option;
 
-class LeaveRequestPage extends Component {
+class LeaveRequestSupervisorPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       from: null,
       to: null,
-      endOpen: false
+      endOpen: false,
+      contactID: "+62"
     };
 
     this.handleOnChange = this.handleOnChange.bind(this);
     this.handleChangeTypeOfLeave = this.handleChangeTypeOfLeave.bind(this);
     this.disabledDateBack = this.disabledDateBack.bind(this);
+    this.handleOnChangeNumber = this.handleOnChangeNumber.bind(this);
+    this.handleOnChangeID = this.handleOnChangeID.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
   }
 
   componentWillMount() {
@@ -54,9 +61,8 @@ class LeaveRequestPage extends Component {
       ...this.props.leaveForm,
       [e.target.name]: e.target.value
     };
-    this.props.formOnChange(newLeave);    
+    this.props.formOnChange(newLeave);
   };
-  
 
   handleChangeTypeOfLeave(value) {
     let typeLeave = {
@@ -107,7 +113,7 @@ class LeaveRequestPage extends Component {
       const date = new Date(value._d),
         mnth = ("0" + (date.getMonth() + 1)).slice(-2),
         day = ("0" + date.getDate()).slice(-2);
-      let newDate = [date.getFullYear(), mnth, day].join("-");
+      let newDate = [day, mnth, date.getFullYear()].join("-");
       let dateFrom = {
         ...this.props.leaveForm,
         date_from: newDate
@@ -124,7 +130,7 @@ class LeaveRequestPage extends Component {
       const date = new Date(value._d),
         mnth = ("0" + (date.getMonth() + 1)).slice(-2),
         day = ("0" + date.getDate()).slice(-2);
-      let newDate = [date.getFullYear(), mnth, day].join("-");
+      let newDate = [day, mnth, date.getFullYear()].join("-");
       let dateTo = {
         ...this.props.leaveForm,
         date_to: newDate
@@ -141,7 +147,7 @@ class LeaveRequestPage extends Component {
       const date = new Date(value._d),
         mnth = ("0" + (date.getMonth() + 1)).slice(-2),
         day = ("0" + date.getDate()).slice(-2);
-      let newDate = [date.getFullYear(), mnth, day].join("-");
+      let newDate = [day, mnth, date.getFullYear()].join("-");
       let backOn = {
         ...this.props.leaveForm,
         back_on: newDate
@@ -152,11 +158,18 @@ class LeaveRequestPage extends Component {
   };
 
   disabledDate(current) {
+    let workDay = moment()
+      .startOf("month")
+      .monthBusinessWeeks();
+
+    console.log("working day=======>", workDay);
+
+    // console.log("curent=====>", current);
     return current && current < moment().endOf("day");
   }
 
   disabledDateBack(current) {
-    return this.state.to && this.state.to > current;    
+    return this.state.to && this.state.to > current;
   }
 
   handleStartOpenChange = open => {
@@ -201,16 +214,15 @@ class LeaveRequestPage extends Component {
   handleOnChangeID = value => {
     this.onChange("contactID", value);
   };
-  
+
   handleOnChangeNumber = e => {
     let newLeave = {
       ...this.props.leaveForm,
-      contact_number: `${this.state.contactID}` + e.target.value
+      contact_number: `${this.state.contactID}${e.target.value}`
     };
     this.props.formOnChange(newLeave);
     console.log(newLeave);
   };
-
 
   handleBlur() {
     console.log("blur");
@@ -227,12 +239,15 @@ class LeaveRequestPage extends Component {
     const arr = [];
     const elements = [];
     const dateFormat = "DD-MM-YYYY";
+    const now = moment()
+      .startOf("month")
+      .monthBusinessDays();
 
     dates.map((fulldate, i) => {
       const date = new Date(fulldate),
         mnth = ("0" + (date.getMonth() + 1)).slice(-2),
         day = ("0" + date.getDate()).slice(-2);
-      arr.push([date.getFullYear(), mnth, day].join("-"));
+      arr.push([day, mnth, date.getFullYear()].join("-"));
       return arr;
     });
 
@@ -426,8 +441,9 @@ class LeaveRequestPage extends Component {
                   type="text"
                   id="contact_number"
                   name="contact_number"
-                  placeholder="contact number"
-                  addonBefore={prefixSelector}                  
+                  placeholder="Phone number"
+                  addonBefore={prefixSelector}
+                  // value={this.props.leaveForm.contact_number}
                   onChange={this.handleOnChangeNumber}
                   style={formStyle}
                 />
@@ -458,7 +474,7 @@ const mapStateToProps = state => ({
   leaveForm: state.leaveRequestReducer
 });
 
-const WrappedLeaveForm = Form.create()(LeaveRequestPage);
+const WrappedLeaveForm = Form.create()(LeaveRequestSupervisorPage);
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(

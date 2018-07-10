@@ -1,5 +1,5 @@
 CREATE TYPE date_range AS(
-  "date" text,
+  "dates" text,
   "status_date" boolean
 );
 
@@ -21,3 +21,4 @@ CREATE TABLE IF NOT EXISTS leave_request
   "reject_reason" text,
   "errand_reason" text,
   "created_at" timestamp with time zone not null default CURRENT_TIMESTAMP
+)

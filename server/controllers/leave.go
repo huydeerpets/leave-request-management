@@ -177,7 +177,7 @@ func (c *LeaveController) UpdateRequest() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, errCon := strconv.ParseInt(idStr, 0, 64)
 	if errCon != nil {
-		helpers.CheckErr("convert id failed @GetRequestAccept", errCon)
+		helpers.CheckErr("convert id failed @UpdateRequest", errCon)
 		resp.Error = errors.New("convert id failed").Error()
 		return
 	}

@@ -17,6 +17,12 @@ func init() {
 			"post:Login",
 		),
 
+		// upadate new password
+		beego.NSRouter("/user/update/:id:int ",
+			&controllers.UserController{},
+			"put:UpdateNewPassword",
+		),
+
 		// create leave request for employee, update leave request, delete leave request
 		beego.NSRouter("/employee/leave/:id:int ",
 			&controllers.LeaveController{},

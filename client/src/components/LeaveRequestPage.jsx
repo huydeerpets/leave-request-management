@@ -69,7 +69,6 @@ class LeaveRequestPage extends Component {
     this.props.formOnChange(typeLeave);
   }
 
-
   handleChangeSelect(value) {
     let hiddenDiv = document.getElementById("showMe");
     if (value === 22) {
@@ -111,11 +110,19 @@ class LeaveRequestPage extends Component {
       const date = new Date(value._d),
         mnth = ("0" + (date.getMonth() + 1)).slice(-2),
         day = ("0" + date.getDate()).slice(-2);
-      let newDate = [date.getFullYear(), mnth, day].join("-");
+      let newDate = [day, mnth, date.getFullYear()].join("-");
       let dateFrom = {
         ...this.props.leaveForm,
         date_from: newDate
       };
+      
+
+      var dateString = "07-15-2016";
+      var dateObj = new Date(dateString);
+      var momentObj = moment(dateObj);
+      var momentString = momentObj.format("YYYY-MM-DD");
+
+      console.log("valuemoment date============>", momentObj);
 
       this.props.formOnChange(dateFrom);
     }
@@ -128,7 +135,7 @@ class LeaveRequestPage extends Component {
       const date = new Date(value._d),
         mnth = ("0" + (date.getMonth() + 1)).slice(-2),
         day = ("0" + date.getDate()).slice(-2);
-      let newDate = [date.getFullYear(), mnth, day].join("-");
+      let newDate = [day, mnth, date.getFullYear()].join("-");
       let dateTo = {
         ...this.props.leaveForm,
         date_to: newDate
@@ -145,7 +152,7 @@ class LeaveRequestPage extends Component {
       const date = new Date(value._d),
         mnth = ("0" + (date.getMonth() + 1)).slice(-2),
         day = ("0" + date.getDate()).slice(-2);
-      let newDate = [date.getFullYear(), mnth, day].join("-");
+      let newDate = [day, mnth, date.getFullYear()].join("-");
       let backOn = {
         ...this.props.leaveForm,
         back_on: newDate
@@ -156,8 +163,14 @@ class LeaveRequestPage extends Component {
   };
 
   disabledDate(current) {
-    return current && current < moment().endOf("day")
-    console.log("curent=====>", current)
+    let workDay = moment()
+      .startOf("month")
+      .monthBusinessWeeks();
+
+    // console.log("working day=======>", workDay);
+
+    // console.log("curent=====>", current);
+    return current && current < moment().endOf("day");
   }
 
   disabledDateBack(current) {
@@ -206,28 +219,23 @@ class LeaveRequestPage extends Component {
   handleOnChangeID = value => {
     this.onChange("contactID", value);
   };
-  
+
   handleOnChangeNumber = e => {
     let newLeave = {
       ...this.props.leaveForm,
-      contact_number: `${this.state.contactID}` + e.target.value
+      contact_number: `${this.state.contactID}${e.target.value}`
     };
     this.props.formOnChange(newLeave);
     console.log(newLeave);
   };
 
-
   handleBlur() {
     console.log("blur");
-
-    let test = moment().startOf('month').monthBusinessDays()    
-    console.log("bussiess day=======>",test);
   }
 
   handleFocus() {
     console.log("focus");
   }
-  
 
   render() {
     const { getFieldDecorator } = this.props.form;
@@ -235,14 +243,16 @@ class LeaveRequestPage extends Component {
     const dates = this.getDates(new Date(from), new Date(to));
     const arr = [];
     const elements = [];
-    const dateFormat = "DD-MM-YYYY";    
-    const now = moment().startOf('month').monthBusinessDays()    ;
+    const dateFormat = "DD-MM-YYYY";
+    const now = moment()
+      .startOf("month")
+      .monthBusinessDays();
 
     dates.map((fulldate, i) => {
       const date = new Date(fulldate),
         mnth = ("0" + (date.getMonth() + 1)).slice(-2),
         day = ("0" + date.getDate()).slice(-2);
-      arr.push([date.getFullYear(), mnth, day].join("-"));
+      arr.push([day, mnth, date.getFullYear()].join("-"));
       return arr;
     });
 
@@ -366,7 +376,7 @@ class LeaveRequestPage extends Component {
                 <DatePicker
                   id="date_from"
                   name="date_from"
-                  disabledDate={this.disabledDate}                        
+                  disabledDate={this.disabledDate}
                   format={dateFormat}
                   value={from}
                   placeholder="Start"

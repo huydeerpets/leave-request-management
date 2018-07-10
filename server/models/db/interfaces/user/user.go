@@ -43,4 +43,6 @@ type IBaseUser interface {
 		[]structLogic.RequestReject,
 		error,
 	)
+	// UpdatePassword
+	UpdatePassword(p *structLogic.NewPassword, employeeNumber int64) (err error)
 }

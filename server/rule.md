@@ -81,15 +81,26 @@ response:
 
 {
 		"employee_number": 12345,
-    "name": "David Zendrato",
-    "gender": "Male",
-    "position": "Senior",
-    "start_working_date": "2017-05-02",
-    "mobile_phone": "0855",
-    "email": "david.pr@tnis.com",
-    "password": "123",
-    "role": "supervisor",
-    "supervisor_id": 13311
+    "name": "Mila Amelia Adiarani",
+    "gender": "Female",
+    "position": "HR & Assistant",
+    "start_working_date": "03-07-2017",
+    "mobile_phone": "081322058231",
+    "email": "mila.am@tnis.com",
+    "password": "12345",
+    "role": "supervisor"    
+}
+
+{
+		"employee_number": 54321,
+    "name": "Mila Amelia Adiarani",
+    "gender": "Female",
+    "position": "Director",
+    "start_working_date": "02-05-2017",
+    "mobile_phone": "081322058231",
+    "email": "mila.am@tnis.com",
+    "password": "12345",
+    "role": "director"    
 }
 
 {

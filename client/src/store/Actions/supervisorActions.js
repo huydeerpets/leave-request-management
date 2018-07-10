@@ -34,9 +34,6 @@ function rejectRequest(payload) {
 	}
 }
 
-
-
-
 export function pendingFetchData() {
 	return (dispatch) => {
 		const employeeNumber = localStorage.getItem('id')

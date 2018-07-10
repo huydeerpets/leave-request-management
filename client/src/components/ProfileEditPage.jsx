@@ -26,7 +26,7 @@ class ProfileEditPage extends Component {
 
   editPassword = (user, employeeNumber) => {
     this.props.history.push({
-      pathname: "/editpassword/" + employeeNumber,
+      pathname: "/profile/" + employeeNumber,
       state: { user: user }
     });
   };
@@ -171,8 +171,8 @@ class ProfileEditPage extends Component {
                       onFocus={this.handleFocus}
                       onBlur={this.handleBlur}
                     >
-                      <Option value={54321}>Visor</Option>
-                      <Option value={12345}>Supervisor</Option>
+                      <Option value={12345}>David Zendrato</Option>
+                      <Option value={54321}>Jannes Santoso</Option>
                     </Select>
                   </FormItem>
 
