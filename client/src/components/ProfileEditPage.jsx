@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { Layout, Button, Form, Input, Select } from "antd";
 import { profileFetchData } from "../store/Actions/profileAction";
+import { SupervisorAdd } from "../store/Actions/AddSupervisorAction";
+
+import moment from "moment-business-days";
+import { Layout, Button, Form, Input, Select, DatePicker } from "antd";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
 const { Content } = Layout;
@@ -13,6 +16,7 @@ class ProfileEditPage extends Component {
   constructor(props) {
     super(props);
   }
+
   componentDidMount() {
     if (
       localStorage.getItem("role") !== "employee" &&
@@ -21,7 +25,19 @@ class ProfileEditPage extends Component {
     ) {
       this.props.history.push("/");
     }
+
     this.props.profileFetchData();
+    this.props.SupervisorAdd();
+
+    const role = localStorage.getItem("role");
+    let hiddenDiv = document.getElementById("supervisor");
+    if (role === "supervisor") {
+      hiddenDiv.style.display = "none";
+    } else if (role === "director") {
+      hiddenDiv.style.display = "none";
+    } else {
+      hiddenDiv.style.display = "block";
+    }
   }
 
   editPassword = (user, employeeNumber) => {
@@ -51,11 +67,22 @@ class ProfileEditPage extends Component {
       }
     };
 
+    const formStyle = {
+      width: "100%"
+    };
+
+    const dateFormat = "DD-MM-YYYY";
+    let supervisorName;
+    this.props.supervisor.map(d => {
+      if (d.supervisor_id === this.props.user.supervisor_id) {
+        supervisorName = d.name;
+      }
+    });
+
     return (
       <div>
         <Layout>
           <HeaderNav />
-
           <Content
             className="container"
             style={{
@@ -76,7 +103,7 @@ class ProfileEditPage extends Component {
             >
               <h1> My Profile </h1>
               <div>
-                <Form onSubmit={this.handleSubmit} className="login-form">
+                <Form>
                   <FormItem {...formItemLayout} label="Name">
                     <Input
                       type="text"
@@ -124,11 +151,16 @@ class ProfileEditPage extends Component {
                   </FormItem>
 
                   <FormItem {...formItemLayout} label="Start Working Date">
-                    <Input
-                      type="date"
+                    <DatePicker
                       id="start_working_date"
                       name="start_working_date"
-                      value={this.props.user.start_working_date}
+                      format={dateFormat}
+                      value={moment(
+                        this.props.user.start_working_date,
+                        dateFormat
+                      )}
+                      style={formStyle}
+                      disabled
                     />
                   </FormItem>
 
@@ -162,19 +194,24 @@ class ProfileEditPage extends Component {
                     </Select>
                   </FormItem>
 
-                  <FormItem {...formItemLayout} label="Supervisor">
-                    <Select
-                      id="supervisor_id"
-                      name="supervisor_id"
-                      optionFilterProp="children"
-                      value={this.props.user.supervisor_id}
-                      onFocus={this.handleFocus}
-                      onBlur={this.handleBlur}
-                    >
-                      <Option value={12345}>David Zendrato</Option>
-                      <Option value={54321}>Jannes Santoso</Option>
-                    </Select>
-                  </FormItem>
+                  <div id="supervisor">
+                    <FormItem {...formItemLayout} label="Supervisor">
+                      <Select
+                        id="supervisor_id"
+                        name="supervisor_id"
+                        optionFilterProp="children"
+                        onFocus={this.handleFocus}
+                        onBlur={this.handleBlur}
+                        value={supervisorName}
+                      >
+                        {this.props.supervisor.map(d => (
+                          <Option key={d.supervisor_id} disabled>
+                            {d.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    </FormItem>
+                  </div>
 
                   <FormItem>
                     <Button
@@ -204,7 +241,8 @@ class ProfileEditPage extends Component {
 
 const mapStateToProps = state => ({
   loading: state.profileReducer.loading,
-  user: state.profileReducer.user
+  user: state.profileReducer.user,
+  supervisor: state.AddSupervisorReducer.supervisor
 });
 
 const WrappedPofileForm = Form.create()(ProfileEditPage);
@@ -212,10 +250,12 @@ const WrappedPofileForm = Form.create()(ProfileEditPage);
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      profileFetchData
+      profileFetchData,
+      SupervisorAdd
     },
     dispatch
   );
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps

@@ -15,31 +15,37 @@ class Adminpage extends Component {
       {
         title: "Employee Number",
         dataIndex: "employee_number",
-        key: "employee_number"
+        key: "employee_number",
+        width: "12%"
       },
       {
         title: "Name",
         dataIndex: "name",
-        key: "name"
+        key: "name",
+        width: "20%",
       },
       {
         title: "Email",
         dataIndex: "email",
-        key: "email"
+        key: "email",
+        width: "20%",
       },
       {
         title: "Position",
         dataIndex: "position",
-        key: "position"
+        key: "position",
+        width: "15%",
       },
       {
         title: "Role",
         dataIndex: "role",
-        key: "role"
+        key: "role",
+        width: "12%",
       },
       {
         title: "Action",
         key: "action",
+        width: "25%",
         render: (text, record) => (
           <span>
             <Button

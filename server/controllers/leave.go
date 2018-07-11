@@ -182,6 +182,17 @@ func (c *LeaveController) UpdateRequest() {
 		return
 	}
 
+	leave = structDB.LeaveRequest{
+		TypeLeaveID:    leave.TypeLeaveID,
+		Reason:         leave.Reason,
+		DateFrom:       leave.DateFrom,
+		DateTo:         leave.DateTo,
+		Total:          helpers.GetTotalDay(leave.DateFrom, leave.DateTo),
+		BackOn:         leave.BackOn,
+		ContactAddress: leave.ContactAddress,
+		ContactNumber:  leave.ContactNumber,
+	}
+
 	errUpdate := dbLeave.UpdateRequest(&leave, id)
 	if errUpdate != nil {
 		resp.Error = errUpdate.Error()

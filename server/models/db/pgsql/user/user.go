@@ -375,3 +375,55 @@ func (u *User) UpdatePassword(p *structLogic.NewPassword, employeeNumber int64) 
 
 	return err
 }
+
+// GetTypeLeave ...
+func (u *User) GetTypeLeave() (result []structDB.TypeLeave, err error) {
+	var dbType structDB.TypeLeave
+
+	o := orm.NewOrm()
+	qb, errQB := orm.NewQueryBuilder("mysql")
+	if errQB != nil {
+		helpers.CheckErr("Query builder failed @GetTypeLeave", errQB)
+		return result, errQB
+	}
+
+	qb.Select(
+		dbType.TableName()+".id",
+		dbType.TableName()+".type_name").
+		From(dbType.TableName())
+	sql := qb.String()
+
+	_, errRaw := o.Raw(sql).QueryRows(&result)
+	if errRaw != nil {
+		helpers.CheckErr("Failed Query Select @GetTypeLeave", errRaw)
+		return result, errors.New("error get")
+	}
+	return result, err
+}
+
+// GetSupervisors ...
+func (u *User) GetSupervisors() (result []structLogic.GetSupervisors, err error) {
+	var dbSupervisor structDB.User
+
+	o := orm.NewOrm()
+	qb, errQB := orm.NewQueryBuilder("mysql")
+	if errQB != nil {
+		helpers.CheckErr("Query builder failed @GetSupervisors", errQB)
+		return result, errQB
+	}
+
+	qb.Select(
+		dbSupervisor.TableName()+".employee_number",
+		dbSupervisor.TableName()+".name").
+		From(dbSupervisor.TableName()).
+		Where(`role = ? `)
+	sql := qb.String()
+	role := "supervisor"
+
+	_, errRaw := o.Raw(sql, role).QueryRows(&result)
+	if errRaw != nil {
+		helpers.CheckErr("Failed Query Select @GetSupervisors", errRaw)
+		return result, errors.New("error get")
+	}
+	return result, err
+}

@@ -6,9 +6,9 @@ import {
   updateStatusAccept,
   updateStatusReject
 } from "../store/Actions/directorActions";
+import { Layout, Table, Modal, Button, Input, Icon } from "antd";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
-import { Layout, Table, Modal, Button, Input, Icon } from "antd";
 const { Content } = Layout;
 let data;
 
@@ -123,12 +123,6 @@ class DirectorPendingPage extends Component {
     });
   };
 
-  showReject = () => {
-    this.setState({
-      visibleReject: true
-    });
-  };
-
   onInputChangeID = e => {
     this.setState({
       searchID: e.target.value
@@ -179,6 +173,16 @@ class DirectorPendingPage extends Component {
       );
       // window.location.reload();
     }, 1000);
+  };
+
+  showReject = () => {
+    this.setState({
+      visibleReject: true
+    });
+  };
+
+  handleCancelReject = () => {
+    this.setState({ visibleReject: false });
   };
 
   handleCancel = () => {
@@ -385,7 +389,7 @@ class DirectorPendingPage extends Component {
 
             <Modal
               visible={visible}
-              title="Det12345il Leave Request Pending"
+              title="Detail Leave Request Pending"
               onOk={this.handleOk}
               onCancel={this.handleCancel}
               style={{ top: "20" }}
@@ -427,7 +431,7 @@ class DirectorPendingPage extends Component {
                 Contact Address :{" "}
                 {this.state.user && this.state.user.contact_address} <br />
                 Contact Number :{" "}
-                {this.state.user && this.state.user.contact_number}                
+                {this.state.user && this.state.user.contact_number}
               </div>
             </Modal>
           </Content>

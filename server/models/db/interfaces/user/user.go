@@ -2,6 +2,7 @@ package user
 
 import (
 	structAPI "server/structs/api"
+	structDB "server/structs/db"
 	structLogic "server/structs/logic"
 )
 
@@ -45,4 +46,8 @@ type IBaseUser interface {
 	)
 	// UpdatePassword
 	UpdatePassword(p *structLogic.NewPassword, employeeNumber int64) (err error)
+	// GetTypeLeave
+	GetTypeLeave() (result []structDB.TypeLeave, err error)
+	// GetSupervisors
+	GetSupervisors() (result []structLogic.GetSupervisors, err error)
 }

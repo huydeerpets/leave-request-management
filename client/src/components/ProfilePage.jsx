@@ -1,110 +1,69 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Table, Input, Button, Icon } from 'antd';
+import { Select, Spin } from 'antd';
+import debounce from 'lodash/debounce';
 
-const data = [{
-  key: '1',
-  name: 'John Brown',
-  age: 32,
-  address: 'New York No. 1 Lake Park',
-}, {
-  key: '2',
-  name: 'Joe Black',
-  age: 42,
-  address: 'London No. 1 Lake Park',
-}, {
-  key: '3',
-  name: 'Jim Green',
-  age: 32,
-  address: 'Sidney No. 1 Lake Park',
-}, {
-  key: '4',
-  name: 'Jim Red',
-  age: 32,
-  address: 'London No. 2 Lake Park',
-}];
+const Option = Select.Option;
 
-export class App extends React.Component {
-  state = {
-    filterDropdownVisible: false,
-    data,
-    searchText: '',
-    filtered: false,
-  };
-
-  onInputChange = (e) => {
-    this.setState({ searchText: e.target.value });
+class UserRemoteSelect extends React.Component {
+  constructor(props) {
+    super(props);
+    this.lastFetchId = 0;
+    this.fetchUser = debounce(this.fetchUser, 800);
   }
 
-  onSearch = () => {
-    const { searchText } = this.state;
-    const reg = new RegExp(searchText, 'gi');
-    this.setState({
-      filterDropdownVisible: false,
-      filtered: !!searchText,
-      data: data.map((record) => {
-        const match = record.name.match(reg);
-        if (!match) {
-          return null;
+  state = {
+    data: [],
+    value: [],
+    fetching: false,
+  }
+
+  fetchUser = (value) => {
+    console.log('fetching user', value);
+    this.lastFetchId += 1;
+    const fetchId = this.lastFetchId;
+    this.setState({ data: [], fetching: true });
+    fetch('https://randomuser.me/api/?results=5')
+      .then(response => response.json())
+      .then((body) => {
+        if (fetchId !== this.lastFetchId) { // for fetch callback order
+          return;
         }
-        return {
-          ...record,
-          name: (
-            <span>
-              {record.name.split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i')).map((text, i) => (
-                text.toLowerCase() === searchText.toLowerCase()
-                  ? <span key={i} className="highlight">{text}</span> : text // eslint-disable-line
-              ))}
-            </span>
-          ),
-        };
-      }).filter(record => !!record),
+        const data = body.results.map(user => ({
+          text: `${user.name.first} ${user.name.last}`,
+          value: user.login.username,
+        }));
+        this.setState({ data, fetching: false });
+      });
+  }
+
+  handleChange = (value) => {
+    this.setState({
+      value,
+      data: [],
+      fetching: false,
     });
   }
 
   render() {
-    const columns = [{
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      filterDropdown: (
-        <div className="custom-filter-dropdown">
-          <Input
-            ref={ele => this.searchInput = ele}
-            placeholder="Search name"
-            value={this.state.searchText}
-            onChange={this.onInputChange}
-            onPressEnter={this.onSearch}
-          />
-          <Button type="primary" onClick={this.onSearch}>Search</Button>
-        </div>
-      ),
-      filterIcon: <Icon type="smile-o" style={{ color: this.state.filtered ? '#108ee9' : '#aaa' }} />,
-      filterDropdownVisible: this.state.filterDropdownVisible,
-      onFilterDropdownVisibleChange: (visible) => {
-        this.setState({
-          filterDropdownVisible: visible,
-        }, () => this.searchInput && this.searchInput.focus());
-      },
-    }, {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
-    }, {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
-      filters: [{
-        text: 'London',
-        value: 'London',
-      }, {
-        text: 'New York',
-        value: 'New York',
-      }],
-      onFilter: (value, record) => record.address.indexOf(value) === 0,
-    }];
-    return <Table columns={columns} dataSource={this.state.data} />;
+    const { fetching, data, value } = this.state;
+    return (
+      <Select
+        mode="multiple"
+        labelInValue
+        value={value}
+        placeholder="Select users"
+        notFoundContent={fetching ? <Spin size="small" /> : null}
+        filterOption={false}
+        onSearch={this.fetchUser}
+        onChange={this.handleChange}
+        style={{ width: '100%' }}
+      >
+        {data.map(d => <Option key={d.value}>{d.text}</Option>)}
+      </Select>
+    );
   }
 }
 
-export default connect()(App);
+
+export default connect()(UserRemoteSelect);

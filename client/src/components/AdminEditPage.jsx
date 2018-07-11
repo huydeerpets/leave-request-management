@@ -6,8 +6,9 @@ import {
   handleEdit,
   saveEditUser
 } from "../store/Actions/editUserAction";
+import { SupervisorAdd } from "../store/Actions/AddSupervisorAction";
 import { Layout, Button, Form, Input, Select, DatePicker } from "antd";
-import moment from "moment";
+import moment from "moment-business-days";
 import HeaderNav from "./menu/HeaderAdmin";
 import Footer from "./menu/Footer";
 const { Content } = Layout;
@@ -18,7 +19,8 @@ class AdminEditPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      date: ""
+      date: "",
+      role: null
     };
 
     this.saveEdit = this.saveEdit.bind(this);
@@ -27,6 +29,7 @@ class AdminEditPage extends Component {
     this.handleChangeRole = this.handleChangeRole.bind(this);
     this.handleChangeSupervisor = this.handleChangeSupervisor.bind(this);
   }
+
   componentDidMount() {
     if (localStorage.getItem("role") !== "admin") {
       this.props.history.push("/");
@@ -45,6 +48,21 @@ class AdminEditPage extends Component {
         el => el.employee_number === id
       );
       this.props.fetchedEdit(user[0]);
+      this.props.SupervisorAdd();
+    }
+  }
+  componentWillMount() {
+    let id = Number(this.props.history.location.pathname.split("/").pop());
+    let user = this.props.history.location.state.users.filter(
+      el => el.employee_number === id
+    );
+    this.props.fetchedEdit(user[0]);
+    this.props.SupervisorAdd();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.user !== this.props.user) {
+      this.setState({ role: nextProps.user.role });
     }
   }
 
@@ -92,18 +110,23 @@ class AdminEditPage extends Component {
     this.props.handleEdit(supervisor);
   }
 
-  onChange(date, dateString) {
-    let workDate = {
-      ...this.props.user,
-      start_working_date: dateString
-    };
+  onBackOn = value => {
+    if (value !== null) {
+      const date = new Date(value._d),
+        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+        day = ("0" + date.getDate()).slice(-2);
+      let newDate = [day, mnth, date.getFullYear()].join("-");
+      let backOn = {
+        ...this.props.user,
+        start_working_date: newDate
+      };
 
-    this.props.handleEdit(workDate);
-    console.log(date, dateString);
-  }
+      this.props.handleEdit(backOn);
+    }
+  };
 
   handleChangeSelectRole(value, event) {
-    let hiddenDiv = document.getElementById("roles");
+    let hiddenDiv = document.getElementById("supervisor");
     if (value === "employee") {
       hiddenDiv.style.display = "block";
     } else if (value === "supervisor") {
@@ -111,6 +134,10 @@ class AdminEditPage extends Component {
     } else {
       hiddenDiv.style.display = "none";
     }
+    this.setState({
+      role: value
+    });
+
     console.log("selected=======>", value);
   }
 
@@ -137,6 +164,31 @@ class AdminEditPage extends Component {
         sm: { span: 16 }
       }
     };
+
+    const formStyle = {
+      width: "100%"
+    };
+
+    const dateFormat = "DD-MM-YYYY";
+
+    const role = this.state.role;
+
+    let supervisorName;
+
+    let hiddenDiv = document.getElementById("supervisor");
+    if (role === "supervisor") {
+      hiddenDiv.style.display = "none";
+    } else if (role === "director") {
+      hiddenDiv.style.display = "none";
+    } else if (role === "employee") {
+      hiddenDiv.style.display = "block";
+    }
+
+    this.props.supervisor.map(d => {
+      if (d.supervisor_id === this.props.user.supervisor_id) {
+        supervisorName = d.name;
+      }
+    });
 
     return (
       <div>
@@ -222,19 +274,16 @@ class AdminEditPage extends Component {
                   </FormItem>
 
                   <FormItem {...formItemLayout} label="Start Working Date">
-                    {/* <DatePicker
-                      onChange={this.onChange}
-                      defaultValue={moment(
-                        String(this.props.user.start_working_date),
-                        "YYYY-MM-DD"
-                      )}
-                    /> */}
-                    <Input
-                      type="date"
+                    <DatePicker
                       id="start_working_date"
-                      name="start_working_date"                      
-                      value={this.props.user.start_working_date}
-                      onChange={this.handleOnChange}
+                      name="start_working_date"
+                      format={dateFormat}
+                      value={moment(
+                        this.props.user.start_working_date,
+                        dateFormat
+                      )}
+                      onChange={this.onBackOn}
+                      style={formStyle}
                     />
                   </FormItem>
 
@@ -271,34 +320,37 @@ class AdminEditPage extends Component {
                     >
                       <Option value="employee">Employee</Option>
                       <Option value="supervisor">Supervisor</Option>
-                      <Option value="dirctor">Director</Option>
+                      <Option value="director">Director</Option>
                     </Select>
                   </FormItem>
 
-                  <FormItem {...formItemLayout} label="Supervisor">
-                    <Select
-                      id="supervisor_id"
-                      name="supervisor_id"
-                      placeholder="Select Supervisor"
-                      optionFilterProp="children"
-                      onChange={this.handleChangeSupervisor}
-                      onSelect={(value, event) =>
-                        this.handleChangeSelect(value, event)
-                      }
-                      showSearch
-                      onFocus={this.handleFocus}
-                      onBlur={this.handleBlur}
-                      filterOption={(input, option) =>
-                        option.props.children
-                          .toLowerCase()
-                          .indexOf(input.toLowerCase()) >= 0
-                      }
-                      value={this.props.user.supervisor_id}
-                    >
-                      <Option value={12345}>Supervisor</Option>
-                      <Option value={54321}>Visor</Option>
-                    </Select>
-                  </FormItem>
+                  <div id="supervisor">
+                    <FormItem {...formItemLayout} label="Supervisor">
+                      <Select
+                        id="supervisor_id"
+                        name="supervisor_id"
+                        placeholder="Select Supervisor"
+                        optionFilterProp="children"
+                        onChange={this.handleChangeSupervisor}
+                        onSelect={(value, event) =>
+                          this.handleChangeSelect(value, event)
+                        }
+                        showSearch
+                        onFocus={this.handleFocus}
+                        onBlur={this.handleBlur}
+                        filterOption={(input, option) =>
+                          option.props.children
+                            .toLowerCase()
+                            .indexOf(input.toLowerCase()) >= 0
+                        }
+                        value={supervisorName}
+                      >
+                        {this.props.supervisor.map(d => (
+                          <Option key={d.supervisor_id}>{d.name}</Option>
+                        ))}
+                      </Select>
+                    </FormItem>
+                  </div>
 
                   <FormItem>
                     <Button
@@ -325,7 +377,8 @@ class AdminEditPage extends Component {
 
 const mapStateToProps = state => ({
   loading: state.editUserReducer.loading,
-  user: state.editUserReducer.user
+  user: state.editUserReducer.user,
+  supervisor: state.AddSupervisorReducer.supervisor
 });
 
 const WrappedRegisterForm = Form.create()(AdminEditPage);
@@ -335,7 +388,8 @@ const mapDispatchToProps = dispatch =>
     {
       fetchedEdit,
       handleEdit,
-      saveEditUser
+      saveEditUser,
+      SupervisorAdd
     },
     dispatch
   );

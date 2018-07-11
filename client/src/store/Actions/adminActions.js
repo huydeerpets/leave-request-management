@@ -59,7 +59,7 @@ export function adminFetchData() {
 
 export function deleteUser(users, employeeNumber) {
 	return (dispatch) => {
-		fetch('http://localhost:8080/api/admin/user/delete/' + employeeNumber, {
+		fetch('http://localhost:8080/api/admin/user/' + employeeNumber, {
 				method: 'DELETE',
 			})
 			.then((resp) => resp.json())

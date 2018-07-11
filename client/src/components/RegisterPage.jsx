@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { formOnchange, SumbitSignUp } from "../store/Actions/signupActions";
+import { SupervisorAdd } from "../store/Actions/AddSupervisorAction";
 
-import { Layout, Form, Input, Select, Button } from "antd";
+import { Layout, Form, Input, Select, Button, DatePicker } from "antd";
 import HeaderNav from "./menu/HeaderAdmin";
 import Footer from "./menu/Footer";
 const { Content } = Layout;
@@ -13,12 +14,18 @@ const Option = Select.Option;
 class RegisterPage extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      contactID: "+62"
+    };
 
     this.handleOnChange = this.handleOnChange.bind(this);
+    this.handleOnChangeNumber = this.handleOnChangeNumber.bind(this);
     this.handleChangeGender = this.handleChangeGender.bind(this);
     this.handleChangeRole = this.handleChangeRole.bind(this);
     this.handleChangeSupervisor = this.handleChangeSupervisor.bind(this);
-    this.handleOnChangeNumber = this.handleOnChangeNumber.bind(this);
+    this.onStartWorking = this.onStartWorking.bind(this);
+    this.handleOnChangeID = this.handleOnChangeID.bind(this);
+    this.handleOnChangePhone = this.handleOnChangePhone.bind(this);
   }
 
   componentWillMount() {
@@ -27,6 +34,10 @@ class RegisterPage extends Component {
     } else if (localStorage.getItem("role") !== "admin") {
       this.props.history.push("/");
     }
+  }
+
+  componentDidMount() {
+    this.props.SupervisorAdd();
   }
 
   handleSubmit = e => {
@@ -49,9 +60,22 @@ class RegisterPage extends Component {
     this.props.form.setFieldsValue({
       [e.target.name]: e.target.value
     });
-    
+  };
 
-    console.log("-----------------------------",newUser);
+  onStartWorking = value => {
+    if (value !== null) {
+      const date = new Date(value._d),
+        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+        day = ("0" + date.getDate()).slice(-2);
+      let newDate = [day, mnth, date.getFullYear()].join("-");
+
+      let startDate = {
+        ...this.props.signupForm,
+        start_working_date: newDate
+      };
+
+      this.props.formOnchange(startDate);
+    }
   };
 
   handleOnChangeNumber = e => {
@@ -93,8 +117,6 @@ class RegisterPage extends Component {
     let hiddenDiv = document.getElementById("roles");
     if (value === "employee") {
       hiddenDiv.style.display = "block";
-    } else if (value === "supervisor") {
-      hiddenDiv.style.display = "block";
     } else {
       hiddenDiv.style.display = "none";
     }
@@ -105,22 +127,26 @@ class RegisterPage extends Component {
     console.log("selected=======>", value);
   }
 
+  handleOnChangeID = value => {
+    this.setState({ contactID: value });
+    console.log("selected=======>", value);
+  };
+
+  handleOnChangePhone = e => {
+    let newLeave = {
+      ...this.props.signupForm,
+      mobile_phone: `${this.state.contactID}${e.target.value}`
+    };
+    this.props.formOnchange(newLeave);
+    console.log("==================>", newLeave);
+  };
+
   handleBlur() {
     console.log("blur");
   }
 
   handleFocus() {
     console.log("focus");
-  }
-
-  makeid() {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  
-    for (var i = 0; i < 6; i++)
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-  
-    return text;
   }
 
   render() {
@@ -135,6 +161,19 @@ class RegisterPage extends Component {
       }
     };
     const { getFieldDecorator } = this.props.form;
+    const dateFormat = "DD-MM-YYYY";
+    const formStyle = {
+      width: "100%"
+    };
+
+    const prefixSelector = getFieldDecorator("prefix", {
+      initialValue: "+62"
+    })(
+      <Select onChange={this.handleOnChangeID} style={{ width: 70 }}>
+        <Option value="+62">+62</Option>
+        <Option value="+66">+66</Option>
+      </Select>
+    );
 
     return (
       <div>
@@ -284,12 +323,13 @@ class RegisterPage extends Component {
                         }
                       ]
                     })(
-                      <Input
-                        type="date"                        
+                      <DatePicker
                         id="start_working_date"
                         name="start_working_date"
-                        placeholder="start_working_date"
-                        onChange={this.handleOnChange}
+                        onChange={this.onStartWorking}
+                        format={dateFormat}
+                        placeholder="start working date"
+                        style={formStyle}
                       />
                     )}
                   </FormItem>
@@ -307,8 +347,9 @@ class RegisterPage extends Component {
                         type="text"
                         id="mobile_phone"
                         name="mobile_phone"
-                        placeholder="mobile_phone"
-                        onChange={this.handleOnChange}
+                        placeholder="mobile phone"
+                        addonBefore={prefixSelector}
+                        onChange={this.handleOnChangePhone}
                       />
                     )}
                   </FormItem>
@@ -367,22 +408,24 @@ class RegisterPage extends Component {
                             .indexOf(input.toLowerCase()) >= 0
                         }
                       >
-                        <Option value={12345}>David Zendrato</Option>
-                        <Option value={54321}>Jannes Santoso</Option>
+                        {!this.props.supervisor
+                          ? ""
+                          : this.props.supervisor.map(d => (
+                              <Option key={d.supervisor_id}>{d.name}</Option>
+                            ))}
                       </Select>
                     </FormItem>
-                  </div>                
+                  </div>
 
-                  <FormItem {...formItemLayout} label="Password">                    
-                      <Input
-                        type="text"
-                        id="password"
-                        name="password"
-                        placeholder="password"
-                        value={this.makeid()}
-                        // value={this.props.signupForm.password}
-                        onChange={this.handleOnChange}
-                      />                                      
+                  <FormItem {...formItemLayout} label="Password">
+                    <Input
+                      type="text"
+                      id="password"
+                      name="password"
+                      placeholder="password"
+                      value={this.props.signupForm.password}
+                      onChange={this.handleOnChange}
+                    />
                   </FormItem>
 
                   <FormItem>
@@ -416,7 +459,8 @@ class RegisterPage extends Component {
 }
 
 const mapStateToProps = state => ({
-  signupForm: state.signupReducer
+  signupForm: state.signupReducer,
+  supervisor: state.AddSupervisorReducer.supervisor
 });
 
 const WrappedRegisterForm = Form.create()(RegisterPage);
@@ -425,7 +469,8 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       formOnchange,
-      SumbitSignUp
+      SumbitSignUp,
+      SupervisorAdd
     },
     dispatch
   );

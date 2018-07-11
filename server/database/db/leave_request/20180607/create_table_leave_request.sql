@@ -1,6 +1,6 @@
 CREATE TYPE date_range AS(
   "dates" text,
-  "status_date" boolean
+  "is_half_day" boolean
 );
 
 CREATE TABLE IF NOT EXISTS leave_request

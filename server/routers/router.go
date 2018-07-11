@@ -17,6 +17,15 @@ func init() {
 			"post:Login",
 		),
 
+		beego.NSRouter("/user/type-leave",
+			&controllers.UserController{},
+			"get:GetTypeLeave",
+		),
+		beego.NSRouter("/user/supervisor",
+			&controllers.UserController{},
+			"get:GetSupervisors",
+		),
+
 		// upadate new password
 		beego.NSRouter("/user/update/:id:int ",
 			&controllers.UserController{},

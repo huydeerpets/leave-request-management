@@ -1,5 +1,5 @@
 const leave = {
-	type_leave_id: '',
+	type_leave_id: null,
 	reason: '',
 	date_from: '',
 	date_to: '',

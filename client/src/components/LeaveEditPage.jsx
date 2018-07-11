@@ -6,6 +6,7 @@ import {
   handleEdit,
   saveEditLeave
 } from "../store/Actions/editRequestAction";
+import { typeLeaveFetchData } from "../store/Actions/typeLeaveAction";
 import moment from "moment-business-days";
 import {
   Layout,
@@ -22,6 +23,7 @@ const { Content } = Layout;
 const { TextArea } = Input;
 const FormItem = Form.Item;
 const Option = Select.Option;
+let typeName;
 
 class LeaveEditPage extends Component {
   constructor(props) {
@@ -29,7 +31,8 @@ class LeaveEditPage extends Component {
     this.state = {
       from: null,
       to: null,
-      endOpen: false
+      endOpen: false,
+      typeName: null,
     };
 
     this.saveEdit = this.saveEdit.bind(this);
@@ -56,6 +59,8 @@ class LeaveEditPage extends Component {
         el => el.id === id
       );
       this.props.fetchedEdit(leave[0]);
+      this.props.typeLeaveFetchData();
+      this.setState({ typeName: this.props.leave.type_id });
     }
   }
 
@@ -67,7 +72,7 @@ class LeaveEditPage extends Component {
   //       from: momentObjFrom,
   //       to: momentObjTo
   //     });
-  //   }    
+  //   }
   // }
 
   saveEdit = () => {
@@ -87,9 +92,10 @@ class LeaveEditPage extends Component {
   handleChangeTypeOfLeave(value) {
     let newLeave = {
       ...this.props.leave,
-      type_leave_id: value
+      type_leave_id: Number(value)
     };
     this.props.handleEdit(newLeave);
+    this.props.leave.type_name;
   }
 
   handleChangeSelect(value, event) {
@@ -243,9 +249,6 @@ class LeaveEditPage extends Component {
     const { from, to, endOpen } = this.state;
     const dates = this.getDates(new Date(from), new Date(to));
     const arr = [];
-    console.log("=============", this.state.from);
-    console.log("=============", this.state.to);
-
     const elements = [];
     const dateFormat = "DD-MM-YYYY";
     const now = moment()
@@ -331,7 +334,6 @@ class LeaveEditPage extends Component {
                   name="type_leave_id"
                   placeholder="Select type of leave"
                   optionFilterProp="children"
-                  value={this.props.leave.type_leave_id}
                   onChange={this.handleChangeTypeOfLeave}
                   onSelect={(value, event) =>
                     this.handleChangeSelect(value, event)
@@ -344,14 +346,12 @@ class LeaveEditPage extends Component {
                       .toLowerCase()
                       .indexOf(input.toLowerCase()) >= 0
                   }
+                  value={this.props.leave.type_name}
                   style={formStyle}
                 >
-                  <Option value={11}>Annual Leave</Option>
-                  <Option value={22}>Errand Leave</Option>
-                  <Option value={33}>Sick Leave</Option>
-                  <Option value={44}>Marriage Leave</Option>
-                  <Option value={55}>Maternity Leave</Option>
-                  <Option value={66}>Other Leave</Option>
+                  {this.props.typeLeave.map(d => (
+                    <Option key={d.id}>{d.type_name}</Option>
+                  ))}
                 </Select>
               </FormItem>
 
@@ -370,25 +370,26 @@ class LeaveEditPage extends Component {
               <FormItem {...formItemLayout} label="From">
                 <DatePicker
                   id="date_from"
-                  name="date_from"                  
+                  name="date_from"
                   format={dateFormat}
-                  value={from}
+                  // value={from}
                   defaultValue={moment(
                     this.props.leave.date_from,
                     "DD-MM-YYYY"
-                  )}                                   
+                  )}
                   onChange={this.onStartChange}
                   onOpenChange={this.handleStartOpenChange}
                   style={formStyle}
                 />
               </FormItem>
+              {this.props.leave.type_id}
               <FormItem {...formItemLayout} label="To">
                 <DatePicker
                   id="date_to"
-                  name="date_to"                  
-                  format={dateFormat}                  
-                  value={to}
-                  defaultValue={moment(this.props.leave.date_to, "DD-MM-YYYY")}                  
+                  name="date_to"
+                  format={dateFormat}
+                  defaultValue={moment(this.props.leave.date_to, "DD-MM-YYYY")}
+                  // value={to}
                   onChange={this.onEndChange}
                   open={endOpen}
                   onOpenChange={this.handleEndOpenChange}
@@ -411,14 +412,13 @@ class LeaveEditPage extends Component {
                   {elements}
                 </FormItem>
               </div>
-
               <FormItem {...formItemLayout} label="Back to work on">
                 <DatePicker
                   id="back_on"
                   name="back_on"
                   format={dateFormat}
                   placeholder="Back to work"
-                  // defaultValue={moment(this.props.leave.back_on, "DD-MM-YYYY")}
+                  defaultValue={moment(this.props.leave.back_on, "DD-MM-YYYY")}
                   disabledDate={this.disabledDateBack}
                   onChange={this.onBackOn}
                   style={formStyle}
@@ -473,7 +473,8 @@ class LeaveEditPage extends Component {
 
 const mapStateToProps = state => ({
   loading: state.editRequestReducer.loading,
-  leave: state.editRequestReducer.leave
+  leave: state.editRequestReducer.leave,
+  typeLeave: state.fetchTypeLeaveReducer.typeLeave
 });
 
 const WrappedRegisterForm = Form.create()(LeaveEditPage);
@@ -483,7 +484,8 @@ const mapDispatchToProps = dispatch =>
     {
       fetchedEdit,
       handleEdit,
-      saveEditLeave
+      saveEditLeave,
+      typeLeaveFetchData
     },
     dispatch
   );

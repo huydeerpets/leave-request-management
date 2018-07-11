@@ -27,11 +27,12 @@ func ArrayToString(arr []int64, delim string) string {
 
 // GetTotalDay ...
 func GetTotalDay(from string, to string) int64 {
-	dateFrom, _ := time.Parse("2006-01-02", from)
-	dateTo, _ := time.Parse("2006-01-02", to)
+	dateFrom, _ := time.Parse("02-01-2006", from)
+	dateTo, _ := time.Parse("02-01-2006", to)
 	diff := dateTo.Sub(dateFrom)
+	result := int64(diff.Hours()/24) + 1
 
-	return int64(diff.Hours() / 24)
+	return result
 }
 
 // GetDay ...

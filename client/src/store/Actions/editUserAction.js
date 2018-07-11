@@ -49,8 +49,9 @@ export function saveEditUser(savedUser, pusher) {
 				error
 			}) => {
 				console.log("err==========>", error)
-				if (body === "update user success") {
-					pusher('/admin')
+				console.log("err==========>", body)
+				if (body === "Update user success") {
+					pusher('/admin')					
 				}
 			}).catch(err => {
 				console.log(err)

@@ -168,3 +168,38 @@ func (c *UserController) UpdateNewPassword() {
 		helpers.CheckErr("failed giving output @UpdateNewPassword", err)
 	}
 }
+
+// GetTypeLeave ...
+func (c *UserController) GetTypeLeave() {
+	var resp structAPI.RespData
+	res, errGet := logic.DBPostUser.GetTypeLeave()
+	if errGet != nil {
+		resp.Error = errGet.Error()
+		c.Ctx.Output.SetStatus(400)
+	} else {
+		resp.Body = res
+	}
+
+	err := c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		helpers.CheckErr("failed giving output @GetTypeLeave", err)
+	}
+}
+
+// GetSupervisors ...
+func (c *UserController) GetSupervisors() {
+	var resp structAPI.RespData
+
+	res, errGet := logic.DBPostUser.GetSupervisors()
+	if errGet != nil {
+		resp.Error = errGet.Error()
+		c.Ctx.Output.SetStatus(400)
+	} else {
+		resp.Body = res
+	}
+
+	err := c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		helpers.CheckErr("failed giving output @GetSupervisors", err)
+	}
+}

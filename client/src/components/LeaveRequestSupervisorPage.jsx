@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import {
-  formOnChange,
-  SumbitLeaveSupervisor
-} from "../store/Actions/leaveRequestAction";
+import { formOnChange, SumbitLeaveSupervisor } from "../store/Actions/leaveRequestAction";
+import { typeLeaveFetchData } from "../store/Actions/typeLeaveAction";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
 import moment from "moment-business-days";
@@ -22,7 +20,7 @@ const FormItem = Form.Item;
 const { TextArea } = Input;
 const Option = Select.Option;
 
-class LeaveRequestSupervisorPage extends Component {
+class LeaveRequestPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -49,6 +47,7 @@ class LeaveRequestSupervisorPage extends Component {
     ) {
       this.props.history.push("/");
     }
+    this.props.typeLeaveFetchData();
   }
 
   handleSubmit = e => {
@@ -67,18 +66,18 @@ class LeaveRequestSupervisorPage extends Component {
   handleChangeTypeOfLeave(value) {
     let typeLeave = {
       ...this.props.leaveForm,
-      type_leave_id: value
+      type_leave_id: Number(value)
     };
     this.props.formOnChange(typeLeave);
   }
 
   handleChangeSelect(value) {
     let hiddenDiv = document.getElementById("showMe");
-    if (value === 22) {
+    if (value === "22") {
       hiddenDiv.style.display = "block";
-    } else if (value === 33) {
+    } else if (value === "33") {
       hiddenDiv.style.display = "block";
-    } else if (value === 66) {
+    } else if (value === "66") {
       hiddenDiv.style.display = "block";
     } else {
       hiddenDiv.style.display = "none";
@@ -118,6 +117,14 @@ class LeaveRequestSupervisorPage extends Component {
         ...this.props.leaveForm,
         date_from: newDate
       };
+      
+
+      var dateString = "07-15-2016";
+      var dateObj = new Date(dateString);
+      var momentObj = moment(dateObj);
+      var momentString = momentObj.format("YYYY-MM-DD");
+
+      console.log("valuemoment date============>", momentObj);
 
       this.props.formOnChange(dateFrom);
     }
@@ -162,7 +169,7 @@ class LeaveRequestSupervisorPage extends Component {
       .startOf("month")
       .monthBusinessWeeks();
 
-    console.log("working day=======>", workDay);
+    // console.log("working day=======>", workDay);
 
     // console.log("curent=====>", current);
     return current && current < moment().endOf("day");
@@ -345,12 +352,14 @@ class LeaveRequestSupervisorPage extends Component {
                   }
                   style={formStyle}
                 >
-                  <Option value={11}>Annual Leave</Option>
+
+                 {this.props.typeLeave.map(d => <Option key={d.id}>{d.type_name}</Option>)}
+                  {/* <Option value={11}>Annual Leave</Option>
                   <Option value={22}>Errand Leave</Option>
                   <Option value={33}>Sick Leave</Option>
                   <Option value={44}>Marriage Leave</Option>
                   <Option value={55}>Maternity Leave</Option>
-                  <Option value={66}>Other Leave</Option>
+                  <Option value={66}>Other Leave</Option> */}
                 </Select>
               </FormItem>
 
@@ -471,16 +480,18 @@ class LeaveRequestSupervisorPage extends Component {
 }
 
 const mapStateToProps = state => ({
-  leaveForm: state.leaveRequestReducer
+  leaveForm: state.leaveRequestReducer,
+  typeLeave : state.fetchTypeLeaveReducer.typeLeave
 });
 
-const WrappedLeaveForm = Form.create()(LeaveRequestSupervisorPage);
+const WrappedLeaveForm = Form.create()(LeaveRequestPage);
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       formOnChange,
-      SumbitLeaveSupervisor
+      SumbitLeaveSupervisor,
+      typeLeaveFetchData
     },
     dispatch
   );
