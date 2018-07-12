@@ -205,6 +205,10 @@ class DirectorPendingPage extends Component {
     this.setState({ reason: newLeave });
   };
 
+  onShowSizeChange(current, pageSize) {
+    console.log(current, pageSize);
+  }
+
   render() {
     const { visible, visibleReject, loadingA, loadingR } = this.state;
     const columns = [
@@ -352,6 +356,13 @@ class DirectorPendingPage extends Component {
                 dataSource={this.state.data}
                 rowKey={record => record.id}
                 onRowClick={this.onSelectChange}
+                pagination={{
+                  className: "my-pagination",
+                  defaultCurrent: 1,
+                  defaultPageSize: 5,
+                  total: 50,
+                  showSizeChanger: this.onShowSizeChange
+                }}
               />
             </div>
 
@@ -401,7 +412,7 @@ class DirectorPendingPage extends Component {
                   loading={loadingA}
                   onClick={this.handleOk}
                 >
-                  Accept
+                  Approve
                 </Button>,
                 <Button
                   key="reject"

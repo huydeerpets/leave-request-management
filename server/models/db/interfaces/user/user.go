@@ -50,4 +50,6 @@ type IBaseUser interface {
 	GetTypeLeave() (result []structDB.TypeLeave, err error)
 	// GetSupervisors
 	GetSupervisors() (result []structLogic.GetSupervisors, err error)
+	// GetSumarry
+	GetSumarry(employeeNumber int64) (structLogic.UserSumarry, error)
 }

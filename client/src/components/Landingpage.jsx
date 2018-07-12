@@ -103,7 +103,8 @@ class Landingpage extends Component {
                       <Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />
                     }
                   />
-                </FormItem>
+                </FormItem>                
+
                 <FormItem>
                   <Button
                     type="primary"
@@ -114,8 +115,8 @@ class Landingpage extends Component {
                     {" "}
                     Log in
                   </Button>
-                  Or <NavLink to="/register">register now!</NavLink>
                 </FormItem>
+                <NavLink to="/register">forgot password?</NavLink>
               </Form>
             </div>
           </Content>

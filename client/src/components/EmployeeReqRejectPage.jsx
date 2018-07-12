@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { rejectFetchData } from "../store/Actions/employeeAction";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
-import { Layout, Table, Modal, Button } from "antd";
+import { Layout, Table, Modal, Button, Pagination } from "antd";
 const { Content } = Layout;
 
 class EmployeeReqAcceptPage extends Component {
@@ -80,6 +80,10 @@ class EmployeeReqAcceptPage extends Component {
     ];
   }
 
+  onShowSizeChange(current, pageSize) {
+    console.log(current, pageSize);
+  }
+
   showDetail = record => {
     this.setState({
       visible: true,
@@ -130,6 +134,13 @@ class EmployeeReqAcceptPage extends Component {
                 dataSource={this.props.users}
                 rowKey={record => record.id}
                 onRowClick={this.onSelectChange}
+                pagination={{
+                  className: "my-pagination",
+                  defaultCurrent: 1,
+                  defaultPageSize: 5,
+                  total: 50,
+                  showSizeChanger: this.onShowSizeChange
+                }}
               />
             </div>
 
@@ -154,16 +165,23 @@ class EmployeeReqAcceptPage extends Component {
                 Name : {this.state.user && this.state.user.name} <br />
                 Gender : {this.state.user && this.state.user.gender} <br />
                 Email : {this.state.user && this.state.user.email} <br />
-                Type Of Leave : {this.state.user && this.state.user.type_name} <br />
+                Type Of Leave : {this.state.user &&
+                  this.state.user.type_name}{" "}
+                <br />
                 Reason : {this.state.user && this.state.user.reason} <br />
                 From : {this.state.user && this.state.user.date_from} <br />
                 To : {this.state.user && this.state.user.date_to} <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
                 Total : {this.state.user && this.state.user.total} day <br />
-                Leave Remaining : {this.state.user && this.state.user.leave_remaining} day <br />
-                Contact Address : {this.state.user && this.state.user.contact_address} <br />
-                Contact Number : {this.state.user && this.state.user.contact_number} <br />
-                Status : {this.state.user && this.state.user.status}
+                Leave Remaining :{" "}
+                {this.state.user && this.state.user.leave_remaining} day <br />
+                Contact Address :{" "}
+                {this.state.user && this.state.user.contact_address} <br />
+                Contact Number :{" "}
+                {this.state.user && this.state.user.contact_number} <br />
+                Status : {this.state.user && this.state.user.status} <br />
+                Reject Reason :{" "}
+                {this.state.user && this.state.user.reject_reason}
               </div>
             </Modal>
           </Content>

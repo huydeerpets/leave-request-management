@@ -75,6 +75,13 @@ class Adminpage extends Component {
     ];
   }
 
+  componentDidMount() {
+    if (localStorage.getItem("role") !== "admin") {
+      this.props.history.push("/");
+    }
+    this.props.adminFetchData();
+  }
+
   editUser = (users, employeeNumber) => {
     console.log(employeeNumber, "--", users);
     this.props.history.push({
@@ -88,11 +95,8 @@ class Adminpage extends Component {
     console.log("delete nih", users, "--", employeeNumber);
   };
 
-  componentDidMount() {
-    if (localStorage.getItem("role") !== "admin") {
-      this.props.history.push("/");
-    }
-    this.props.adminFetchData();
+  onShowSizeChange(current, pageSize) {
+    console.log(current, pageSize);
   }
 
   render() {
@@ -117,6 +121,13 @@ class Adminpage extends Component {
                 columns={this.columns}
                 dataSource={this.props.users}
                 rowKey={record => record.employee_number}
+                pagination={{
+                  className: "my-pagination",
+                  defaultCurrent: 1,
+                  defaultPageSize: 5,
+                  total: 50,
+                  showSizeChanger: this.onShowSizeChange
+                }}
               />
             </div>
           </Content>

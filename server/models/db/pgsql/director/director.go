@@ -125,7 +125,8 @@ func (u *Director) GetDirectorPendingRequest() ([]structLogic.RequestPending, er
 		InnerJoin(userTypeLeave.TableName()).
 		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
 		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
-		Where(`status = ? `)
+		Where(`status = ? `).
+		OrderBy(leave.TableName() + ".created_at DESC")
 	sql := qb.String()
 
 	count, errRaw := o.Raw(sql, statPendingDirector).QueryRows(&reqPending)
@@ -185,7 +186,8 @@ func (u *Director) GetDirectorAcceptRequest() ([]structLogic.RequestAccept, erro
 		InnerJoin(userTypeLeave.TableName()).
 		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
 		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
-		Where(`status = ? `)
+		Where(`status = ? `).
+		OrderBy(leave.TableName() + ".created_at DESC")
 	sql := qb.String()
 
 	count, errRaw := o.Raw(sql, statAcceptDirector).QueryRows(&reqAccept)
@@ -236,6 +238,7 @@ func (u *Director) GetDirectorRejectRequest() ([]structLogic.RequestReject, erro
 		leave.TableName()+".contact_address",
 		leave.TableName()+".contact_number",
 		leave.TableName()+".status",
+		leave.TableName()+".reject_reason",
 		leave.TableName()+".action_by").
 		From(user.TableName()).
 		InnerJoin(leave.TableName()).
@@ -245,7 +248,8 @@ func (u *Director) GetDirectorRejectRequest() ([]structLogic.RequestReject, erro
 		InnerJoin(userTypeLeave.TableName()).
 		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
 		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
-		Where(`status = ? `)
+		Where(`status = ? `).
+		OrderBy(leave.TableName() + ".created_at DESC")
 	sql := qb.String()
 
 	count, errRaw := o.Raw(sql, StatRejectInDirector).QueryRows(&reqReject)

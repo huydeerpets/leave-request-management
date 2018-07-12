@@ -24,8 +24,9 @@ type LeaveController struct {
 // PostLeaveRequest ...
 func (c *LeaveController) PostLeaveRequest() {
 	var (
-		resp    structAPI.RespData
-		req     structAPI.ReqLeave
+		resp structAPI.RespData
+		req  structAPI.ReqLeave
+		// reqDate []structAPI.DateRange
 		dbLeave db.LeaveRequest
 	)
 
@@ -49,12 +50,22 @@ func (c *LeaveController) PostLeaveRequest() {
 		return
 	}
 
+	// for j := 0; j < len(req.DateRanges); j++ {
+	// 	reqDate = append(reqDate,
+	// 		structAPI.DateRange{
+	// 			Date : req.DateRanges[j].,
+	// 			IsHalfDay : req.DateRanges[j].,
+	// 		}
+	// 	)
+	// }
+
 	leave := structAPI.CreateLeaveRequest{
 		EmployeeNumber: employeeNumber,
 		TypeLeaveID:    req.TypeLeaveID,
 		Reason:         req.Reason,
 		DateFrom:       req.DateFrom,
 		DateTo:         req.DateTo,
+		// DateRanges: 	reqDate,
 		Total:          helpers.GetTotalDay(req.DateFrom, req.DateTo),
 		BackOn:         req.BackOn,
 		ContactAddress: req.ContactAddress,

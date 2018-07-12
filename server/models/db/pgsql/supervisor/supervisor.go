@@ -63,7 +63,8 @@ func (u *Supervisor) GetUserPending(supervisorID int64) ([]structLogic.LeavePend
 		InnerJoin(userTypeLeave.TableName()).
 		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
 		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
-		Where(`status = ? `).And(`supervisor_id = ? `)
+		Where(`status = ? `).And(`supervisor_id = ? `).
+		OrderBy(leave.TableName() + ".created_at DESC")
 	sql := qb.String()
 
 	count, errRaw := o.Raw(sql, statPendingInSupervisor, supervisorID).QueryRows(&reqPending)
@@ -125,7 +126,8 @@ func (u *Supervisor) GetUserAccept(supervisorID int64) ([]structLogic.LeaveAccep
 		InnerJoin(userTypeLeave.TableName()).
 		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
 		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
-		Where(`(status = ? OR status = ? )`).And(user.TableName() + `.supervisor_id = ? `)
+		Where(`(status = ? OR status = ? )`).And(user.TableName() + `.supervisor_id = ? `).
+		OrderBy(leave.TableName() + ".created_at DESC")
 	sql := qb.String()
 
 	count, errRaw := o.Raw(sql, statPendingInDirector, statSuccessInDirector, supervisorID).QueryRows(&reqAccepts)
@@ -186,7 +188,8 @@ func (u *Supervisor) GetUserReject(supervisorID int64) ([]structLogic.LeaveRejec
 		InnerJoin(userTypeLeave.TableName()).
 		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
 		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
-		Where(`status = ?`).And(user.TableName() + `.supervisor_id = ? `)
+		Where(`status = ?`).And(user.TableName() + `.supervisor_id = ? `).
+		OrderBy(leave.TableName() + ".created_at DESC")
 	sql := qb.String()
 
 	count, errRaw := o.Raw(sql, statRejectInSupervisor, supervisorID).QueryRows(&reqRejects)

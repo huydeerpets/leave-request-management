@@ -80,6 +80,15 @@ class AdminReqPendingPage extends Component {
     ];
   }
 
+  componentDidMount() {
+    if (!localStorage.getItem("token")) {
+      this.props.history.push("/");
+    } else if (localStorage.getItem("role") !== "admin") {
+      this.props.history.push("/");
+    }
+    this.props.pendingFetchData();
+  }
+
   showDetail = record => {
     this.setState({
       visible: true,
@@ -95,14 +104,10 @@ class AdminReqPendingPage extends Component {
     this.setState({ visible: false });
   };
 
-  componentDidMount() {
-    if (!localStorage.getItem("token")) {
-      this.props.history.push("/");
-    } else if (localStorage.getItem("role") !== "admin") {
-      this.props.history.push("/");
-    }
-    this.props.pendingFetchData();
+  onShowSizeChange(current, pageSize) {
+    console.log(current, pageSize);
   }
+
   render() {
     const { visible, loading } = this.state;
 
@@ -127,6 +132,13 @@ class AdminReqPendingPage extends Component {
                 dataSource={this.props.users}
                 rowKey={record => record.id}
                 onRowClick={this.onSelectChange}
+                pagination={{
+                  className: "my-pagination",
+                  defaultCurrent: 1,
+                  defaultPageSize: 5,
+                  total: 50,
+                  showSizeChanger: this.onShowSizeChange
+                }}
               />
             </div>
 

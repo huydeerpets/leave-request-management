@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS users
   "email" varchar(30) NOT NULL,
   "password" varchar(100) NOT NULL,
   "role" text NOT NULL,
-  "supervisor_id" int NOT NULL  
+  "supervisor_id" int  
 )

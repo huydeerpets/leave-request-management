@@ -206,7 +206,8 @@ func (u *Admin) GetLeaveRequestPending() ([]structLogic.RequestPending, error) {
 		InnerJoin(userTypeLeave.TableName()).
 		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
 		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
-		Where(`(status = ? OR status = ? )`)
+		Where(`(status = ? OR status = ? )`).
+		OrderBy(leave.TableName() + ".created_at DESC")
 	sql := qb.String()
 
 	count, errRaw := o.Raw(sql, statPendingInSupervisor, statPendingInDirector).QueryRows(&reqPending)
@@ -266,7 +267,9 @@ func (u *Admin) GetLeaveRequest() ([]structLogic.RequestAccept, error) {
 		InnerJoin(userTypeLeave.TableName()).
 		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
 		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
-		Where(`status = ? `)
+		Where(`status = ? `).
+		OrderBy(leave.TableName() + ".created_at DESC")
+
 	sql := qb.String()
 
 	count, errRaw := o.Raw(sql, statAcceptDirector).QueryRows(&reqAccept)
@@ -318,6 +321,7 @@ func (u *Admin) GetLeaveRequestReject() ([]structLogic.RequestReject, error) {
 		leave.TableName()+".contact_address",
 		leave.TableName()+".contact_number",
 		leave.TableName()+".status",
+		leave.TableName()+".reject_reason",
 		leave.TableName()+".action_by").
 		From(user.TableName()).
 		InnerJoin(leave.TableName()).
@@ -327,7 +331,8 @@ func (u *Admin) GetLeaveRequestReject() ([]structLogic.RequestReject, error) {
 		InnerJoin(userTypeLeave.TableName()).
 		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
 		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
-		Where(`(status = ? OR status = ? )`)
+		Where(`(status = ? OR status = ? )`).
+		OrderBy(leave.TableName() + ".created_at DESC")
 	sql := qb.String()
 
 	count, errRaw := o.Raw(sql, statRejectInSuperVisor, statRejectInDirector).QueryRows(&reqReject)

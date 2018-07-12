@@ -80,6 +80,15 @@ class DirectorAcceptPage extends Component {
     ];
   }
 
+  componentDidMount() {
+    if (!localStorage.getItem("token")) {
+      this.props.history.push("/");
+    } else if (localStorage.getItem("role") !== "supervisor") {
+      this.props.history.push("/");
+    }
+    this.props.rejectFetchData();
+  }
+
   showDetail = record => {
     this.setState({
       visible: true,
@@ -95,14 +104,10 @@ class DirectorAcceptPage extends Component {
     this.setState({ visible: false });
   };
 
-  componentDidMount() {
-    if (!localStorage.getItem("token")) {
-      this.props.history.push("/");
-    } else if (localStorage.getItem("role") !== "supervisor") {
-      this.props.history.push("/");
-    }
-    this.props.rejectFetchData();
+  onShowSizeChange(current, pageSize) {
+    console.log(current, pageSize);
   }
+
   render() {
     const { visible, loading } = this.state;
 
@@ -127,6 +132,13 @@ class DirectorAcceptPage extends Component {
                 dataSource={this.props.users}
                 rowKey={record => record.id}
                 onRowClick={this.onSelectChange}
+                pagination={{
+                  className: "my-pagination",
+                  defaultCurrent: 1,
+                  defaultPageSize: 5,
+                  total: 50,
+                  showSizeChanger: this.onShowSizeChange
+                }}
               />
             </div>
 
@@ -160,6 +172,7 @@ class DirectorAcceptPage extends Component {
                 Leave Remaining : {this.state.user && this.state.user.leave_remaining} <br />
                 Contact Address: {this.state.user && this.state.user.contact_address} <br />
                 Contact Number : {this.state.user && this.state.user.contact_number}
+                Contact Number : {this.state.user && this.state.user.reject_reason}
               </div>
             </Modal>
           </Content>

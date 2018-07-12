@@ -104,7 +104,8 @@ func (u *User) GetPendingRequest(employeeNumber int64) ([]structLogic.RequestPen
 		InnerJoin(userTypeLeave.TableName()).
 		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
 		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
-		Where(`(status = ? OR status = ? )`).And(user.TableName() + `.employee_number = ? `)
+		Where(`(status = ? OR status = ? )`).And(user.TableName() + `.employee_number = ? `).
+		OrderBy(leave.TableName() + ".created_at DESC")
 	sql := qb.String()
 
 	count, errRaw := o.Raw(sql, statPendingSupervisor, statPendingDirector, employeeNumber).QueryRows(&reqPending)
@@ -164,7 +165,8 @@ func (u *User) GetAcceptRequest(employeeNumber int64) ([]structLogic.RequestAcce
 		InnerJoin(userTypeLeave.TableName()).
 		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
 		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
-		Where(`status = ?`).And(user.TableName() + `.employee_number = ? `)
+		Where(`status = ?`).And(user.TableName() + `.employee_number = ? `).
+		OrderBy(leave.TableName() + ".created_at DESC")
 	sql := qb.String()
 
 	count, errRaw := o.Raw(sql, statAcceptDirector, employeeNumber).QueryRows(&reqAccept)
@@ -217,6 +219,7 @@ func (u *User) GetRejectRequest(employeeNumber int64) ([]structLogic.RequestReje
 		leave.TableName()+".contact_address",
 		leave.TableName()+".contact_number",
 		leave.TableName()+".status",
+		leave.TableName()+".reject_reason",
 		leave.TableName()+".action_by").
 		From(user.TableName()).
 		InnerJoin(leave.TableName()).
@@ -226,7 +229,8 @@ func (u *User) GetRejectRequest(employeeNumber int64) ([]structLogic.RequestReje
 		InnerJoin(userTypeLeave.TableName()).
 		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
 		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
-		Where(`(status = ? OR status = ? )`).And(user.TableName() + `.employee_number = ? `)
+		Where(`(status = ? OR status = ? )`).And(user.TableName() + `.employee_number = ? `).
+		OrderBy(leave.TableName() + ".created_at DESC")
 	sql := qb.String()
 
 	count, errRaw := o.Raw(sql, statRejectSupervisor, statRejectDirector, employeeNumber).QueryRows(&reqReject)
@@ -426,4 +430,48 @@ func (u *User) GetSupervisors() (result []structLogic.GetSupervisors, err error)
 		return result, errors.New("error get")
 	}
 	return result, err
+}
+
+// GetSumarry ...
+func (u *User) GetSumarry(employeeNumber int64) (structLogic.UserSumarry, error) {
+	var (
+		sumarry       structLogic.UserSumarry
+		leave         structDB.LeaveRequest
+		typeLeave     structDB.TypeLeave
+		userTypeLeave structDB.UserTypeLeave
+	)
+
+	statSuccessInDirector := constant.StatusSuccessInDirector
+
+	o := orm.NewOrm()
+	qb, errQB := orm.NewQueryBuilder("mysql")
+	if errQB != nil {
+		helpers.CheckErr("Query builder failed @GetSumarry", errQB)
+		return sumarry, errQB
+	}
+
+	qb.Select(
+		typeLeave.TableName()+".type_name",
+		"SUM("+leave.TableName()+".total) as used",
+		userTypeLeave.TableName()+".leave_remaining").
+		From(userTypeLeave.TableName()).
+		InnerJoin(typeLeave.TableName()).
+		On(typeLeave.TableName()+".id"+"="+userTypeLeave.TableName()+".type_leave_id").
+		InnerJoin(leave.TableName()).
+		On(leave.TableName()+".type_leave_id"+"="+userTypeLeave.TableName()+".type_leave_id").
+		And(leave.TableName()+".employee_number"+"="+userTypeLeave.TableName()+".employee_number").
+		Where(userTypeLeave.TableName()+`.employee_number = ? `).
+		And(leave.TableName()+`.status = ?`).
+		GroupBy(userTypeLeave.TableName()+`.type_leave_id`,
+			typeLeave.TableName()+`.type_name`,
+			userTypeLeave.TableName()+`.leave_remaining`)
+	sql := qb.String()
+
+	errRaw := o.Raw(sql, employeeNumber, statSuccessInDirector).QueryRow(&sumarry)
+	if errRaw != nil {
+		helpers.CheckErr("Failed Query Select @GetSumarry", errRaw)
+		return sumarry, errors.New("error get user summary")
+	}
+
+	return sumarry, errRaw
 }

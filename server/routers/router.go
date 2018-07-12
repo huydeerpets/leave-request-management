@@ -25,6 +25,10 @@ func init() {
 			&controllers.UserController{},
 			"get:GetSupervisors",
 		),
+		beego.NSRouter("/user/summary/:id:int ",
+			&controllers.UserController{},
+			"get:GetUserSummary",
+		),
 
 		// upadate new password
 		beego.NSRouter("/user/update/:id:int ",

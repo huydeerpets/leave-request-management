@@ -90,6 +90,15 @@ class SupervisorPendingPage extends Component {
     ];
   }
 
+  componentDidMount() {
+    if (!localStorage.getItem("token")) {
+      this.props.history.push("/");
+    } else if (localStorage.getItem("role") !== "supervisor") {
+      this.props.history.push("/");
+    }
+    this.props.pendingFetchData();
+  }
+
   showDetail = record => {
     this.setState({
       visible: true,
@@ -160,14 +169,10 @@ class SupervisorPendingPage extends Component {
     this.setState({ reason: newLeave });    
   };
 
-  componentDidMount() {
-    if (!localStorage.getItem("token")) {
-      this.props.history.push("/");
-    } else if (localStorage.getItem("role") !== "supervisor") {
-      this.props.history.push("/");
-    }
-    this.props.pendingFetchData();
+  onShowSizeChange(current, pageSize) {
+    console.log(current, pageSize);
   }
+
   render() {
     const { visible, visibleReject, loadingA, loadingR } = this.state;
 
@@ -192,6 +197,13 @@ class SupervisorPendingPage extends Component {
                 dataSource={this.props.users}
                 rowKey={record => record.id}
                 onRowClick={this.onSelectChange}
+                pagination={{
+                  className: "my-pagination",
+                  defaultCurrent: 1,
+                  defaultPageSize: 5,
+                  total: 50,
+                  showSizeChanger: this.onShowSizeChange
+                }}
               />
             </div>
 
@@ -241,7 +253,7 @@ class SupervisorPendingPage extends Component {
                   loading={loadingA}
                   onClick={this.handleOk}
                 >
-                  Accept
+                  Approve
                 </Button>,
                 <Button type="danger" onClick={this.showReject}>
                   Reject

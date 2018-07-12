@@ -20,5 +20,6 @@ type RequestReject struct {
 	ContactAddress   string `json:"contact_address" orm:"column(contact_address)"`
 	ContactNumber    string `json:"contact_number" orm:"column(contact_number)"`
 	Status           string `json:"status" orm:"column(status)"`
+	RejectReason     string `json:"reject_reason" orm:"column(reject_reason)"`
 	ActionBy         string `json:"action_by" orm:"column(action_by)"`
 }

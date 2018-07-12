@@ -203,3 +203,30 @@ func (c *UserController) GetSupervisors() {
 		helpers.CheckErr("failed giving output @GetSupervisors", err)
 	}
 }
+
+// GetUserSummary ...
+func (c *UserController) GetUserSummary() {
+	var (
+		resp structAPI.RespData
+	)
+	idStr := c.Ctx.Input.Param(":id")
+	employeeNumber, errCon := strconv.ParseInt(idStr, 0, 64)
+	if errCon != nil {
+		helpers.CheckErr("convert id failed @GetUserSummary", errCon)
+		resp.Error = errors.New("convert id failed").Error()
+		return
+	}
+
+	resGet, errGetSummary := logic.DBPostUser.GetSumarry(employeeNumber)
+	if errGetSummary != nil {
+		resp.Error = errGetSummary.Error()
+		c.Ctx.Output.SetStatus(400)
+	} else {
+		resp.Body = resGet
+	}
+
+	err := c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		helpers.CheckErr("failed giving output @GetUserSummary", err)
+	}
+}

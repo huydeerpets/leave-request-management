@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS leave_request
   "type_leave_id" int NOT NULL,
   "reason" text NOT NULL,
   "date_from" text NOT NULL,
-  "date_to" text NOT NULL,
+  "date_to" text NOT NULL,  
   "date_ranges" date_range[],
   "back_on" text NOT NULL,
   "total" int NOT NULL,
@@ -18,7 +18,6 @@ CREATE TABLE IF NOT EXISTS leave_request
   "contact_number" text NOT NULL,
   "status" text NOT NULL,
   "action_by" text,
-  "reject_reason" text,
-  "errand_reason" text,
+  "reject_reason" text,  
   "created_at" timestamp with time zone not null default CURRENT_TIMESTAMP
 )

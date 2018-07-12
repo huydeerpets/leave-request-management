@@ -12,3 +12,10 @@ type LeaveReason struct {
 	// Status       string `json:"status" orm:"column(status)"`
 	RejectReason string `json:"reject_reason" orm:"column(reject_reason)"`
 }
+
+// UserSumarry ...
+type UserSumarry struct {
+	TypeName       string `json:"type_name" orm:"column(type_name)"`
+	Used           int64  `json:"used" orm:"column(used)"`
+	LeaveRemaining int64  `json:"leave_remaining" orm:"column(leave_remaining)"`
+}
