@@ -2,39 +2,54 @@ import {
 	createStore,
 	combineReducers,
 	applyMiddleware
-} from 'redux'
+} from '../../../../../../../.cache/typescript/2.9/node_modules/redux'
 import thunk from 'redux-thunk';
 
 import loginReducer from './Reducers/loginReducer'
+import resetPasswordReducer from './Reducers/resetPasswordReducer'
+
 import adminReducer from './Reducers/adminReducer'
 import signupReducer from './Reducers/signupReducer'
 import editUserReducer from './Reducers/editUserReducer'
-import editRequestReducer from './Reducers/editRequestReducer'
+
 import leaveRequestReducer from './Reducers/leaveRequestReducer'
-import fetchEmployeeReducer from './Reducers/fetchEmployeeReducer'
-import fetchSupervisorReducer from './Reducers/fetchSupervisorReducer'
+import editRequestReducer from './Reducers/editRequestReducer'
+
+
 import fetchDirectorReducer from './Reducers/fetchDirectorReducer'
+import fetchSupervisorReducer from './Reducers/fetchSupervisorReducer'
+import fetchEmployeeReducer from './Reducers/fetchEmployeeReducer'
+
+
 import profileReducer from './Reducers/profileReducer'
 import passwordReducer from './Reducers/passwordReducer'
+
 import fetchTypeLeaveReducer from './Reducers/fetchTypeLeaveReducer'
 import AddSupervisorReducer from './Reducers/AddSupervisorReducer'
 
 
+
+
 const appStore = combineReducers({
 	loginReducer,
+	resetPasswordReducer,
+
 	adminReducer,
-	signupReducer,
+	signupReducer,	
+	editUserReducer,	
+	
+	profileReducer,	
+	AddSupervisorReducer,	
+
 	leaveRequestReducer,
-	editUserReducer,
-	editRequestReducer,
-	profileReducer,
+	editRequestReducer,	
+
+	fetchDirectorReducer,
+	fetchSupervisorReducer,	
+	fetchEmployeeReducer,
+	
 	passwordReducer,
 	fetchTypeLeaveReducer,
-	AddSupervisorReducer,
-
-	fetchEmployeeReducer,
-	fetchSupervisorReducer,
-	fetchDirectorReducer,
 })
 
 const store = createStore(

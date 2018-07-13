@@ -22,6 +22,7 @@ export default class HeaderNav extends React.Component {
     super(props);
     this.state = { role: localStorage.getItem("role") };
   }
+
   render() {
     if (this.state.role === "employee") {
       return (
@@ -224,6 +225,8 @@ export default class HeaderNav extends React.Component {
           />
         </Header>
       );
-    } 
+    } else{
+      return null
+    }
   }
 }

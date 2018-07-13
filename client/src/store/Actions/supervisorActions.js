@@ -44,12 +44,9 @@ export function pendingFetchData() {
 			.then(({
 				body
 			}) => {
-				console.log(body)
-
 				let payload = {
 					loading: false,
 					users: body
-
 				}
 				dispatch(pendingFetch(payload))
 			})
@@ -69,12 +66,9 @@ export function acceptFetchData() {
 			.then(({
 				body
 			}) => {
-				console.log(body)
-
 				let payload = {
 					loading: false,
 					users: body
-
 				}
 				dispatch(acceptFetch(payload))
 			})
@@ -95,12 +89,9 @@ export function rejectFetchData() {
 			.then(({
 				body
 			}) => {
-				console.log(body)
-
 				let payload = {
 					loading: false,
 					users: body
-
 				}
 				dispatch(rejectFetch(payload))
 			})

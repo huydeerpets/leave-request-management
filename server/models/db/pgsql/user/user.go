@@ -68,7 +68,7 @@ func (u *User) ForgotPassword(e *structLogic.PasswordReset) error {
 	o.Raw(`SELECT name, email FROM `+user.TableName()+` WHERE email = ?`, e.Email).QueryRow(&getEmployee)
 
 	if count == 0 {
-		return errors.New("Email not register")
+		return errors.New("email not register")
 	} else {
 		_, errRAW := o.Raw(`UPDATE `+user.TableName()+` SET password = ? WHERE email = ?`, passwordReset, e.Email).Exec()
 		if errRAW != nil {

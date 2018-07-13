@@ -5,12 +5,12 @@ const { Footer } = Layout;
 export default class FooterLayout extends React.Component {
   render() {
     return (
-      <Footer style={{ background: "grey" }}>
+      <Footer className="App-footer">
         <p>
           <a href="http://opensource.org/licenses/mit-license.php"> MIT</a>. The
           website content is licensed{" "}
-          <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
-            CC BY NC SA 4.0
+          <a href="http://www.tnis.com" target="_blank">
+          &copy; P.T TNIS Service Indonesia
           </a>.
         </p>
       </Footer>

@@ -9,7 +9,7 @@ export function formOnchange(payload) {
 
 function clearField(msg) {
 	return {
-		type: 'CLEAR_FIELD'		
+		type: 'CLEAR_FIELD'
 	}
 }
 
@@ -41,11 +41,9 @@ export function SumbitSignUp(payload) {
 					errMsg = 'regiter failed, email already register'
 					dispatch(errorHandle(errMsg))
 				} else {
-					dispatch(clearField())
-					// alert('register success')
+					dispatch(clearField())					
 					window.location.href = "/admin";
 				}
-
 
 			}).catch(err => {
 				let errMsg = 'regiter failed, please field out all field'

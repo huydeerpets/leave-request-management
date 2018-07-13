@@ -57,7 +57,7 @@ func (c *UserController) PasswordReset() {
 	)
 
 	body := c.Ctx.Input.RequestBody
-	fmt.Println("REJECT-REASON=======>", string(body))
+	fmt.Println("EMAIL-RESET=======>", string(body))
 
 	errMarshal := json.Unmarshal(body, &dbUser)
 	if errMarshal != nil {
@@ -72,7 +72,7 @@ func (c *UserController) PasswordReset() {
 	if errUpStat != nil {
 		resp.Error = errUpStat.Error()
 	} else {
-		resp.Body = "please check your email"
+		resp.Body = "reset password success, please check your email"
 	}
 
 	err := c.Ctx.Output.JSON(resp, false, false)

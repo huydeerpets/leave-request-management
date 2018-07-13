@@ -12,7 +12,7 @@ export class SupervisorLandingPage extends React.Component {
       this.props.history.push("/");
     } else if (localStorage.getItem("role") !== "supervisor") {
       this.props.history.push("/");
-    }    
+    }
   }
 
   render() {

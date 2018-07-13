@@ -13,17 +13,18 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 class ProfileEditPage extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   componentDidMount() {
-    if (
+
+    if (!localStorage.getItem("token")) {
+      this.props.history.push("/");
+    } else if (
       localStorage.getItem("role") !== "employee" &&
       localStorage.getItem("role") !== "supervisor" &&
       localStorage.getItem("role") !== "director"
     ) {
       this.props.history.push("/");
+      window.location.href= "/"
     }
 
     this.props.profileFetchData();

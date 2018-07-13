@@ -5,7 +5,7 @@ import { rejectFetchData } from "../store/Actions/employeeAction";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
 import Loading from "./menu/Loading";
-import { Layout, Table, Modal, Button, Pagination } from "antd";
+import { Layout, Table, Modal, Button } from "antd";
 const { Content } = Layout;
 
 class EmployeeReqAcceptPage extends Component {
@@ -83,14 +83,12 @@ class EmployeeReqAcceptPage extends Component {
 
 
   componentDidMount() {
-    if (!localStorage.getItem("token")) {
-      this.props.history.push("/");
-    } else if (
+  if (
       localStorage.getItem("role") !== "employee" &&
       localStorage.getItem("role") !== "supervisor"
     ) {
       this.props.history.push("/");
-    }
+    }   
     this.props.rejectFetchData();
   }
 

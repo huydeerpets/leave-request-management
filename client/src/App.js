@@ -5,18 +5,20 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './store';
 
-import Landingpage from './components/Landingpage';
+import Loginpage from './components/Loginpage';
+import ResetPasswordPage from './components/ResetPasswordPage';
+
 import Adminpage from './components/AdminPage';
 import RegisterPage from './components/RegisterPage';
 import AdminReqPendingPage from './components/AdminReqPendingPage';
 import AdminReqAcceptPage from './components/AdminReqAcceptPage';
 import AdminReqRejectPage from './components/AdminReqRejectPage';
 import AdminEditPage from './components/AdminEditPage';
-import LeaveEditPage from './components/LeaveEditPage';
 
 import LeaveRequestPage from './components/LeaveRequestPage';
-import ProfileEditPage from './components/ProfileEditPage';
 import LeaveRequestSupervisorPage from './components/LeaveRequestSupervisorPage';
+import LeaveEditPage from './components/LeaveEditPage';
+import ProfileEditPage from './components/ProfileEditPage';
 
 import LandingEmployeePage from './components/LandingEmployeePage';
 import EmployeeReqPendingPage from './components/EmployeeReqPendingPage';
@@ -43,8 +45,9 @@ class App extends Component {
         <div className="App">
           <BrowserRouter>
             <Switch>
-              <Route exact path="/" component={Landingpage} />
-              <Route exact path="/login" component={Landingpage} />
+              <Route exact path="/" component={Loginpage} />
+              <Route exact path="/login" component={Loginpage} />
+              <Route exact path="/reset-password" component={ResetPasswordPage} />
 
 
               <Route path="/admin" component={Adminpage} />

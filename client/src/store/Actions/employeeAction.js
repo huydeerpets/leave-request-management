@@ -5,7 +5,6 @@ function pendingFetch(payload) {
 	}
 }
 
-
 function acceptFetch(payload) {
 	return {
 		type: 'FETCH_REQUEST_ACCEPT',
@@ -39,14 +38,10 @@ export function pendingFetchData() {
 			.then(({
 				body
 			}) => {
-				console.log(body)
-
 				let payload = {
 					loading: false,
 					users: body
-
 				}
-				console.log(payload, 'aaa')
 				dispatch(pendingFetch(payload))
 			})
 			.catch(err => {
@@ -65,14 +60,10 @@ export function acceptFetchData() {
 			.then(({
 				body
 			}) => {
-				console.log(body)
-
 				let payload = {
 					loading: false,
 					users: body
-
 				}
-				console.log(payload, 'aaa')
 				dispatch(acceptFetch(payload))
 			})
 			.catch(err => {
@@ -91,14 +82,10 @@ export function rejectFetchData() {
 			.then(({
 				body
 			}) => {
-				console.log(body)
-
 				let payload = {
 					loading: false,
 					users: body
-
 				}
-				console.log(payload, 'aaa')
 				dispatch(rejectFetch(payload))
 			})
 			.catch(err => {

@@ -13,8 +13,7 @@ export function typeLeaveFetchData() {
 			.then((resp) => resp.json())
 			.then(({
 				body
-			}) => {
-				console.log(body)
+			}) => {				
 				let payload = {
 					typeLeave: body
 				}

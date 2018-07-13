@@ -177,7 +177,7 @@ class AdminReqRejectPage extends Component {
                 Contact Address :{" "}
                 {this.state.user && this.state.user.contact_address} <br />
                 Contact Number :{" "}
-                {this.state.user && this.state.user.contact_number}
+                {this.state.user && this.state.user.contact_number}  <br />
                 Reject Reason :{" "}
                 {this.state.user && this.state.user.reject_reason}
               </div>

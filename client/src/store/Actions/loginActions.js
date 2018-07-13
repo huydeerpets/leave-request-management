@@ -14,9 +14,15 @@ function clearField() {
 	}
 }
 
+function errorHandle(payload) {
+	return {
+		type: "HANDLE_ERROR",
+		payload: payload
+	}
+}
+
 export function submitLogin(payload, pusher) {
 	return (dispatch) => {
-
 		fetch('http://localhost:8080/api/login', {
 				method: 'POST',
 				body: JSON.stringify(payload)
@@ -26,59 +32,68 @@ export function submitLogin(payload, pusher) {
 				body,
 				error
 			}) => {
-				const token = body['Token']
-				const id = body['ID']
-				const role = body['Role']
+				let payloadError
 
 				if (error === "Failed get user, email not register") {
-					console.log(error)
-					alert('Email not register, please register')
-					dispatch(clearField())
+					payloadError = {
+						message: 'Email not register',
+						is_error: true,
+					}
+					dispatch(errorHandle(payloadError))
 				} else if (error === "Wrong Password") {
-					console.log(error)
-					alert('Wrong Password')
-					dispatch(clearField())
+					payloadError = {
+						message: 'Wrong Password',
+						is_error: true,
+					}
+					dispatch(errorHandle(payloadError))
 				} else {
+					const token = body['Token']
+					const id = body['ID']
+					const role = body['Role']
 					setAuthorizationToken(token);
+
 					if (role === 'admin') {
 						localStorage.setItem('token', token)
 						localStorage.setItem('role', role)
 						localStorage.setItem('id', id)
 						pusher('/admin')
 						dispatch(clearField())
-						alert("login success")
+
 					} else if (role === 'director') {
 						localStorage.setItem('token', token)
 						localStorage.setItem('role', role)
 						localStorage.setItem('id', id)
 						pusher('/director')
 						dispatch(clearField())
-						alert("login success")
+
 					} else if (role === 'supervisor') {
 						localStorage.setItem('token', token)
 						localStorage.setItem('role', role)
 						localStorage.setItem('id', id)
-						pusher('/supervisor')
+						// payloadError = {
+						// 	message: 'Login success!',
+						// 	is_error: false,
+						// }
+						// dispatch(errorHandle(payloadError))
 						dispatch(clearField())
-						alert("login success")
+						pusher('/supervisor')
+
 					} else if (role === 'employee') {
 						localStorage.setItem('token', token)
 						localStorage.setItem('role', role)
 						localStorage.setItem('id', id)
 						pusher('/employee')
 						dispatch(clearField())
-						alert("login success")
+
 					} else if (role !== 'admin' || role !== 'director' || role !== 'supervisor' || role !== 'employee') {
-						alert('Email not register, please register')
 						pusher('/')
 						dispatch(clearField())
 					}
 				}
 			})
 			.catch(err => {
-				console.log(err)
-				alert("please check email and password", err)
-				dispatch(clearField())
+				let errMsg = 'Please check your email and password'
+				dispatch(errorHandle(errMsg))
 			})
 	}
 }

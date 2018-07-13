@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { handleEdit, updateNewPassword } from "../store/Actions/passwordAction";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
-import { Layout, Form, Input, Select, Button } from "antd";
+import { Layout, Form, Input, Button } from "antd";
 const { Content } = Layout;
 const FormItem = Form.Item;
 
@@ -47,9 +47,7 @@ class PasswordPage extends Component {
     console.log("change", newPassword);
   };
 
-  render() {
-    const { from, to, endOpen } = this.state;
-
+  render() {    
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },

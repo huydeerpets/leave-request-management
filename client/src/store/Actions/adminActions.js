@@ -41,13 +41,10 @@ export function adminFetchData() {
 			.then((resp) => resp.json())
 			.then(({
 				body
-			}) => {
-				console.log(body)
-
+			}) => {			
 				let payload = {
 					loading: false,
 					users: body
-
 				}
 				dispatch(adminloaded(payload))
 			})
@@ -85,21 +82,17 @@ export function deleteUser(users, employeeNumber) {
 
 
 export function pendingFetchData() {
-	return (dispatch) => {
-		const employeeNumber = localStorage.getItem('id')
+	return (dispatch) => {		
 		fetch('http://localhost:8080/api/admin/leave/pending/', {
 				method: 'GET',
 			})
 			.then((resp) => resp.json())
 			.then(({
 				body
-			}) => {
-				console.log(body)
-
+			}) => {				
 				let payload = {
 					loading: false,
 					users: body
-
 				}
 				dispatch(pendingFetch(payload))
 			})
@@ -117,13 +110,10 @@ export function acceptFetchData() {
 			.then((resp) => resp.json())
 			.then(({
 				body
-			}) => {
-				console.log(body)
-
+			}) => {				
 				let payload = {
 					loading: false,
 					users: body
-
 				}
 				dispatch(acceptFetch(payload))
 			})
@@ -135,21 +125,17 @@ export function acceptFetchData() {
 
 
 export function rejectFetchData() {
-	return (dispatch) => {
-		const employeeNumber = localStorage.getItem('id')
+	return (dispatch) => {		
 		fetch('http://localhost:8080/api/admin/leave/reject/', {
 				method: 'GET',
 			})
 			.then((resp) => resp.json())
 			.then(({
 				body
-			}) => {
-				console.log(body)
-
+			}) => {				
 				let payload = {
 					loading: false,
 					users: body
-
 				}
 				dispatch(rejectFetch(payload))
 			})
