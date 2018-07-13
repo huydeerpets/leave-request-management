@@ -9,6 +9,7 @@ import {
 import { Layout, Table, Modal, Button, Input, Icon } from "antd";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
+import Loading from "./menu/Loading";
 const { Content } = Layout;
 let data;
 
@@ -334,7 +335,7 @@ class DirectorPendingPage extends Component {
     ];
 
     if (this.props.loading) {
-      return <h1> loading... </h1>;
+      return <Loading />;
     } else {
       return (
         <Layout>

@@ -4,7 +4,17 @@ import { connect } from "react-redux";
 import { formOnchange, SumbitSignUp } from "../store/Actions/signupActions";
 import { SupervisorAdd } from "../store/Actions/AddSupervisorAction";
 
-import { Layout, Form, Input, Select, Button, DatePicker } from "antd";
+import {
+  Layout,
+  Form,
+  Input,
+  Select,
+  Button,
+  DatePicker,
+  Alert,
+  notification,
+  message
+} from "antd";
 import HeaderNav from "./menu/HeaderAdmin";
 import Footer from "./menu/Footer";
 const { Content } = Layout;
@@ -48,6 +58,12 @@ class RegisterPage extends Component {
       }
     });
     this.props.SumbitSignUp(this.props.signupForm);
+
+    if (JSON.stringify(this.props.error) !== "{}") {
+      message.error(JSON.stringify(this.props.error));
+    } else {      
+      message.error(`"regiter failed, please field out all fieled"`);
+    }
   };
 
   handleOnChange = e => {
@@ -417,26 +433,23 @@ class RegisterPage extends Component {
                     </FormItem>
                   </div>
 
-                  <FormItem {...formItemLayout} label="Password">
-                    <Input
-                      type="text"
-                      id="password"
-                      name="password"
-                      placeholder="password"
-                      value={this.props.signupForm.password}
-                      onChange={this.handleOnChange}
-                    />
-                  </FormItem>
+                  <Input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="password"
+                    value={this.props.signupForm.password}
+                    onChange={this.handleOnChange}
+                    disabled
+                    style={{ display: "none" }}
+                  />
 
                   <FormItem>
                     <Button
                       onClick={this.handleSubmit}
                       htmlType="submit"
                       type="primary"
-                    >
-                      {" "}
-                      Sign-up
-                    </Button>
+                    > CREATE</Button>
                   </FormItem>
                 </Form>
               </div>
@@ -459,7 +472,8 @@ class RegisterPage extends Component {
 }
 
 const mapStateToProps = state => ({
-  signupForm: state.signupReducer,
+  signupForm: state.signupReducer.user,
+  error: state.signupReducer.error,
   supervisor: state.AddSupervisorReducer.supervisor
 });
 

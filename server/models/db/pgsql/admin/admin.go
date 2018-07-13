@@ -25,7 +25,7 @@ func (u *Admin) AddUser(user structDB.User) error {
 	o := orm.NewOrm()
 
 	o.Raw(`SELECT count(*) as Count FROM `+user.TableName()+` WHERE email = ?`, user.Email).QueryRow(&count)
-
+	passwordString := user.Password
 	if count > 0 {
 		return errors.New("Email already register")
 	} else {
@@ -42,6 +42,9 @@ func (u *Admin) AddUser(user structDB.User) error {
 			helpers.CheckErr("error insert @AddUser", err)
 			return errors.New("insert users failed")
 		}
+
+		helpers.GoMailRegisterPassword(user.Email, passwordString)
+
 		return err
 	}
 }

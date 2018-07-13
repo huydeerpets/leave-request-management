@@ -56,6 +56,31 @@ func (u *User) GetJWT(loginData structAPI.ReqLogin) (result structAPI.RespLogin,
 	return RespLogin, err
 }
 
+// ForgotPassword ...
+func (u *User) ForgotPassword(e *structLogic.PasswordReset) error {
+	var count int
+	var getEmployee structLogic.GetEmployee
+	var user structDB.User
+	passwordReset := "JDJhJDEwJGVLUUZYQ1hMeC5oYXZzeDN5VmdIdnVad3dicG5GRjNXZU1HaGZlUFhKR0xTcnRxeFJpOE9P"
+
+	o := orm.NewOrm()
+	o.Raw(`SELECT count(*) as Count FROM `+user.TableName()+` WHERE email = ?`, e.Email).QueryRow(&count)
+	o.Raw(`SELECT name, email FROM `+user.TableName()+` WHERE email = ?`, e.Email).QueryRow(&getEmployee)
+
+	if count == 0 {
+		return errors.New("Email not register")
+	} else {
+		_, errRAW := o.Raw(`UPDATE `+user.TableName()+` SET password = ? WHERE email = ?`, passwordReset, e.Email).Exec()
+		if errRAW != nil {
+			helpers.CheckErr("error forgot password @ForgotPassword", errRAW)
+		}
+
+		helpers.GoMailForgotPassword(getEmployee.Email, getEmployee.Name)
+		return errRAW
+	}
+	// return err
+}
+
 // GetPendingRequest ...
 func (u *User) GetPendingRequest(employeeNumber int64) ([]structLogic.RequestPending, error) {
 	var (

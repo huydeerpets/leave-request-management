@@ -7,6 +7,7 @@ import {
 } from "../store/Actions/employeeAction";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
+import Loading from "./menu/Loading";
 import {
   Layout,
   Table,
@@ -161,7 +162,7 @@ class EmployeeReqAcceptPage extends Component {
     const { visible, loading } = this.state;
 
     if (this.props.loading) {
-      return <h1> loading... </h1>;
+      return <Loading />;
     } else {
       return (
         <Layout>

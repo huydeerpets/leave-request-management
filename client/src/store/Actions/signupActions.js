@@ -7,9 +7,16 @@ export function formOnchange(payload) {
 	}
 }
 
-function clearField() {
+function clearField(msg) {
 	return {
-		type: 'CLEAR_FIELD'
+		type: 'CLEAR_FIELD'		
+	}
+}
+
+function errorHandle(err) {
+	return {
+		type: "HANDLE_ERROR",
+		message: err
 	}
 }
 
@@ -24,20 +31,25 @@ export function SumbitSignUp(payload) {
 				body,
 				error
 			}) => {
-				let respErr = error
+				const respErr = error
+				let errMsg
 				console.log("=================error", respErr)
 				if (respErr === "type request malform") {
-					alert('regiter failed, please field out all field')
+					errMsg = 'regiter failed, please field out all field'
+					dispatch(errorHandle(errMsg))
 				} else if (respErr === "Email already register") {
-					alert('regiter failed, email already register')
+					errMsg = 'regiter failed, email already register'
+					dispatch(errorHandle(errMsg))
 				} else {
 					dispatch(clearField())
-					alert('register success')
+					// alert('register success')
 					window.location.href = "/admin";
 				}
 
+
 			}).catch(err => {
-				console.log(err)
+				let errMsg = 'regiter failed, please field out all field'
+				dispatch(errorHandle(errMsg))
 			})
 	}
 }

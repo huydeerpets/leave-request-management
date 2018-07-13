@@ -12,3 +12,8 @@ type NewPassword struct {
 	NewPassword     string `json:"new_password" orm:"column(new_password)"`
 	ConfirmPassword string `json:"confirm_password" orm:"column(confirm_password)"`
 }
+
+// PasswordReset ...
+type PasswordReset struct {
+	Email string `json:"email" orm:"column(email)"`
+}

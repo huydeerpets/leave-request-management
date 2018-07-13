@@ -13,6 +13,8 @@ type IBaseUser interface {
 		result structAPI.RespLogin,
 		err error,
 	)
+	// ForgotPassword
+	ForgotPassword(e *structLogic.PasswordReset) error
 	// GetDirector
 	GetDirector() (
 		result structLogic.GetDirector,

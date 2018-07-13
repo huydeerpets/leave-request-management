@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { rejectFetchData } from "../store/Actions/supervisorActions";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
+import Loading from "./menu/Loading";
 import { Layout, Table, Modal, Button } from "antd";
 const { Content } = Layout;
 
@@ -112,7 +113,7 @@ class DirectorAcceptPage extends Component {
     const { visible, loading } = this.state;
 
     if (this.props.loading) {
-      return <h1> loading... </h1>;
+      return <Loading />;
     } else {
       return (
         <Layout>

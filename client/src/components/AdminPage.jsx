@@ -4,7 +4,16 @@ import { connect } from "react-redux";
 import { adminFetchData, deleteUser } from "../store/Actions/adminActions";
 import HeaderNav from "./menu/HeaderAdmin";
 import Footer from "./menu/Footer";
-import { Layout, Table, Button, Divider, Popconfirm, message } from "antd";
+import Loading from "./menu/Loading";
+import {
+  Layout,
+  Table,
+  Button,
+  Divider,
+  Popconfirm,
+  message,
+  Spin
+} from "antd";
 const { Content } = Layout;
 
 class Adminpage extends Component {
@@ -22,25 +31,25 @@ class Adminpage extends Component {
         title: "Name",
         dataIndex: "name",
         key: "name",
-        width: "20%",
+        width: "20%"
       },
       {
         title: "Email",
         dataIndex: "email",
         key: "email",
-        width: "20%",
+        width: "20%"
       },
       {
         title: "Position",
         dataIndex: "position",
         key: "position",
-        width: "15%",
+        width: "15%"
       },
       {
         title: "Role",
         dataIndex: "role",
         key: "role",
-        width: "12%",
+        width: "12%"
       },
       {
         title: "Action",
@@ -101,7 +110,7 @@ class Adminpage extends Component {
 
   render() {
     if (this.props.loading) {
-      return <h1> loading... </h1>;
+      return <Loading />;
     } else {
       return (
         <Layout>

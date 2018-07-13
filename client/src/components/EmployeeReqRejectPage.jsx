@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { rejectFetchData } from "../store/Actions/employeeAction";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
+import Loading from "./menu/Loading";
 import { Layout, Table, Modal, Button, Pagination } from "antd";
 const { Content } = Layout;
 
@@ -80,8 +81,17 @@ class EmployeeReqAcceptPage extends Component {
     ];
   }
 
-  onShowSizeChange(current, pageSize) {
-    console.log(current, pageSize);
+
+  componentDidMount() {
+    if (!localStorage.getItem("token")) {
+      this.props.history.push("/");
+    } else if (
+      localStorage.getItem("role") !== "employee" &&
+      localStorage.getItem("role") !== "supervisor"
+    ) {
+      this.props.history.push("/");
+    }
+    this.props.rejectFetchData();
   }
 
   showDetail = record => {
@@ -99,22 +109,17 @@ class EmployeeReqAcceptPage extends Component {
     this.setState({ visible: false });
   };
 
-  componentDidMount() {
-    if (!localStorage.getItem("token")) {
-      this.props.history.push("/");
-    } else if (
-      localStorage.getItem("role") !== "employee" &&
-      localStorage.getItem("role") !== "supervisor"
-    ) {
-      this.props.history.push("/");
-    }
-    this.props.rejectFetchData();
+  onShowSizeChange(current, pageSize) {
+    console.log(current, pageSize);
   }
+
+
+
   render() {
     const { visible, loading } = this.state;
 
     if (this.props.loading) {
-      return <h1> loading... </h1>;
+      return <Loading />;
     } else {
       return (
         <Layout>

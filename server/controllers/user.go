@@ -48,6 +48,39 @@ func (c *UserController) Login() {
 	}
 }
 
+// PasswordReset ...
+func (c *UserController) PasswordReset() {
+	var (
+		resp structAPI.RespData
+		// reqEmail structAPI.ReqForgot
+		dbUser structLogic.PasswordReset
+	)
+
+	body := c.Ctx.Input.RequestBody
+	fmt.Println("REJECT-REASON=======>", string(body))
+
+	errMarshal := json.Unmarshal(body, &dbUser)
+	if errMarshal != nil {
+		helpers.CheckErr("unmarshall req body failed @PasswordReset", errMarshal)
+		resp.Error = errors.New("type request malform").Error()
+		c.Ctx.Output.SetStatus(400)
+		c.Ctx.Output.JSON(resp, false, false)
+		return
+	}
+
+	errUpStat := logic.DBPostUser.ForgotPassword(&dbUser)
+	if errUpStat != nil {
+		resp.Error = errUpStat.Error()
+	} else {
+		resp.Body = "please check your email"
+	}
+
+	err := c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		helpers.CheckErr("failed giving output @PasswordReset", err)
+	}
+}
+
 // GetRequestPending ...
 func (c *UserController) GetRequestPending() {
 	var (

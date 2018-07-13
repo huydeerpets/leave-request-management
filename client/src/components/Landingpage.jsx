@@ -4,7 +4,8 @@ import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { handleFormInput, submitLogin } from "../store/Actions/loginActions";
 import { Layout, Form, Icon, Input, Button, Menu } from "antd";
-const { Header, Footer, Content } = Layout;
+import Footer from "./menu/Footer";
+const { Header, Content } = Layout;
 const FormItem = Form.Item;
 
 class Landingpage extends Component {
@@ -103,7 +104,7 @@ class Landingpage extends Component {
                       <Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />
                     }
                   />
-                </FormItem>                
+                </FormItem>
 
                 <FormItem>
                   <Button
@@ -121,15 +122,7 @@ class Landingpage extends Component {
             </div>
           </Content>
 
-          <Footer style={{ textAlign: "center" }}>
-            <p>
-              <a href="http://opensource.org/licenses/mit-license.php"> MIT</a>.
-              The website content is licensed{" "}
-              <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
-                CC BY NC SA 4.0
-              </a>.
-            </p>
-          </Footer>
+          <Footer />
         </Layout>
       </div>
     );

@@ -18,7 +18,6 @@ export function profileFetchData() {
 				let payload = {
 					loading: false,
 					user: body
-
 				}
 				dispatch(profileloaded(payload))
 			})

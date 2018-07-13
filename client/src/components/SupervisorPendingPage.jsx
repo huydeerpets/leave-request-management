@@ -8,6 +8,7 @@ import {
 } from "../store/Actions/supervisorActions";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
+import Loading from "./menu/Loading";
 import { Layout, Table, Modal, Button, Input } from "antd";
 const { Content } = Layout;
 
@@ -177,7 +178,7 @@ class SupervisorPendingPage extends Component {
     const { visible, visibleReject, loadingA, loadingR } = this.state;
 
     if (this.props.loading) {
-      return <h1> loading... </h1>;
+      return <Loading />;
     } else {
       return (
         <Layout>

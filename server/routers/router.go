@@ -30,6 +30,11 @@ func init() {
 			"get:GetUserSummary",
 		),
 
+		beego.NSRouter("/user/password-reset",
+			&controllers.UserController{},
+			"put:PasswordReset",
+		),
+
 		// upadate new password
 		beego.NSRouter("/user/update/:id:int ",
 			&controllers.UserController{},

@@ -47,6 +47,15 @@ type directorMailReject struct {
 	Reason       string
 }
 
+type sendPassword struct {
+	EmployeeName string
+	Password     string
+}
+
+type newUser struct {
+	Password string
+}
+
 // GoMailEmployee ...
 func GoMailEmployee(mailTo string, leaveID string, employeeName string, supervisorName string) {
 
@@ -264,6 +273,81 @@ func GoMailDirectorReject(mailTo string, leaveID string, employeeName string, di
 	m.SetHeader("From", authEmail)
 	m.SetHeader("To", mailTo)
 	m.SetHeader("Subject", "Reject Leave Request")
+	m.Embed(filePrefix + "/tnis.png")
+	m.SetBody("text/html", mailHTML)
+
+	d := gomail.NewDialer(authHost, port, authEmail, authPassword)
+
+	if err := d.DialAndSend(m); err != nil {
+		CheckErr("error email", err)
+	}
+}
+
+// GoMailForgotPassword ...
+func GoMailForgotPassword(mailTo string, employeeName string) {
+
+	var errParse error
+	resetPassword := constant.GOPWDRESET
+	filePrefix, _ := filepath.Abs("./views")
+	t := template.New("forgot_password.html")
+	infoHTML := sendPassword{employeeName, resetPassword}
+	t, errParse = t.ParseFiles(filePrefix + "/forgot_password.html")
+	if errParse != nil {
+		CheckErr("errParse ", errParse)
+	}
+
+	var tpl bytes.Buffer
+	if err := t.Execute(&tpl, infoHTML); err != nil {
+		CheckErr("err ", err)
+	}
+	mailHTML := tpl.String()
+
+	authEmail := "tnis.noreply@gmail.com"
+	authPassword := constant.GOPWD
+	authHost := "smtp.gmail.com"
+	port := 587
+
+	m := gomail.NewMessage()
+	m.SetHeader("From", authEmail)
+	m.SetHeader("To", mailTo)
+	m.SetHeader("Subject", "Forgot Password")
+	m.Embed(filePrefix + "/tnis.png")
+	m.SetBody("text/html", mailHTML)
+
+	d := gomail.NewDialer(authHost, port, authEmail, authPassword)
+
+	if err := d.DialAndSend(m); err != nil {
+		CheckErr("error email", err)
+	}
+}
+
+// GoMailRegisterPassword ...
+func GoMailRegisterPassword(mailTo string, password string) {
+
+	var errParse error
+	filePrefix, _ := filepath.Abs("./views")
+	t := template.New("register_password.html")
+	infoHTML := newUser{password}
+	t, errParse = t.ParseFiles(filePrefix + "/register_password.html")
+	if errParse != nil {
+		CheckErr("errParse ", errParse)
+	}
+
+	var tpl bytes.Buffer
+	if err := t.Execute(&tpl, infoHTML); err != nil {
+		CheckErr("err ", err)
+	}
+	mailHTML := tpl.String()
+
+	authEmail := "tnis.noreply@gmail.com"
+	authPassword := constant.GOPWD
+	authHost := "smtp.gmail.com"
+	port := 587
+
+	m := gomail.NewMessage()
+	m.SetHeader("From", authEmail)
+	m.SetHeader("To", mailTo)
+	m.SetHeader("Subject", "Register Password")
 	m.Embed(filePrefix + "/tnis.png")
 	m.SetBody("text/html", mailHTML)
 
