@@ -8,7 +8,7 @@ type CreateLeaveRequest struct {
 	DateFrom       string `json:"date_from" orm:"column(date_from)"`
 	DateTo         string `json:"date_to" orm:"column(date_to)"`
 	// DateRanges     []DateRange `json:"date_ranges"`
-	Total          int64  `json:"total" orm:"column(total)"`
+	Total          int    `json:"total" orm:"column(total)"`
 	BackOn         string `json:"back_on" orm:"column(back_on)"`
 	ContactAddress string `json:"contact_address" orm:"column(contact_address)"`
 	ContactNumber  string `json:"contact_number" orm:"column(contact_number)"`

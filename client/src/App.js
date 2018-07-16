@@ -64,9 +64,9 @@ class App extends Component {
 
               <Route path="/employee" component={LandingEmployeePage} />
               <Route path={`/editrequest/:id`} component={LeaveEditPage}/>
-              <Route exact path={`/profile/:id`} component={PasswordPage}/>
               <Route exact path="/profile" component={ProfileEditPage} />
-
+              <Route exact path={`/profile/:id`} component={PasswordPage}/>
+              
 
               <Route path="/request-pending" component={EmployeeReqPendingPage} />
               <Route path="/request-accept" component={EmployeeReqAcceptPage} />

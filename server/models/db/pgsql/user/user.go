@@ -458,9 +458,9 @@ func (u *User) GetSupervisors() (result []structLogic.GetSupervisors, err error)
 }
 
 // GetSumarry ...
-func (u *User) GetSumarry(employeeNumber int64) (structLogic.UserSumarry, error) {
+func (u *User) GetSumarry(employeeNumber int64) ([]structLogic.UserSumarry, error) {
 	var (
-		sumarry       structLogic.UserSumarry
+		sumarry       []structLogic.UserSumarry
 		leave         structDB.LeaveRequest
 		typeLeave     structDB.TypeLeave
 		userTypeLeave structDB.UserTypeLeave
@@ -484,7 +484,6 @@ func (u *User) GetSumarry(employeeNumber int64) (structLogic.UserSumarry, error)
 		On(typeLeave.TableName()+".id"+"="+userTypeLeave.TableName()+".type_leave_id").
 		InnerJoin(leave.TableName()).
 		On(leave.TableName()+".type_leave_id"+"="+userTypeLeave.TableName()+".type_leave_id").
-		And(leave.TableName()+".employee_number"+"="+userTypeLeave.TableName()+".employee_number").
 		Where(userTypeLeave.TableName()+`.employee_number = ? `).
 		And(leave.TableName()+`.status = ?`).
 		GroupBy(userTypeLeave.TableName()+`.type_leave_id`,
@@ -492,11 +491,42 @@ func (u *User) GetSumarry(employeeNumber int64) (structLogic.UserSumarry, error)
 			userTypeLeave.TableName()+`.leave_remaining`)
 	sql := qb.String()
 
-	errRaw := o.Raw(sql, employeeNumber, statSuccessInDirector).QueryRow(&sumarry)
+	_, errRaw := o.Raw(sql, employeeNumber, statSuccessInDirector).QueryRows(&sumarry)
 	if errRaw != nil {
 		helpers.CheckErr("Failed Query Select @GetSumarry", errRaw)
 		return sumarry, errors.New("error get user summary")
 	}
 
 	return sumarry, errRaw
+}
+
+// GetUserTypeLeave ...
+func (u *User) GetUserTypeLeave(employeeNumber int64) (result []structLogic.UserTypeLeave, err error) {
+	var (
+		dbType        structDB.TypeLeave
+		userTypeLeave structDB.UserTypeLeave
+	)
+
+	o := orm.NewOrm()
+	qb, errQB := orm.NewQueryBuilder("mysql")
+	if errQB != nil {
+		helpers.CheckErr("Query builder failed @GetUserTypeLeave", errQB)
+		return result, errQB
+	}
+
+	qb.Select(
+		dbType.TableName()+".type_name",
+		userTypeLeave.TableName()+".leave_remaining").
+		From(dbType.TableName()).
+		InnerJoin(userTypeLeave.TableName()).
+		On(userTypeLeave.TableName() + ".type_leave_id" + " = " + dbType.TableName() + ".id").
+		Where(userTypeLeave.TableName() + `.employee_number = ? `)
+	sql := qb.String()
+
+	_, errRaw := o.Raw(sql, employeeNumber).QueryRows(&result)
+	if errRaw != nil {
+		helpers.CheckErr("Failed Query Select @GetUserTypeLeave", errRaw)
+		return result, errors.New("error get")
+	}
+	return result, err
 }

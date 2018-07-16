@@ -16,16 +16,9 @@
   font-size: large;
 }
 
-.ant-layout-header {
-  background: #001529;
-  padding: 0 50px;
-  height: 64px;
-  line-height: 6px;
-}
-
 .App-header {
   background-color: #4abdcf;
-  height: 70px;
+  height: 100px;
   padding: 20px;
   color: white;
 }
@@ -41,17 +34,16 @@
 
 .App-footer {
   background-color: #4abdcf;
-  height: 70px;
+  height: 100px;
   color: white;
+  justify-content: center;
+  align-items: center;
+  align-self: auto;
 }
 
 .login-form {
   padding: 10px;
   max-width: 500px;
-}
-
-.login-form-forgot {
-  float: right;
 }
 
 .login-form-button {

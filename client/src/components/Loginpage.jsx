@@ -55,7 +55,7 @@ class LoginPage extends Component {
       this.props.history.push(url);
     });
 
-    message.error(JSON.stringify(this.props.error.message));
+    // message.error(JSON.stringify(this.props.error.message));
     // if (this.props.error.is_error === true) {
     //   message.error(JSON.stringify(this.props.error.message));
     // } else if (this.props.error.is_error === false) {
@@ -100,12 +100,12 @@ class LoginPage extends Component {
             className="container"
             style={{
               display: "flex",
-              margin: "56px 15px ",
+              margin: "138px 15px ",
               justifyContent: "space-around"
             }}
           >
             <div
-              style={{ padding: 70, background: "#fff", "border-radius": 10 }}
+              style={{ padding: 100, background: "#fff", "border-radius": 7 }}
             >
               <h1> Welcome! </h1>
               <Form onSubmit={this.handleSumbitLogin} className="login-form">

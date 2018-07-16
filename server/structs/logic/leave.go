@@ -19,3 +19,8 @@ type UserSumarry struct {
 	Used           int64  `json:"used" orm:"column(used)"`
 	LeaveRemaining int64  `json:"leave_remaining" orm:"column(leave_remaining)"`
 }
+
+type UserTypeLeave struct {
+	TypeName       string `json:"type_name" orm:"column(type_name)"`
+	LeaveRemaining int64  `json:"leave_remaining" orm:"column(leave_remaining)"`
+}

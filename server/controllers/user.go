@@ -263,3 +263,30 @@ func (c *UserController) GetUserSummary() {
 		helpers.CheckErr("failed giving output @GetUserSummary", err)
 	}
 }
+
+// GetUserTypeLeave ...
+func (c *UserController) GetUserTypeLeave() {
+	var (
+		resp structAPI.RespData
+	)
+	idStr := c.Ctx.Input.Param(":id")
+	employeeNumber, errCon := strconv.ParseInt(idStr, 0, 64)
+	if errCon != nil {
+		helpers.CheckErr("convert id failed @GetUserTypeLeave", errCon)
+		resp.Error = errors.New("convert id failed").Error()
+		return
+	}
+
+	resGet, errGet := logic.DBPostUser.GetUserTypeLeave(employeeNumber)
+	if errGet != nil {
+		resp.Error = errGet.Error()
+		c.Ctx.Output.SetStatus(400)
+	} else {
+		resp.Body = resGet
+	}
+
+	err := c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		helpers.CheckErr("failed giving output @GetUserTypeLeave", err)
+	}
+}

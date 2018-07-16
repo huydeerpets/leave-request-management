@@ -71,7 +71,7 @@ export default class HeaderNav extends React.Component {
                 <NavLink to="/request-pending">List Request Pending</NavLink>
               </Menu.Item>
               <Menu.Item key="schedule:2">
-                <NavLink to="/request-accept">List Request Accept</NavLink>
+                <NavLink to="/request-accept">List Request Approve</NavLink>
               </Menu.Item>
               <Menu.Item key="schedule:3">
                 <NavLink to="/request-reject">List Request Reject</NavLink>
@@ -131,7 +131,7 @@ export default class HeaderNav extends React.Component {
                 <NavLink to="/request-pending">List Request Pending</NavLink>
               </Menu.Item>
               <Menu.Item key="schedule:3">
-                <NavLink to="/request-accept">List Request Accept</NavLink>
+                <NavLink to="/request-accept">List Request Approve</NavLink>
               </Menu.Item>
               <Menu.Item key="schedule:4">
                 <NavLink to="/request-reject">List Request Reject</NavLink>

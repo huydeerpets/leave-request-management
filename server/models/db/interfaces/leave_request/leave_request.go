@@ -14,7 +14,7 @@ type IBaseLeaveRequest interface {
 		dateFrom string,
 		dateTo string,
 		backOn string,
-		total int64,
+		total int,
 		address string,
 		contactLeave string,
 		status string) error
@@ -25,7 +25,7 @@ type IBaseLeaveRequest interface {
 		from string,
 		to string,
 		backOn string,
-		total int64,
+		total int,
 		address string,
 		contactLeave string,
 		status string) error

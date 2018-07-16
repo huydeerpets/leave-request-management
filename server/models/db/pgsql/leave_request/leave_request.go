@@ -21,13 +21,13 @@ func (l *LeaveRequest) CreateLeaveRequest(employeeNumber int64,
 	dateFrom string,
 	dateTo string,
 	backOn string,
-	total int64,
+	total int,
 	address string,
 	contactLeave string,
 	status string) error {
 
 	var leave structDB.LeaveRequest
-	var user logicUser.User
+	// var user logicUser.User
 	o := orm.NewOrm()
 	qb, errQB := orm.NewQueryBuilder("mysql")
 	if errQB != nil {
@@ -65,11 +65,11 @@ func (l *LeaveRequest) CreateLeaveRequest(employeeNumber int64,
 		return errors.New("insert create leave request failed")
 	}
 
-	getEmployee, _ := user.GetEmployee(employeeNumber)
-	getSupervisorID, _ := user.GetSupervisor(employeeNumber)
-	getSupervisor, _ := user.GetEmployee(getSupervisorID.SupervisorID)
+	// getEmployee, _ := user.GetEmployee(employeeNumber)
+	// getSupervisorID, _ := user.GetSupervisor(employeeNumber)
+	// getSupervisor, _ := user.GetEmployee(getSupervisorID.SupervisorID)
 
-	helpers.GoMailSupervisor(getSupervisor.Email, getEmployee.Name, getSupervisor.Name)
+	// helpers.GoMailSupervisor(getSupervisor.Email, getEmployee.Name, getSupervisor.Name)
 
 	return err
 }
@@ -81,7 +81,7 @@ func (l *LeaveRequest) CreateLeaveRequestSupervisor(employeeNumber int64,
 	dateFrom string,
 	dateTo string,
 	backOn string,
-	total int64,
+	total int,
 	address string,
 	contactLeave string,
 	status string) error {

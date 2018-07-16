@@ -145,7 +145,7 @@ class DirectorRejectPage extends Component {
 
             <Modal
               visible={visible}
-              title="Detail Leave Request Accepted"
+              title="Detail Leave Request Rejected"
               onCancel={this.handleCancel}
               style={{ top: "20" }}
               bodyStyle={{ padding: "0" }}
@@ -169,8 +169,8 @@ class DirectorRejectPage extends Component {
                 From : {this.state.user && this.state.user.date_from} <br />
                 To : {this.state.user && this.state.user.date_to} <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
-                Total : {this.state.user && this.state.user.total} day <br />
-                Leave Remaining : {this.state.user && this.state.user.leave_remaining} day <br />
+                Total Leave : {this.state.user && this.state.user.total} day <br />
+                Leave Balance : {this.state.user && this.state.user.leave_remaining} day <br />
                 Contact Address : {this.state.user && this.state.user.contact_address} <br />
                 Contact Number : {this.state.user && this.state.user.contact_number}                
                 Reject Reason : {this.state.user && this.state.user.reject_reason}  

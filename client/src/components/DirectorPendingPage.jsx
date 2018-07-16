@@ -437,9 +437,8 @@ class DirectorPendingPage extends Component {
                 From : {this.state.user && this.state.user.date_from} <br />
                 To : {this.state.user && this.state.user.date_to} <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
-                Total : {this.state.user && this.state.user.total} day <br />
-                Leave Remaining :{" "}
-                {this.state.user && this.state.user.leave_remaining} day <br />
+                Total Leave : {this.state.user && this.state.user.total} day <br />
+                Leave Balance : {this.state.user && this.state.user.leave_remaining} day <br />
                 Contact Address :{" "}
                 {this.state.user && this.state.user.contact_address} <br />
                 Contact Number :{" "}

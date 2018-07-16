@@ -16,6 +16,10 @@ func init() {
 			&controllers.UserController{},
 			"post:Login",
 		),
+		beego.NSRouter("/user/password-reset",
+			&controllers.UserController{},
+			"put:PasswordReset",
+		),
 
 		beego.NSRouter("/user/type-leave",
 			&controllers.UserController{},
@@ -25,14 +29,14 @@ func init() {
 			&controllers.UserController{},
 			"get:GetSupervisors",
 		),
-		beego.NSRouter("/user/summary/:id:int ",
+
+		beego.NSRouter("/user/summary/:id:int",
 			&controllers.UserController{},
 			"get:GetUserSummary",
 		),
-
-		beego.NSRouter("/user/password-reset",
+		beego.NSRouter("/user/type-leave/:id:int",
 			&controllers.UserController{},
-			"put:PasswordReset",
+			"get:GetUserTypeLeave",
 		),
 
 		// upadate new password
