@@ -9,9 +9,9 @@ import (
 	"strconv"
 
 	db "server/models/db/pgsql/leave_request"
+	userLogic "server/models/db/pgsql/user"
 
 	structAPI "server/structs/api"
-	structDB "server/structs/db"
 
 	"github.com/astaxie/beego"
 )
@@ -27,6 +27,7 @@ func (c *LeaveController) PostLeaveRequest() {
 		resp    structAPI.RespData
 		req     structAPI.ReqLeave
 		dbLeave db.LeaveRequest
+		dbUser  userLogic.User
 	)
 
 	idStr := c.Ctx.Input.Param(":id")
@@ -54,6 +55,9 @@ func (c *LeaveController) PostLeaveRequest() {
 	valueHalfDay := float64(0.5)
 	result := helpers.Multiply(totalDay, reqHalfDay, valueHalfDay)
 
+	resGet, errGet := dbUser.GetUserLeaveRemaining(req.TypeLeaveID, employeeNumber)
+	helpers.CheckErr("err get", errGet)
+
 	leave := structAPI.CreateLeaveRequest{
 		EmployeeNumber: employeeNumber,
 		TypeLeaveID:    req.TypeLeaveID,
@@ -68,25 +72,32 @@ func (c *LeaveController) PostLeaveRequest() {
 		Status:         constant.StatusPendingInSupervisor,
 	}
 
-	errAddLeave := dbLeave.CreateLeaveRequest(
-		leave.EmployeeNumber,
-		leave.TypeLeaveID,
-		leave.Reason,
-		leave.DateFrom,
-		leave.DateTo,
-		leave.HalfDates,
-		leave.BackOn,
-		leave.Total,
-		leave.ContactAddress,
-		leave.ContactNumber,
-		leave.Status,
-	)
+	strBalance := strconv.FormatFloat(resGet.LeaveRemaining, 'f', 1, 64)
+	strTotal := strconv.FormatFloat(result, 'f', 1, 64)
 
-	if errAddLeave != nil {
-		resp.Error = errAddLeave.Error()
-		c.Ctx.Output.SetStatus(400)
+	if result > float64(resGet.LeaveRemaining) {
+		resp.Error = errors.New("your total leave is " + strTotal + " day and your " + resGet.TypeName + " balance is " + strBalance + " day left").Error()
 	} else {
-		resp.Body = leave
+		errAddLeave := dbLeave.CreateLeaveRequest(
+			leave.EmployeeNumber,
+			leave.TypeLeaveID,
+			leave.Reason,
+			leave.DateFrom,
+			leave.DateTo,
+			leave.HalfDates,
+			leave.BackOn,
+			leave.Total,
+			leave.ContactAddress,
+			leave.ContactNumber,
+			leave.Status,
+		)
+
+		if errAddLeave != nil {
+			resp.Error = errAddLeave.Error()
+			c.Ctx.Output.SetStatus(400)
+		} else {
+			resp.Body = leave
+		}
 	}
 
 	err := c.Ctx.Output.JSON(resp, false, false)
@@ -173,7 +184,7 @@ func (c *LeaveController) PostLeaveRequestSupervisor() {
 func (c *LeaveController) UpdateRequest() {
 	var (
 		resp    structAPI.RespData
-		leave   structDB.LeaveRequest
+		leave   structAPI.UpdateLeaveRequest
 		dbLeave db.LeaveRequest
 	)
 
@@ -201,12 +212,12 @@ func (c *LeaveController) UpdateRequest() {
 	valueHalfDay := float64(0.5)
 	result := helpers.Multiply(totalDay, reqHalfDay, valueHalfDay)
 
-	leave = structDB.LeaveRequest{
-		TypeLeaveID: leave.TypeLeaveID,
-		Reason:      leave.Reason,
-		DateFrom:    leave.DateFrom,
-		DateTo:      leave.DateTo,
-
+	leave = structAPI.UpdateLeaveRequest{
+		TypeLeaveID:    leave.TypeLeaveID,
+		Reason:         leave.Reason,
+		DateFrom:       leave.DateFrom,
+		DateTo:         leave.DateTo,
+		HalfDates:      leave.HalfDates,
 		Total:          result,
 		BackOn:         leave.BackOn,
 		ContactAddress: leave.ContactAddress,

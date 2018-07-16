@@ -2,9 +2,9 @@ package logic
 
 // GetLeave ...
 type GetLeave struct {
-	ID          string `json:"id" orm:"column(id)"`
-	TypeLeaveID int64  `json:"type_leave_id" orm:"column(type_leave_id)"`
-	Total       int64  `json:"total" orm:"column(total)"`
+	ID          string  `json:"id" orm:"column(id)"`
+	TypeLeaveID int64   `json:"type_leave_id" orm:"column(type_leave_id)"`
+	Total       float64 `json:"total" orm:"column(total)"`
 }
 
 // LeaveReason ...
@@ -20,7 +20,8 @@ type UserSumarry struct {
 	LeaveRemaining int64  `json:"leave_remaining" orm:"column(leave_remaining)"`
 }
 
+// UserTypeLeave ...
 type UserTypeLeave struct {
-	TypeName       string `json:"type_name" orm:"column(type_name)"`
-	LeaveRemaining int64  `json:"leave_remaining" orm:"column(leave_remaining)"`
+	TypeName       string  `json:"type_name" orm:"column(type_name)"`
+	LeaveRemaining float64 `json:"leave_remaining" orm:"column(leave_remaining)"`
 }

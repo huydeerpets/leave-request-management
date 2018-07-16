@@ -36,8 +36,8 @@ type IBaseAdmin interface {
 	CreateUserTypeLeave(
 		employeeNumber int64,
 		typeLeaveID int64,
-		total int64,
+		total float64,
 	) error
 	// UpdateLeaveRemaning
-	UpdateLeaveRemaning(total int64, employeeNumber int64, typeID int64) (err error)
+	UpdateLeaveRemaning(total float64, employeeNumber int64, typeID int64) (err error)
 }

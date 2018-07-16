@@ -530,3 +530,34 @@ func (u *User) GetUserTypeLeave(employeeNumber int64) (result []structLogic.User
 	}
 	return result, err
 }
+
+// GetUserLeaveRemaining ...
+func (u *User) GetUserLeaveRemaining(typeID int64, employeeNumber int64) (result structLogic.UserTypeLeave, err error) {
+	var (
+		dbType        structDB.TypeLeave
+		userTypeLeave structDB.UserTypeLeave
+	)
+
+	o := orm.NewOrm()
+	qb, errQB := orm.NewQueryBuilder("mysql")
+	if errQB != nil {
+		helpers.CheckErr("Query builder failed @GetUserLeaveRemaining", errQB)
+		return result, errQB
+	}
+
+	qb.Select(
+		dbType.TableName()+".type_name",
+		userTypeLeave.TableName()+".leave_remaining").
+		From(userTypeLeave.TableName()).
+		InnerJoin(dbType.TableName()).
+		On(dbType.TableName() + ".id" + " = " + userTypeLeave.TableName() + ".type_leave_id").
+		Where(userTypeLeave.TableName() + `.type_leave_id = ? `).And(userTypeLeave.TableName() + `.employee_number = ? `)
+	sql := qb.String()
+
+	errRaw := o.Raw(sql, typeID, employeeNumber).QueryRow(&result)
+	if errRaw != nil {
+		helpers.CheckErr("Failed Query Select @GetUserLeaveRemaining", errRaw)
+		return result, errors.New("error get")
+	}
+	return result, err
+}

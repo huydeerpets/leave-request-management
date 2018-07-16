@@ -349,7 +349,7 @@ func (u *Admin) GetLeaveRequestReject() ([]structLogic.RequestReject, error) {
 }
 
 // UpdateLeaveRemaning ...
-func (u *Admin) UpdateLeaveRemaning(total int64, employeeNumber int64, typeID int64) (err error) {
+func (u *Admin) UpdateLeaveRemaning(total float64, employeeNumber int64, typeID int64) (err error) {
 	var e *structDB.UserTypeLeave
 	o := orm.NewOrm()
 	qb, errQB := orm.NewQueryBuilder("mysql")
@@ -381,7 +381,7 @@ func (u *Admin) UpdateLeaveRemaning(total int64, employeeNumber int64, typeID in
 // CreateUserTypeLeave ...
 func (u *Admin) CreateUserTypeLeave(employeeNumber int64,
 	typeLeaveID int64,
-	leaveRemaining int64) error {
+	leaveRemaining float64) error {
 
 	var typeLeave structDB.UserTypeLeave
 

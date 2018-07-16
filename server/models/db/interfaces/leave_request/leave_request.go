@@ -1,7 +1,7 @@
 package leave
 
 import (
-	structDB "server/structs/db"
+	structAPI "server/structs/api"
 	structLogic "server/structs/logic"
 )
 
@@ -32,7 +32,7 @@ type IBaseLeaveRequest interface {
 		contactLeave string,
 		status string) error
 	// UpdateRequest
-	UpdateRequest(e *structDB.LeaveRequest, id int64) (err error)
+	UpdateRequest(e *structAPI.UpdateLeaveRequest, id int64) (err error)
 	// DeleteRequest
 	DeleteRequest(id int64) (err error)
 	// GetLeave

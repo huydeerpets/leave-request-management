@@ -4,6 +4,7 @@ import (
 	"errors"
 	"server/helpers"
 	logicUser "server/models/db/pgsql/user"
+	structAPI "server/structs/api"
 	structDB "server/structs/db"
 	structLogic "server/structs/logic"
 
@@ -146,7 +147,9 @@ func (l *LeaveRequest) CreateLeaveRequestSupervisor(employeeNumber int64,
 }
 
 // UpdateRequest ...
-func (l *LeaveRequest) UpdateRequest(e *structDB.LeaveRequest, id int64) (err error) {
+func (l *LeaveRequest) UpdateRequest(e *structAPI.UpdateLeaveRequest, id int64) (err error) {
+	var dbLeave structDB.LeaveRequest
+	isHalfDay := helpers.ArrayToString(e.HalfDates, ",")
 	o := orm.NewOrm()
 	qb, errQB := orm.NewQueryBuilder("mysql")
 	if errQB != nil {
@@ -154,13 +157,14 @@ func (l *LeaveRequest) UpdateRequest(e *structDB.LeaveRequest, id int64) (err er
 		return errQB
 	}
 
-	qb.Update(e.TableName()).
+	qb.Update(dbLeave.TableName()).
 		Set("type_leave_id = ?",
 			"reason = ?",
 			"date_from = ?",
 			"date_to = ?",
 			"half_dates = ?",
 			"back_on = ?",
+			"total",
 			"contact_address = ?",
 			"contact_number = ?").Where("id = ? ")
 	sql := qb.String()
@@ -170,8 +174,9 @@ func (l *LeaveRequest) UpdateRequest(e *structDB.LeaveRequest, id int64) (err er
 		e.Reason,
 		e.DateFrom,
 		e.DateTo,
-		e.HalfDates,
+		isHalfDay,
 		e.BackOn,
+		e.Total,
 		e.ContactAddress,
 		e.ContactNumber,
 		id).Exec()

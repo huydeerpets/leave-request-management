@@ -56,4 +56,5 @@ type IBaseUser interface {
 	GetSumarry(employeeNumber int64) ([]structLogic.UserSumarry, error)
 	// GetUserTypeLeave
 	GetUserTypeLeave(employeeNumber int64) (result []structLogic.UserTypeLeave, err error)
+	GetUserLeaveRemaining(typeID int64, employeeNumber int64) (result structLogic.UserTypeLeave, err error)
 }
