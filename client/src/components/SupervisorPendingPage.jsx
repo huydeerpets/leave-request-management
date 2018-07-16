@@ -188,7 +188,7 @@ class SupervisorPendingPage extends Component {
             style={{
               display: "flex",
               margin: "18px 10px 0",
-              justifyContent: "space-around",
+              justifyContent: "center",
               paddingBottom: "336px"
             }}
           >

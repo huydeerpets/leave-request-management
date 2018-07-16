@@ -2,7 +2,7 @@ import {
 	createStore,
 	combineReducers,
 	applyMiddleware
-} from '../../../../../../../.cache/typescript/2.9/node_modules/redux'
+} from 'redux'
 import thunk from 'redux-thunk';
 
 import loginReducer from './Reducers/loginReducer'
@@ -19,6 +19,9 @@ import editRequestReducer from './Reducers/editRequestReducer'
 import fetchDirectorReducer from './Reducers/fetchDirectorReducer'
 import fetchSupervisorReducer from './Reducers/fetchSupervisorReducer'
 import fetchEmployeeReducer from './Reducers/fetchEmployeeReducer'
+import fetchUserSummaryReducer from './Reducers/fetchUserSummaryReducer'
+import fetchUserTypeLeaveReducer from './Reducers/fetchUserTypeLeaveReducer'
+
 
 
 import profileReducer from './Reducers/profileReducer'
@@ -47,9 +50,13 @@ const appStore = combineReducers({
 	fetchDirectorReducer,
 	fetchSupervisorReducer,	
 	fetchEmployeeReducer,
+
+	fetchUserSummaryReducer,
+	fetchUserTypeLeaveReducer,
 	
 	passwordReducer,
 	fetchTypeLeaveReducer,
+	
 })
 
 const store = createStore(

@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { handleFormInput, submitLogin } from "../store/Actions/loginActions";
 import { Layout, Form, Icon, Input, Button, message } from "antd";
-import Footer from "./menu/Footer";
 const { Header, Content } = Layout;
+const { Footer } = Layout;
 const FormItem = Form.Item;
 
 class LoginPage extends Component {
@@ -154,7 +154,15 @@ class LoginPage extends Component {
             </div>
           </Content>
 
-          <Footer />
+          <Footer className="Login-footer">
+            <p>
+              <a href="http://opensource.org/licenses/mit-license.php"> MIT</a>.
+              The website content is licensed{" "}
+              <a href="http://www.tnis.com" target="_blank">
+                &copy; P.T TNIS Service Indonesia
+              </a>.
+            </p>
+          </Footer>
         </Layout>
       </div>
     );

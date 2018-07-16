@@ -32,7 +32,7 @@
   padding-bottom: 100px;
 }
 
-.App-footer {
+.Login-footer {
   background-color: #4abdcf;
   height: 100px;
   color: white;
@@ -48,6 +48,13 @@
 
 .login-form-button {
   width: 100%;
+}
+
+.alignleft {
+	float: left;
+}
+.alignright {
+	float: right;
 }
 
 #components-layout-demo-responsive .logo {

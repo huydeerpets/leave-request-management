@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { handleEdit, resetPassword } from "../store/Actions/resetPasswordAction";
 import { Layout, Form, Icon, Input, Button } from "antd";
-import Footer from "./menu/Footer";
 const { Header, Content } = Layout;
+const { Footer } = Layout;
 const FormItem = Form.Item;
 
 class ResetPasswordPage extends Component {
@@ -81,12 +81,12 @@ class ResetPasswordPage extends Component {
             className="container"
             style={{
               display: "flex",
-              margin: "86px 15px ",
+              margin: "170px 15px ",
               justifyContent: "space-around"
             }}
           >
             <div
-              style={{ padding: 70, background: "#fff", "border-radius": 10 }}
+              style={{ padding: 100, background: "#fff", "border-radius": 7 }}
             >
               <h1> Welcome! </h1>
               <Form onSubmit={this.handleSumbitLogin} className="login-form">
@@ -138,7 +138,15 @@ class ResetPasswordPage extends Component {
             </div>
           </Content>
 
-          <Footer />
+           <Footer className="Login-footer">
+            <p>
+              <a href="http://opensource.org/licenses/mit-license.php"> MIT</a>.
+              The website content is licensed{" "}
+              <a href="http://www.tnis.com" target="_blank">
+                &copy; P.T TNIS Service Indonesia
+              </a>.
+            </p>
+          </Footer>
         </Layout>
       </div>
     );
