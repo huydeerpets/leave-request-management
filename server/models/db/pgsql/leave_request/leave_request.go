@@ -20,14 +20,17 @@ func (l *LeaveRequest) CreateLeaveRequest(employeeNumber int64,
 	reason string,
 	dateFrom string,
 	dateTo string,
+	halfDates []string,
 	backOn string,
-	total int,
+	total float64,
 	address string,
 	contactLeave string,
 	status string) error {
 
 	var leave structDB.LeaveRequest
-	// var user logicUser.User
+	var user logicUser.User
+	isHalfDay := helpers.ArrayToString(halfDates, ",")
+
 	o := orm.NewOrm()
 	qb, errQB := orm.NewQueryBuilder("mysql")
 	if errQB != nil {
@@ -42,18 +45,21 @@ func (l *LeaveRequest) CreateLeaveRequest(employeeNumber int64,
 		"reason",
 		"date_from",
 		"date_to",
+		"half_dates",
 		"back_on",
 		"total",
 		"contact_address",
 		"contact_number",
 		"status").
-		Values("?, ?, ?, ?, ?, ?, ?, ?, ?, ?")
+		Values("?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?")
 	sql := qb.String()
+
 	values := []interface{}{employeeNumber,
 		typeLeaveID,
 		reason,
 		dateFrom,
 		dateTo,
+		"{" + isHalfDay + "}",
 		backOn,
 		total,
 		address,
@@ -65,11 +71,11 @@ func (l *LeaveRequest) CreateLeaveRequest(employeeNumber int64,
 		return errors.New("insert create leave request failed")
 	}
 
-	// getEmployee, _ := user.GetEmployee(employeeNumber)
-	// getSupervisorID, _ := user.GetSupervisor(employeeNumber)
-	// getSupervisor, _ := user.GetEmployee(getSupervisorID.SupervisorID)
+	getEmployee, _ := user.GetEmployee(employeeNumber)
+	getSupervisorID, _ := user.GetSupervisor(employeeNumber)
+	getSupervisor, _ := user.GetEmployee(getSupervisorID.SupervisorID)
 
-	// helpers.GoMailSupervisor(getSupervisor.Email, getEmployee.Name, getSupervisor.Name)
+	helpers.GoMailSupervisor(getSupervisor.Email, getEmployee.Name, getSupervisor.Name)
 
 	return err
 }
@@ -80,14 +86,16 @@ func (l *LeaveRequest) CreateLeaveRequestSupervisor(employeeNumber int64,
 	reason string,
 	dateFrom string,
 	dateTo string,
+	halfDates []string,
 	backOn string,
-	total int,
+	total float64,
 	address string,
 	contactLeave string,
 	status string) error {
 
 	var leave structDB.LeaveRequest
 	var user logicUser.User
+	isHalfDay := helpers.ArrayToString(halfDates, ",")
 
 	o := orm.NewOrm()
 	qb, errQB := orm.NewQueryBuilder("mysql")
@@ -103,18 +111,21 @@ func (l *LeaveRequest) CreateLeaveRequestSupervisor(employeeNumber int64,
 		"reason",
 		"date_from",
 		"date_to",
+		"half_dates",
 		"back_on",
 		"total",
 		"contact_address",
 		"contact_number",
 		"status").
-		Values("?, ?, ?, ?, ?, ?, ?, ?, ?, ?")
+		Values("?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?")
 	sql := qb.String()
+
 	values := []interface{}{employeeNumber,
 		typeLeaveID,
 		reason,
 		dateFrom,
 		dateTo,
+		"{" + isHalfDay + "}",
 		backOn,
 		total,
 		address,
@@ -148,6 +159,7 @@ func (l *LeaveRequest) UpdateRequest(e *structDB.LeaveRequest, id int64) (err er
 			"reason = ?",
 			"date_from = ?",
 			"date_to = ?",
+			"half_dates = ?",
 			"back_on = ?",
 			"contact_address = ?",
 			"contact_number = ?").Where("id = ? ")
@@ -158,6 +170,7 @@ func (l *LeaveRequest) UpdateRequest(e *structDB.LeaveRequest, id int64) (err er
 		e.Reason,
 		e.DateFrom,
 		e.DateTo,
+		e.HalfDates,
 		e.BackOn,
 		e.ContactAddress,
 		e.ContactNumber,

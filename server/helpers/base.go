@@ -29,8 +29,13 @@ func BytesToString(data []byte) string {
 }
 
 // ArrayToString ...
-func ArrayToString(arr []int64, delim string) string {
+func ArrayToString(arr []string, delim string) string {
 	return strings.Trim(strings.Replace(fmt.Sprint(arr), " ", delim, -1), "[]")
+}
+
+// Multiply ...
+func Multiply(x, y, z float64) float64 {
+	return (x - (y * z))
 }
 
 func stringToInt(value string) int {

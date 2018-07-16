@@ -1,8 +1,3 @@
-CREATE TYPE date_range AS(
-  "dates" text,
-  "is_half_day" boolean
-);
-
 CREATE TABLE IF NOT EXISTS leave_request
 (
   "id" int PRIMARY KEY NOT NULL,
@@ -11,9 +6,9 @@ CREATE TABLE IF NOT EXISTS leave_request
   "reason" text NOT NULL,
   "date_from" text NOT NULL,
   "date_to" text NOT NULL,  
-  "date_ranges" date_range[],
+  "half_dates" TEXT [],
   "back_on" text NOT NULL,
-  "total" int NOT NULL,
+  "total" float NOT NULL,
   "contact_address" text NOT NULL,
   "contact_number" text NOT NULL,
   "status" text NOT NULL,

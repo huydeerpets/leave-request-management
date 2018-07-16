@@ -24,9 +24,8 @@ type LeaveController struct {
 // PostLeaveRequest ...
 func (c *LeaveController) PostLeaveRequest() {
 	var (
-		resp structAPI.RespData
-		req  structAPI.ReqLeave
-		// reqDate []structAPI.DateRange
+		resp    structAPI.RespData
+		req     structAPI.ReqLeave
 		dbLeave db.LeaveRequest
 	)
 
@@ -50,14 +49,10 @@ func (c *LeaveController) PostLeaveRequest() {
 		return
 	}
 
-	// for j := 0; j < len(req.DateRanges); j++ {
-	// 	reqDate = append(reqDate,
-	// 		structAPI.DateRange{
-	// 			Date : req.DateRanges[j].,
-	// 			IsHalfDay : req.DateRanges[j].,
-	// 		}
-	// 	)
-	// }
+	totalDay := float64(helpers.GetTotalDay(req.DateFrom, req.DateTo))
+	reqHalfDay := float64(len(req.HalfDates))
+	valueHalfDay := float64(0.5)
+	result := helpers.Multiply(totalDay, reqHalfDay, valueHalfDay)
 
 	leave := structAPI.CreateLeaveRequest{
 		EmployeeNumber: employeeNumber,
@@ -65,8 +60,8 @@ func (c *LeaveController) PostLeaveRequest() {
 		Reason:         req.Reason,
 		DateFrom:       req.DateFrom,
 		DateTo:         req.DateTo,
-		// DateRanges: 	reqDate,
-		Total:          helpers.GetTotalDay(req.DateFrom, req.DateTo),
+		HalfDates:      req.HalfDates,
+		Total:          result,
 		BackOn:         req.BackOn,
 		ContactAddress: req.ContactAddress,
 		ContactNumber:  req.ContactNumber,
@@ -79,6 +74,7 @@ func (c *LeaveController) PostLeaveRequest() {
 		leave.Reason,
 		leave.DateFrom,
 		leave.DateTo,
+		leave.HalfDates,
 		leave.BackOn,
 		leave.Total,
 		leave.ContactAddress,
@@ -127,13 +123,19 @@ func (c *LeaveController) PostLeaveRequestSupervisor() {
 		return
 	}
 
-	leave := structDB.LeaveRequest{
+	totalDay := float64(helpers.GetTotalDay(req.DateFrom, req.DateTo))
+	reqHalfDay := float64(len(req.HalfDates))
+	valueHalfDay := float64(0.5)
+	result := helpers.Multiply(totalDay, reqHalfDay, valueHalfDay)
+
+	leave := structAPI.CreateLeaveRequest{
 		EmployeeNumber: employeeNumber,
 		TypeLeaveID:    req.TypeLeaveID,
 		Reason:         req.Reason,
 		DateFrom:       req.DateFrom,
 		DateTo:         req.DateTo,
-		Total:          helpers.GetTotalDay(req.DateFrom, req.DateTo),
+		HalfDates:      req.HalfDates,
+		Total:          result,
 		BackOn:         req.BackOn,
 		ContactAddress: req.ContactAddress,
 		ContactNumber:  req.ContactNumber,
@@ -146,6 +148,7 @@ func (c *LeaveController) PostLeaveRequestSupervisor() {
 		leave.Reason,
 		leave.DateFrom,
 		leave.DateTo,
+		leave.HalfDates,
 		leave.BackOn,
 		leave.Total,
 		leave.ContactAddress,
@@ -193,12 +196,18 @@ func (c *LeaveController) UpdateRequest() {
 		return
 	}
 
+	totalDay := float64(helpers.GetTotalDay(leave.DateFrom, leave.DateTo))
+	reqHalfDay := float64(len(leave.HalfDates))
+	valueHalfDay := float64(0.5)
+	result := helpers.Multiply(totalDay, reqHalfDay, valueHalfDay)
+
 	leave = structDB.LeaveRequest{
-		TypeLeaveID:    leave.TypeLeaveID,
-		Reason:         leave.Reason,
-		DateFrom:       leave.DateFrom,
-		DateTo:         leave.DateTo,
-		Total:          helpers.GetTotalDay(leave.DateFrom, leave.DateTo),
+		TypeLeaveID: leave.TypeLeaveID,
+		Reason:      leave.Reason,
+		DateFrom:    leave.DateFrom,
+		DateTo:      leave.DateTo,
+
+		Total:          result,
 		BackOn:         leave.BackOn,
 		ContactAddress: leave.ContactAddress,
 		ContactNumber:  leave.ContactNumber,
