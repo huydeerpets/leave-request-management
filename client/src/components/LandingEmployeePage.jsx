@@ -8,6 +8,7 @@ import Footer from "./menu/Footer";
 import { Layout, Row, Col } from "antd";
 const { Content } = Layout;
 
+
 export class LandingEmployeePage extends React.Component {
   componentDidMount() {
     if (!localStorage.getItem("token")) {
@@ -24,15 +25,18 @@ export class LandingEmployeePage extends React.Component {
     const typeLeave = [];
     const dataSummary = this.props.userSummary;
     const dataType = this.props.userType;
-
-    for (let i = 0; i < dataSummary.length; i++) {
-      summary.push(
-        <p>
-          {dataSummary[i].type_name}: {dataSummary[i].used} day out of{" "}
-          {dataSummary[i].leave_remaining} day
-        </p>
-      );
-    }
+    if(dataSummary){
+      for (let i = 0; i < dataSummary.length; i++) {
+        summary.push(
+          <p>
+            {dataSummary[i].type_name}: {dataSummary[i].used} day out of{" "}
+            {dataSummary[i].leave_remaining} day
+          </p>
+        );
+      }
+    }else {
+      <p></p>
+    }    
 
     for (let j in dataType) {
       if (dataType[j].type_name === "Sick Leave") {
