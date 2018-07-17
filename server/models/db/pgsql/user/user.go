@@ -115,6 +115,7 @@ func (u *User) GetPendingRequest(employeeNumber int64) ([]structLogic.RequestPen
 		leave.TableName()+".reason",
 		leave.TableName()+".date_from",
 		leave.TableName()+".date_to",
+		leave.TableName()+".half_dates",
 		leave.TableName()+".total",
 		leave.TableName()+".back_on",
 		leave.TableName()+".contact_address",

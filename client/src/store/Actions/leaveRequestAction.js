@@ -26,14 +26,17 @@ export function SumbitLeave(payload) {
 				body,
 				error
 			}) => {
-				let respErr = error
-				if (respErr === "type request malform") {
-					console.log(respErr)
+				
+				let respErr = error				
+				if (respErr !== null) {					
+					alert(respErr)
+				} 
+				else if (respErr === "type request malform") {					
 					alert('create failed, please field out all field')
 				} else {
 					dispatch(clearField())
-					alert('create leave request success')
 					window.location.href = "/request-pending";
+					alert('create leave request success')
 				}
 			}).catch(err => {
 				console.log(err)

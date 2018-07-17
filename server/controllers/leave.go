@@ -76,6 +76,8 @@ func (c *LeaveController) PostLeaveRequest() {
 	strTotal := strconv.FormatFloat(result, 'f', 1, 64)
 
 	if result > float64(resGet.LeaveRemaining) {
+		beego.Warning("error")
+		c.Ctx.Output.SetStatus(400)
 		resp.Error = errors.New("your total leave is " + strTotal + " day and your " + resGet.TypeName + " balance is " + strBalance + " day left").Error()
 	} else {
 		errAddLeave := dbLeave.CreateLeaveRequest(

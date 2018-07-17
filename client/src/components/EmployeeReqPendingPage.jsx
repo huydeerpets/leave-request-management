@@ -217,6 +217,7 @@ class EmployeeReqAcceptPage extends Component {
                 Reason : {this.state.user && this.state.user.reason} <br />
                 From : {this.state.user && this.state.user.date_from} <br />
                 To : {this.state.user && this.state.user.date_to} <br />
+                Half : {this.state.user && this.state.user.half_dates} <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
                 Total Leave : {this.state.user && this.state.user.total} day <br />
                 Leave Balance : {this.state.user && this.state.user.leave_remaining} day <br />
