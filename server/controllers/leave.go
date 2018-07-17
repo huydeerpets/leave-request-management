@@ -75,8 +75,16 @@ func (c *LeaveController) PostLeaveRequest() {
 	strBalance := strconv.FormatFloat(resGet.LeaveRemaining, 'f', 1, 64)
 	strTotal := strconv.FormatFloat(result, 'f', 1, 64)
 
-	if result > float64(resGet.LeaveRemaining) {
-		beego.Warning("error")
+	if req.TypeLeaveID != 11 && req.TypeLeaveID != 22 && req.TypeLeaveID != 33 && req.TypeLeaveID != 44 && req.TypeLeaveID != 55 && req.TypeLeaveID != 66 {
+		beego.Warning("error empty field type leave @PostLeaveRequest")
+		c.Ctx.Output.SetStatus(400)
+		resp.Error = errors.New("error empty field").Error()
+	} else if req.DateFrom == "" || req.DateTo == "" || req.BackOn == "" || req.ContactAddress == "" || req.ContactNumber == "" {
+		beego.Warning("error empty field @PostLeaveRequest")
+		c.Ctx.Output.SetStatus(400)
+		resp.Error = errors.New("error empty field").Error()
+	} else if result > float64(resGet.LeaveRemaining) {
+		beego.Warning("error leave balance @PostLeaveRequest")
 		c.Ctx.Output.SetStatus(400)
 		resp.Error = errors.New("your total leave is " + strTotal + " day and your " + resGet.TypeName + " balance is " + strBalance + " day left").Error()
 	} else {

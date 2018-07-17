@@ -59,6 +59,11 @@ class LeaveRequestPage extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        console.log("Received values of form: ", values);
+      }
+    });
     this.props.SumbitLeave(this.props.leaveForm);
   };
 
@@ -268,7 +273,7 @@ class LeaveRequestPage extends Component {
 
   render() {
     const { from, to, start, end, endOpen } = this.state;
-    const { getFieldDecorator } = this.props.form;    
+    const { getFieldDecorator } = this.props.form;
     const dates = this.getDates(start, end);
     const elements = [];
     const dateFormat = "DD-MM-YYYY";
@@ -339,29 +344,37 @@ class LeaveRequestPage extends Component {
 
             <Form onSubmit={this.handleSubmit} className="login-form">
               <FormItem {...formItemLayout} label="Type Of Leave">
-                <Select
-                  id="type_leave_id"
-                  name="type_leave_id"
-                  placeholder="Select type of leave"
-                  optionFilterProp="children"
-                  onChange={this.handleChangeTypeOfLeave}
-                  onSelect={(value, event) =>
-                    this.handleChangeSelect(value, event)
-                  }
-                  showSearch
-                  onFocus={this.handleFocus}
-                  onBlur={this.handleBlur}
-                  filterOption={(input, option) =>
-                    option.props.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
-                  }
-                  style={formStyle}
-                >
-                  {this.props.typeLeave.map(d => (
-                    <Option key={d.id}>{d.type_name}</Option>
-                  ))}
-                </Select>
+                {getFieldDecorator("type of leave", {
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(
+                  <Select
+                    id="type_leave_id"
+                    name="type_leave_id"
+                    placeholder="Select type of leave"
+                    optionFilterProp="children"
+                    onChange={this.handleChangeTypeOfLeave}
+                    onSelect={(value, event) =>
+                      this.handleChangeSelect(value, event)
+                    }
+                    showSearch
+                    onFocus={this.handleFocus}
+                    onBlur={this.handleBlur}
+                    filterOption={(input, option) =>
+                      option.props.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                    style={formStyle}
+                  >
+                    {this.props.typeLeave.map(d => (
+                      <Option key={d.id}>{d.type_name}</Option>
+                    ))}
+                  </Select>
+                )}
               </FormItem>
 
               <div id="showMe">
@@ -378,31 +391,47 @@ class LeaveRequestPage extends Component {
                 </FormItem>
               </div>
               <FormItem {...formItemLayout} label="From">
-                <DatePicker
-                  id="date_from"
-                  name="date_from"
-                  disabledDate={this.disabledDate}
-                  format={dateFormat}
-                  value={from}
-                  placeholder="Start"
-                  onChange={this.onStartChange}
-                  onOpenChange={this.handleStartOpenChange}
-                  style={formStyle}
-                />
+                {getFieldDecorator("start date", {
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(
+                  <DatePicker
+                    id="date_from"
+                    name="date_from"
+                    disabledDate={this.disabledDate}
+                    format={dateFormat}
+                    value={from}
+                    placeholder="Start"
+                    onChange={this.onStartChange}
+                    onOpenChange={this.handleStartOpenChange}
+                    style={formStyle}
+                  />
+                )}
               </FormItem>
               <FormItem {...formItemLayout} label="To">
-                <DatePicker
-                  id="date_to"
-                  name="date_to"
-                  disabledDate={this.disabledEndDate}
-                  format={dateFormat}
-                  value={to}
-                  placeholder="End"
-                  onChange={this.onEndChange}
-                  open={endOpen}
-                  onOpenChange={this.handleEndOpenChange}
-                  style={formStyle}
-                />
+                {getFieldDecorator("end date", {
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(
+                  <DatePicker
+                    id="date_to"
+                    name="date_to"
+                    disabledDate={this.disabledEndDate}
+                    format={dateFormat}
+                    value={to}
+                    placeholder="End"
+                    onChange={this.onEndChange}
+                    open={endOpen}
+                    onOpenChange={this.handleEndOpenChange}
+                    style={formStyle}
+                  />
+                )}
               </FormItem>
               <FormItem>
                 <Checkbox
@@ -422,39 +451,63 @@ class LeaveRequestPage extends Component {
               </div>
 
               <FormItem {...formItemLayout} label="Back to work on">
-                <DatePicker
-                  id="back_on"
-                  name="back_on"
-                  disabledDate={this.disabledDateBack}
-                  onChange={this.onBackOn}
-                  format={dateFormat}
-                  placeholder="Back to work"
-                  style={formStyle}
-                />
+                {getFieldDecorator("back to work", {
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(
+                  <DatePicker
+                    id="back_on"
+                    name="back_on"
+                    disabledDate={this.disabledDateBack}
+                    onChange={this.onBackOn}
+                    format={dateFormat}
+                    placeholder="Back to work"
+                    style={formStyle}
+                  />
+                )}
               </FormItem>
 
               <FormItem {...formItemLayout} label="Contact Address">
-                <TextArea
-                  type="text"
-                  id="contact_address"
-                  name="contact_address"
-                  placeholder="contact_address, email, etc"
-                  onChange={this.handleOnChange}
-                  autosize={{ minRows: 2, maxRows: 8 }}
-                  style={formStyle}
-                />
+                {getFieldDecorator("contact address", {
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(
+                  <TextArea
+                    type="text"
+                    id="contact_address"
+                    name="contact_address"
+                    placeholder="contact_address, email, etc"
+                    onChange={this.handleOnChange}
+                    autosize={{ minRows: 2, maxRows: 8 }}
+                    style={formStyle}
+                  />
+                )}
               </FormItem>
 
               <FormItem {...formItemLayout} label="Contact Number">
-                <Input
-                  type="text"
-                  id="contact_number"
-                  name="contact_number"
-                  placeholder="Phone number"
-                  addonBefore={prefixSelector}
-                  onChange={this.handleOnChangeNumber}
-                  style={formStyle}
-                />
+                {getFieldDecorator("contact number", {
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(
+                  <Input
+                    type="text"
+                    id="contact_number"
+                    name="contact_number"
+                    placeholder="Phone number"
+                    addonBefore={prefixSelector}
+                    onChange={this.handleOnChangeNumber}
+                    style={formStyle}
+                  />
+                )}
               </FormItem>
               <FormItem>
                 <Button
