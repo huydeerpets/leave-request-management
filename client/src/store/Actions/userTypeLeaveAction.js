@@ -1,3 +1,9 @@
+import {
+	ROOT_API
+} from "./types.js"
+
+const employeeNumber = localStorage.getItem('id')
+
 function userTypeLeave(payload) {
 	return {
 		type: 'FETCH_USER_TYPE',
@@ -6,9 +12,8 @@ function userTypeLeave(payload) {
 }
 
 export function userTypeFetch() {
-	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
-		fetch(`http://localhost:8080/api/user/type-leave/${employeeNumber}`, {
+		fetch(`${ROOT_API}/api/user/type-leave/${employeeNumber}`, {
 				method: 'GET',
 			})
 			.then((resp) => resp.json())
@@ -18,7 +23,7 @@ export function userTypeFetch() {
 
 				let payload = {
 					userType: body
-				}									
+				}
 				dispatch(userTypeLeave(payload))
 			})
 			.catch(err => {

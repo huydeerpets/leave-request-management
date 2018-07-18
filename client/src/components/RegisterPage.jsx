@@ -37,6 +37,7 @@ class RegisterPage extends Component {
   }
 
   componentWillMount() {
+    console.log(" ----------------- Register-User ----------------- ");
     if (!localStorage.getItem("token")) {
       this.props.history.push("/");
     } else if (localStorage.getItem("role") !== "admin") {

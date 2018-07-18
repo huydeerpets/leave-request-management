@@ -1,3 +1,9 @@
+import {
+	ROOT_API
+} from "./types.js"
+
+const employeeNumber = localStorage.getItem('id')
+
 export function handleEdit(payload) {
 	return (dispatch) => {
 		dispatch({
@@ -7,11 +13,9 @@ export function handleEdit(payload) {
 	}
 }
 
-export function updateNewPassword(savePassword,pusher ) {
-	const employeeNumber = localStorage.getItem('id')
-	console.log("saved", savePassword)
+export function updateNewPassword(savePassword, pusher) {
 	return (dispatch) => {
-		fetch(`http://localhost:8080/api/user/update/${employeeNumber}`, {
+		fetch(`${ROOT_API}/api/user/update/${employeeNumber}`, {
 				method: 'PUT',
 				body: JSON.stringify(savePassword)
 			})
@@ -19,7 +23,7 @@ export function updateNewPassword(savePassword,pusher ) {
 			.then(({
 				body,
 				error
-			}) => {				
+			}) => {
 				if (body === "update password success") {
 					alert("update password success")
 					pusher('/profile')

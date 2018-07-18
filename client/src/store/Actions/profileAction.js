@@ -1,3 +1,9 @@
+import {
+	ROOT_API
+} from "./types.js"
+
+const employeeNumber = localStorage.getItem('id')
+
 function profileloaded(payload) {
 	return {
 		type: 'PROFILE_LOADED',
@@ -6,9 +12,9 @@ function profileloaded(payload) {
 }
 
 export function profileFetchData() {
-	const employeeNumber = localStorage.getItem('id')
+
 	return (dispatch) => {
-		fetch(`http://localhost:8080/api/admin/user/${employeeNumber}`, {
+		fetch(`${ROOT_API}/api/admin/user/${employeeNumber}/`, {
 				method: 'GET',
 			})
 			.then((resp) => resp.json())

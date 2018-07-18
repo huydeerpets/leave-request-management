@@ -1,3 +1,7 @@
+import {
+	ROOT_API
+} from "./types.js"
+
 export function handleEdit(payload) {
 	return (dispatch) => {
 		dispatch({
@@ -9,7 +13,7 @@ export function handleEdit(payload) {
 
 export function resetPassword(savePassword, pusher) {
 	return (dispatch) => {
-		fetch(`http://localhost:8080/api/user/password-reset`, {
+		fetch(`${ROOT_API}/api/user/password-reset`, {
 				method: 'PUT',
 				body: JSON.stringify(savePassword)
 			})

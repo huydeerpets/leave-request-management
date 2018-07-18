@@ -1,3 +1,9 @@
+import {
+	ROOT_API
+} from "./types.js"
+
+const employeeNumber = localStorage.getItem('id')
+
 function pendingFetch(payload) {
 	return {
 		type: 'FETCH_LEAVE_PENDING',
@@ -36,8 +42,7 @@ function rejectRequest(payload) {
 
 export function pendingFetchData() {
 	return (dispatch) => {
-		const employeeNumber = localStorage.getItem('id')
-		fetch('http://localhost:8080/api/supervisor/pending/' + employeeNumber, {
+		fetch(`${ROOT_API}/api/supervisor/pending/${employeeNumber}`, {
 				method: 'GET',
 			})
 			.then((resp) => resp.json())
@@ -58,8 +63,7 @@ export function pendingFetchData() {
 
 export function acceptFetchData() {
 	return (dispatch) => {
-		const employeeNumber = localStorage.getItem('id')
-		fetch('http://localhost:8080/api/supervisor/accept/' + employeeNumber, {
+		fetch(`${ROOT_API}/api/supervisor/accept/${employeeNumber}`, {
 				method: 'GET',
 			})
 			.then((resp) => resp.json())
@@ -81,8 +85,7 @@ export function acceptFetchData() {
 
 export function rejectFetchData() {
 	return (dispatch) => {
-		const employeeNumber = localStorage.getItem('id')
-		fetch('http://localhost:8080/api/supervisor/reject/' + employeeNumber, {
+		fetch(`${ROOT_API}/api/supervisor/reject/${employeeNumber}`, {
 				method: 'GET',
 			})
 			.then((resp) => resp.json())
@@ -103,7 +106,7 @@ export function rejectFetchData() {
 
 export function updateStatusAccept(users, id, enumber) {
 	return (dispatch) => {
-		fetch(`http://localhost:8080/api/employee/accept/${id}/${enumber}`, {
+		fetch(`${ROOT_API}/api/supervisor/accept/${id}/${enumber}`, {		
 				method: 'PUT',
 			})
 			.then(response => {
@@ -124,7 +127,7 @@ export function updateStatusAccept(users, id, enumber) {
 
 export function updateStatusReject(users, id, enumber, payload) {
 	return (dispatch) => {
-		fetch(`http://localhost:8080/api/employee/reject/${id}/${enumber}`, {
+		fetch(`${ROOT_API}/api/supervisor/reject/${id}/${enumber}`, {				
 				method: 'PUT',
 				body: JSON.stringify(payload)
 			})

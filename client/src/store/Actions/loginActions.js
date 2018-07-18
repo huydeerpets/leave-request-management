@@ -1,5 +1,8 @@
 // import jwtDecode from 'jwt-decode';
 import setAuthorizationToken from '../../utils/setAuthorizationToken';
+import {
+	ROOT_API
+} from "./types.js"
 
 export function handleFormInput(payload) {
 	return {
@@ -23,7 +26,7 @@ function errorHandle(payload) {
 
 export function submitLogin(payload, pusher) {
 	return (dispatch) => {
-		fetch('http://localhost:8080/api/login', {
+		fetch(`${ROOT_API}/api/login`, {
 				method: 'POST',
 				body: JSON.stringify(payload)
 			})

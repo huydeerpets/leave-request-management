@@ -25,21 +25,22 @@ export default class HeaderAdmin extends React.Component {
   render() {
     return (
       <Header>
-        <Menu
+        <Menu {...this.props}
           theme="dark"
+            // mode={mobileVersion ? 'vertical' : 'horizontal'}
           mode="horizontal"
           defaultSelectedKeys={["1"]}
           style={{ lineHeight: "64px" }}
         >
           <Menu.Item key="1">
-            <NavLink to="/">
+            <NavLink to="/admin">
               <span>
                 <Icon type="home" />
               </span>Home
             </NavLink>
           </Menu.Item>
           <Menu.Item key="2">
-            <NavLink to="/register">
+            <NavLink to="/register-user">
               <span>
                 <Icon type="form" />
               </span>Add User
@@ -53,25 +54,21 @@ export default class HeaderAdmin extends React.Component {
             }
           >
             <Menu.Item key="schedule:1">
-              <NavLink to="/list-request-pending">
-                List Request Pending
-              </NavLink>
+              <NavLink to="/pending-request">List Pending Request</NavLink>
             </Menu.Item>
             <Menu.Item key="schedule:2">
-              <NavLink to="/list-request-accept">
-                List Request Accept
-              </NavLink>
+              <NavLink to="/approve-request">List Approve Request</NavLink>
             </Menu.Item>
             <Menu.Item key="schedule:3">
-              <NavLink to="/list-request-reject">
-                List Request Reject
-              </NavLink>
+              <NavLink to="/reject-request">List Reject Request</NavLink>
             </Menu.Item>
           </SubMenu>
           <Menu.Item key="4">
             <ButtonLogout />
           </Menu.Item>
         </Menu>
+        {this.props.children}
+
         <div
           style={{
             display: "flex",

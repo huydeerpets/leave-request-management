@@ -1,3 +1,7 @@
+import {
+	ROOT_API
+} from "./types.js"
+
 function fetchUser(payload) {
 	return {
 		type: 'FETCH_EDIT',
@@ -37,9 +41,8 @@ export function fetchedEdit(user) {
 }
 
 export function saveEditUser(savedUser, pusher) {
-	console.log("user==========>", JSON.stringify(savedUser))
 	return (dispatch) => {
-		fetch(`http://localhost:8080/api/admin/user/${savedUser.employee_number}`, {
+		fetch(`${ROOT_API}/api/admin/user/${savedUser.employee_number}`, {
 				method: 'PUT',
 				body: JSON.stringify(savedUser)
 			})
@@ -47,10 +50,10 @@ export function saveEditUser(savedUser, pusher) {
 			.then(({
 				body,
 				error
-			}) => {				
-				if (body !==  null) {
+			}) => {
+				if (body !== null) {
 					alert(body)
-					pusher('/admin')					
+					pusher('/admin')
 				} else if (error !== null) {
 					alert(error)
 				}

@@ -1,3 +1,7 @@
+import {
+	ROOT_API
+} from "./types.js"
+
 function addSupervisor(payload) {
 	return {
 		type: 'ADD_SUPERVISOR',
@@ -7,13 +11,13 @@ function addSupervisor(payload) {
 
 export function SupervisorAdd() {
 	return (dispatch) => {
-		fetch('http://localhost:8080/api/user/supervisor', {
+		fetch(`${ROOT_API}/api/user/supervisor`, {
 				method: 'GET',
 			})
 			.then((resp) => resp.json())
 			.then(({
 				body
-			}) => {				
+			}) => {
 				let payload = {
 					supervisor: body
 				}

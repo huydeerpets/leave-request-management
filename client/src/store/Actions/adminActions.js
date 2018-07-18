@@ -1,3 +1,7 @@
+import {
+	ROOT_API
+} from "./types.js"
+
 function pendingFetch(payload) {
 	return {
 		type: 'FETCH_LEAVE_PENDING',
@@ -35,13 +39,13 @@ function userDeleted(payload) {
 
 export function adminFetchData() {
 	return (dispatch) => {
-		fetch('http://localhost:8080/api/admin/user', {
+		fetch(`${ROOT_API}/api/admin/user/`, {
 				method: 'GET',
 			})
 			.then((resp) => resp.json())
 			.then(({
 				body
-			}) => {			
+			}) => {
 				let payload = {
 					loading: false,
 					users: body
@@ -56,7 +60,7 @@ export function adminFetchData() {
 
 export function deleteUser(users, employeeNumber) {
 	return (dispatch) => {
-		fetch('http://localhost:8080/api/admin/user/' + employeeNumber, {
+		fetch(`${ROOT_API}/api/admin/user/${employeeNumber}`, {
 				method: 'DELETE',
 			})
 			.then((resp) => resp.json())
@@ -82,14 +86,14 @@ export function deleteUser(users, employeeNumber) {
 
 
 export function pendingFetchData() {
-	return (dispatch) => {		
-		fetch('http://localhost:8080/api/admin/leave/pending/', {
+	return (dispatch) => {
+		fetch(`${ROOT_API}/api/admin/leave/pending/`, {
 				method: 'GET',
 			})
 			.then((resp) => resp.json())
 			.then(({
 				body
-			}) => {				
+			}) => {
 				let payload = {
 					loading: false,
 					users: body
@@ -104,13 +108,13 @@ export function pendingFetchData() {
 
 export function acceptFetchData() {
 	return (dispatch) => {
-		fetch('http://localhost:8080/api/admin/leave/accept/', {
+		fetch(`${ROOT_API}/api/admin/leave/accept/`, {
 				method: 'GET',
 			})
 			.then((resp) => resp.json())
 			.then(({
 				body
-			}) => {				
+			}) => {
 				let payload = {
 					loading: false,
 					users: body
@@ -125,14 +129,14 @@ export function acceptFetchData() {
 
 
 export function rejectFetchData() {
-	return (dispatch) => {		
-		fetch('http://localhost:8080/api/admin/leave/reject/', {
+	return (dispatch) => {
+		fetch(`${ROOT_API}/api/admin/leave/reject/`, {
 				method: 'GET',
 			})
 			.then((resp) => resp.json())
 			.then(({
 				body
-			}) => {				
+			}) => {
 				let payload = {
 					loading: false,
 					users: body

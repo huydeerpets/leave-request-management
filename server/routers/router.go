@@ -112,12 +112,12 @@ func init() {
 
 		// ========================= supervisor ========================= //
 		// accept status by supervisor
-		beego.NSRouter("/employee/accept/:id:int/:enumber:int",
+		beego.NSRouter("/supervisor/accept/:id:int/:enumber:int",
 			&controllers.SupervisorController{},
 			"put:AcceptStatusBySupervisor",
 		),
 		// reject status by supervisor
-		beego.NSRouter("/employee/reject/:id:int/:enumber:int",
+		beego.NSRouter("/supervisor/reject/:id:int/:enumber:int",
 			&controllers.SupervisorController{},
 			"put:RejectStatusBySv",
 		),

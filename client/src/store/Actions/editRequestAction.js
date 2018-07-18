@@ -1,3 +1,7 @@
+import {
+	ROOT_API
+} from "./types.js"
+
 function fetchRequest(payload) {
 	return {
 		type: 'FETCH_EDIT',
@@ -37,9 +41,8 @@ export function fetchedEdit(leave) {
 }
 
 export function saveEditLeave(savedLeave, pusher) {
-	console.log("user==========>", JSON.stringify(savedLeave))
 	return (dispatch) => {
-		fetch(`http://localhost:8080/api/employee/leave/${savedLeave.id}`, {
+		fetch(`${ROOT_API}/api/employee/leave/${savedLeave.id}`, {
 				method: 'PUT',
 				body: JSON.stringify(savedLeave)
 			})
@@ -50,7 +53,7 @@ export function saveEditLeave(savedLeave, pusher) {
 			}) => {
 				console.log("err==========>", body)
 				if (body === "Update leave success") {
-					pusher('/request-pending')					
+					pusher('/request-pending')
 				}
 			}).catch(err => {
 				console.log(err)

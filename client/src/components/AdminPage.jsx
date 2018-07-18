@@ -82,9 +82,9 @@ class Adminpage extends Component {
       }
     ];
   }
-
+  
   componentWillMount() {
-    console.log(" ----------------- Admin-Page ----------------- ");
+    console.log(" ----------------- Admin-Page ----------------- ");    
   }
 
   componentDidMount() {
@@ -97,7 +97,7 @@ class Adminpage extends Component {
   editUser = (users, employeeNumber) => {
     console.log(employeeNumber, "--", users);
     this.props.history.push({
-      pathname: "/edituser/" + employeeNumber,
+      pathname: "/edit-user/" + employeeNumber,
       state: { users: users }
     });
   };
@@ -117,7 +117,7 @@ class Adminpage extends Component {
     } else {
       return (
         <Layout>
-          <HeaderNav />
+          <HeaderNav {...this.props.history} />
 
           <Content
             className="container"

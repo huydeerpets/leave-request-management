@@ -50,19 +50,20 @@ class App extends Component {
               <Route exact path="/reset-password" component={ResetPasswordPage} />
 
 
-              <Route path="/admin" component={Adminpage} />
-              <Route exact path="/register" component={RegisterPage} />            
-              <Route path="/list-request-pending" component={AdminReqPendingPage} />
-              <Route path="/list-request-accept" component={AdminReqAcceptPage} />              
-              <Route path="/list-request-reject" component={AdminReqRejectPage} />
-              <Route path={`/edituser/:id`} component={AdminEditPage}/>
+              <Route exact path="/admin" component={Adminpage} />
+              <Route path="/register-user" component={RegisterPage} />            
+              <Route path={`/edit-user/:id`} component={AdminEditPage}/>
+              <Route path="/pending-request" component={AdminReqPendingPage} />
+              <Route path="/approve-request" component={AdminReqAcceptPage} />              
+              <Route path="/reject-request" component={AdminReqRejectPage} />
+              
 
 
               <Route path="/request-leave" component={LeaveRequestPage} />
               <Route path="/supervisor-request-leave" component={LeaveRequestSupervisorPage} />
 
 
-              <Route path="/employee" component={LandingEmployeePage} />
+              <Route exact path="/employee" component={LandingEmployeePage} />
               <Route path={`/editrequest/:id`} component={LeaveEditPage}/>
               <Route exact path="/profile" component={ProfileEditPage} />
               <Route exact path={`/profile/:id`} component={PasswordPage}/>
@@ -73,13 +74,13 @@ class App extends Component {
               <Route path="/request-reject" component={EmployeeReqRejectPage} />
 
 
-              <Route path="/supervisor" component={SupervisorLandingPage} />
+              <Route exact path="/supervisor" component={SupervisorLandingPage} />
               <Route path="/list-request" component={SupervisorPendingPage} />
               <Route path="/list-accept" component={SupervisorAcceptPage} />
               <Route path="/list-reject" component={SupervisorRejectPage} />
 
 
-              <Route path="/director" component={DirectorLandingPage} />
+              <Route exact path="/director" component={DirectorLandingPage} />
               <Route path="/list-pending-request" component={DirectorPendingPage} />
               <Route path="/list-accept-request" component={DirectorAcceptPage} />
               <Route path="/list-reject-request" component={DirectorRejectPage} />

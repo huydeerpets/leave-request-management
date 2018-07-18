@@ -1,3 +1,9 @@
+import {
+	ROOT_API
+} from "./types.js"
+
+const employeeNumber = localStorage.getItem('id')
+
 function userSummary(payload) {
 	return {
 		type: 'FETCH_USER_SUMMARY',
@@ -6,9 +12,8 @@ function userSummary(payload) {
 }
 
 export function userSummaryFetchData() {
-	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
-		fetch(`http://localhost:8080/api/user/summary/${employeeNumber}`, {
+		fetch(`${ROOT_API}/api/user/summary/${employeeNumber}`, {
 				method: 'GET',
 			})
 			.then((resp) => resp.json())
