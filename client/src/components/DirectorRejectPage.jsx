@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { rejectFetchData } from "../store/Actions/directorActions";
+import { Layout, Table, Modal, Button, Input, Icon } from "antd";
 import HeaderNav from "./menu/HeaderNav";
-import Footer from "./menu/Footer";
 import Loading from "./menu/Loading";
-import { Layout, Table, Modal, Button } from "antd";
+import Footer from "./menu/Footer";
 const { Content } = Layout;
+let data;
 
 class DirectorRejectPage extends Component {
   constructor(props) {
@@ -14,15 +15,176 @@ class DirectorRejectPage extends Component {
     this.state = {
       loading: false,
       visible: false,
-      user: null
+      user: null,
+      data: this.props.users,
+      filterDropdownVisible: false,
+      filterDropdownNameVisible: false,
+      filtered: false,
+      searchText: "",
+      searchID: ""
     };
+  }
 
-    this.columns = [
+  componentWillMount() {
+    console.log("------------ Director-Reject -------------------");
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.users !== this.props.users) {
+      this.setState({ data: nextProps.users });
+    }
+    data = nextProps.users;
+  }
+
+  componentDidMount() {
+    if (!localStorage.getItem("token")) {
+      this.props.history.push("/");
+    } else if (localStorage.getItem("role") !== "director") {
+      this.props.history.push("/");
+    }
+    this.props.rejectFetchData();
+  }
+
+  onSearch = () => {
+    const { searchText } = this.state;
+    const reg = new RegExp(searchText, "gi");
+    this.setState({
+      filterDropdownNameVisible: false,
+      filtered: !!searchText,
+      data: data
+        .map(record => {
+          const match = record.name.match(reg);
+          if (!match) {
+            return null;
+          }
+          return {
+            ...record,
+            name: (
+              <span>
+                {record.name
+                  .split(
+                    new RegExp(`(?<=${searchText})|(?=${searchText})`, "i")
+                  )
+                  .map(
+                    (text, i) =>
+                      text.toLowerCase() === searchText.toLowerCase() ? (
+                        <span key={i}>{text}</span>
+                      ) : (
+                        text
+                      ) // eslint-disable-line
+                  )}
+              </span>
+            )
+          };
+        })
+        .filter(record => !!record)
+    });
+  };
+
+  onSearchID = () => {
+    const { searchID } = this.state;
+    const reg = new RegExp(searchID, "gi");
+    this.setState({
+      filterDropdownIDVisible: false,
+      filtered: !!searchID,
+      data: data
+        .map(record => {
+          const match = String(record.id).match(reg);
+          if (!match) {
+            return null;
+          }
+          return {
+            ...record,
+            ID: (
+              <span>
+                {this.state.data.map(
+                  (text, i) =>
+                    String(text.id) === searchID ? (
+                      <span key={i} className="highlight">
+                        {text}
+                      </span>
+                    ) : (
+                      text
+                    ) // eslint-disable-line
+                )}
+                }
+              </span>
+            )
+          };
+        })
+        .filter(record => !!record)
+    });
+  };
+
+  onInputChangeID = e => {
+    this.setState({
+      searchID: e.target.value
+    });
+  };
+
+  onInputChangeName = e => {
+    this.setState({
+      searchText: e.target.value
+    });
+  };
+
+  showDetail = record => {
+    this.setState({
+      visible: true,
+      user: record
+    });
+  };
+
+  onSelectChange = selectedRowKeys => {
+    console.log("selected row: ", selectedRowKeys);
+  };
+
+  handleCancel = () => {
+    this.setState({ visible: false });
+  };
+
+  onShowSizeChange(current, pageSize) {
+    console.log(current, pageSize);
+  }
+
+  render() {
+    const { visible, loading, searchID } = this.state;        
+    const columns = [
       {
         title: "ID",
         dataIndex: "id",
         key: "id",
-        width: 95
+        width: 95,
+        filterDropdown: (
+          <div className="custom-filter-dropdown-id">
+            <Input
+              type="number"
+              ref={ele => (this.searchInput = ele)}
+              placeholder="Search request id"
+              value={this.state.searchID}
+              onChange={this.onInputChangeID}
+              onPressEnter={this.onSearchID}
+            />
+            <Button type="primary" onClick={this.onSearchID}>
+              Search
+            </Button>
+          </div>
+        ),
+        filterIcon: (
+          <Icon
+            type="search"
+            style={{ color: this.state.filtered ? "#108ee9" : "#aaa" }}
+          />
+        ),
+        filterDropdownIDVisible: this.state.filterDropdownIDVisible,
+        onFilterDropdownVisibleChange: visible => {
+          this.setState(
+            {
+              filterDropdownIDVisible: visible
+            },
+            () => this.searchInput && this.searchInput.focus()
+          );
+        }
       },
       {
         title: "Employee Number",
@@ -34,8 +196,38 @@ class DirectorRejectPage extends Component {
         title: "Name",
         dataIndex: "name",
         key: "name",
-        width: 150
+        width: 150,
+        filterDropdown: (
+          <div className="custom-filter-dropdown-name">
+            <Input
+              ref={ele => (this.searchInput = ele)}
+              placeholder="Search name"
+              value={this.state.searchText}
+              onChange={this.onInputChangeName}
+              onPressEnter={this.onSearch}
+            />
+            <Button type="primary" onClick={this.onSearch}>
+              Search
+            </Button>
+          </div>
+        ),
+        filterIcon: (
+          <Icon
+            type="search"
+            style={{ color: this.state.filtered ? "#108ee9" : "#aaa" }}
+          />
+        ),
+        filterDropdownNameVisible: this.state.filterDropdownNameVisible,
+        onFilterDropdownVisibleChange: visible => {
+          this.setState(
+            {
+              filterDropdownNameVisible: visible
+            },
+            () => this.searchInput && this.searchInput.focus()
+          );
+        }
       },
+
       {
         title: "Position",
         dataIndex: "position",
@@ -79,38 +271,6 @@ class DirectorRejectPage extends Component {
         )
       }
     ];
-  }
-
-  componentDidMount() {
-    if (!localStorage.getItem("token")) {
-      this.props.history.push("/");
-    } else if (localStorage.getItem("role") !== "director") {
-      this.props.history.push("/");
-    }
-    this.props.rejectFetchData();
-  }
-
-  showDetail = record => {
-    this.setState({
-      visible: true,
-      user: record
-    });
-  };
-
-  onSelectChange = selectedRowKeys => {
-    console.log("selected row: ", selectedRowKeys);
-  };
-
-  handleCancel = () => {
-    this.setState({ visible: false });
-  };
-
-  onShowSizeChange(current, pageSize) {
-    console.log(current, pageSize);
-  }
-
-  render() {
-    const { visible, loading } = this.state;
 
     if (this.props.loading) {
       return <Loading />;
@@ -129,8 +289,8 @@ class DirectorRejectPage extends Component {
           >
             <div style={{ padding: 20, background: "#fff" }}>
               <Table
-                columns={this.columns}
-                dataSource={this.props.users}
+                columns={columns}
+                dataSource={this.state.data}
                 rowKey={record => record.id}
                 onRowClick={this.onSelectChange}
                 pagination={{
@@ -159,21 +319,30 @@ class DirectorRejectPage extends Component {
                 </Button>
               ]}
             >
-              <div style={{ padding: 10, background: "#fff" }}>s
-                ID : {this.state.user && this.state.user.id} <br />
+              <div style={{ padding: 10, background: "#fff" }}>
+                s ID : {this.state.user && this.state.user.id} <br />
                 Name : {this.state.user && this.state.user.name} <br />
                 Gender : {this.state.user && this.state.user.gender} <br />
                 Email : {this.state.user && this.state.user.email} <br />
-                Type Of Leave : {this.state.user && this.state.user.type_name} <br />
+                Type Of Leave : {this.state.user &&
+                  this.state.user.type_name}{" "}
+                <br />
                 Reason : {this.state.user && this.state.user.reason} <br />
                 From : {this.state.user && this.state.user.date_from} <br />
                 To : {this.state.user && this.state.user.date_to} <br />
+                Half Day : {this.state.user && this.state.user.half_dates}{" "}
+                <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
-                Total Leave : {this.state.user && this.state.user.total} day <br />
-                Leave Balance : {this.state.user && this.state.user.leave_remaining} day <br />
-                Contact Address : {this.state.user && this.state.user.contact_address} <br />
-                Contact Number : {this.state.user && this.state.user.contact_number}                
-                Reject Reason : {this.state.user && this.state.user.reject_reason}  
+                Total Leave : {this.state.user &&
+                  this.state.user.total} day <br />
+                Leave Balance :{" "}
+                {this.state.user && this.state.user.leave_remaining} day <br />
+                Contact Address :{" "}
+                {this.state.user && this.state.user.contact_address} <br />
+                Contact Number :{" "}
+                {this.state.user && this.state.user.contact_number}
+                Reject Reason :{" "}
+                {this.state.user && this.state.user.reject_reason}
               </div>
             </Modal>
           </Content>
@@ -197,7 +366,6 @@ const mapDispatchToProps = dispatch =>
     dispatch
   );
 
-console.log(mapStateToProps);
 export default connect(
   mapStateToProps,
   mapDispatchToProps

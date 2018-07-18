@@ -43,6 +43,10 @@ class LeaveEditPage extends Component {
     this.handleOnChangeID = this.handleOnChangeID.bind(this);
   }
 
+  componentWillMount() {
+    console.log(" ----------------- Request-Leave-Edit ----------------- ");
+  }
+
   componentDidMount() {
     if (
       localStorage.getItem("role") !== "employee" &&

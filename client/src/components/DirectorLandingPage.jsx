@@ -6,6 +6,11 @@ import { Layout } from "antd";
 const { Content } = Layout;
 
 export class DirectorLandingPage extends Component {
+
+  componentWillMount() {
+    console.log(" ----------------- Director-Landing-Page ----------------- ");
+  }
+
   componentDidMount() {
     if (!localStorage.getItem("token")) {
       this.props.history.push("/");

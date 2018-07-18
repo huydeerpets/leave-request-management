@@ -14,8 +14,11 @@ const Option = Select.Option;
 
 class ProfileEditPage extends Component {
 
-  componentDidMount() {
+  componentWillMount() {
+    console.log(" ----------------- Profile-Page ----------------- ");
+  }
 
+  componentDidMount() {
     if (!localStorage.getItem("token")) {
       this.props.history.push("/");
     } else if (

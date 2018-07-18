@@ -33,7 +33,7 @@ class DirectorPendingPage extends Component {
   }
 
   componentWillMount() {
-    console.log("------------ Director -------------------");
+    console.log(" ----------------- Director-Pending ----------------- ");
   }
 
   componentWillReceiveProps(nextProps) {
@@ -383,10 +383,7 @@ class DirectorPendingPage extends Component {
                     onClick={this.handleReject}
                   >
                     Reject
-                  </Button>,
-                  <Button key="cancel" onClick={this.handleCancelReject}>
-                    Return
-                  </Button>
+                  </Button>             
                 ]}
               >
                 <Input
@@ -436,6 +433,7 @@ class DirectorPendingPage extends Component {
                 Reason : {this.state.user && this.state.user.reason} <br />
                 From : {this.state.user && this.state.user.date_from} <br />
                 To : {this.state.user && this.state.user.date_to} <br />
+                Half Day : {this.state.user && this.state.user.half_dates} <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
                 Total Leave : {this.state.user && this.state.user.total} day <br />
                 Leave Balance : {this.state.user && this.state.user.leave_remaining} day <br />
@@ -468,7 +466,6 @@ const mapDispatchToProps = dispatch =>
     dispatch
   );
 
-console.log(mapStateToProps);
 export default connect(
   mapStateToProps,
   mapDispatchToProps

@@ -21,6 +21,7 @@ class PasswordPage extends Component {
   }
 
   componentWillMount() {
+    console.log(" ----------------- Update-Password ----------------- ");
     if (!localStorage.getItem("token")) {
       this.props.history.push("/");
     } else if (

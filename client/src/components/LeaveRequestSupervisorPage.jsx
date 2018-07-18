@@ -3,6 +3,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { formOnChange, SumbitLeaveSupervisor } from "../store/Actions/leaveRequestAction";
 import { typeLeaveFetchData } from "../store/Actions/typeLeaveAction";
+import update from "react-addons-update";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
 import moment from "moment-business-days";
@@ -19,6 +20,7 @@ const { Content } = Layout;
 const FormItem = Form.Item;
 const { TextArea } = Input;
 const Option = Select.Option;
+let Arrs = [];
 
 class LeaveRequestPage extends Component {
   constructor(props) {
@@ -26,8 +28,11 @@ class LeaveRequestPage extends Component {
     this.state = {
       from: null,
       to: null,
+      start: null,
+      end: null,
       endOpen: false,
-      contactID: "+62"
+      contactID: "+62",
+      halfDate: []
     };
 
     this.handleOnChange = this.handleOnChange.bind(this);
@@ -36,6 +41,8 @@ class LeaveRequestPage extends Component {
     this.handleOnChangeNumber = this.handleOnChangeNumber.bind(this);
     this.handleOnChangeID = this.handleOnChangeID.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
+    this.onChangeIsHalfDay = this.onChangeIsHalfDay.bind(this);
+    this.onChangeAddHalfDay = this.onChangeAddHalfDay.bind(this);
   }
 
   componentWillMount() {
@@ -52,6 +59,11 @@ class LeaveRequestPage extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        console.log("Received values of form: ", values);
+      }
+    });
     this.props.SumbitLeaveSupervisor(this.props.leaveForm);
   };
 
@@ -113,22 +125,16 @@ class LeaveRequestPage extends Component {
         mnth = ("0" + (date.getMonth() + 1)).slice(-2),
         day = ("0" + date.getDate()).slice(-2);
       let newDate = [day, mnth, date.getFullYear()].join("-");
+      let newStart = [mnth, day, date.getFullYear()].join("-");
+
       let dateFrom = {
         ...this.props.leaveForm,
         date_from: newDate
       };
-      
-
-      var dateString = "07-15-2016";
-      var dateObj = new Date(dateString);
-      var momentObj = moment(dateObj);
-      var momentString = momentObj.format("YYYY-MM-DD");
-
-      console.log("valuemoment date============>", momentObj);
 
       this.props.formOnChange(dateFrom);
+      this.onChange("start", newStart);
     }
-
     this.onChange("from", value);
   };
 
@@ -138,14 +144,14 @@ class LeaveRequestPage extends Component {
         mnth = ("0" + (date.getMonth() + 1)).slice(-2),
         day = ("0" + date.getDate()).slice(-2);
       let newDate = [day, mnth, date.getFullYear()].join("-");
+      let newEnd = [mnth, day, date.getFullYear()].join("-");
       let dateTo = {
         ...this.props.leaveForm,
         date_to: newDate
       };
-
       this.props.formOnChange(dateTo);
+      this.onChange("end", newEnd);
     }
-
     this.onChange("to", value);
   };
 
@@ -159,19 +165,17 @@ class LeaveRequestPage extends Component {
         ...this.props.leaveForm,
         back_on: newDate
       };
-
       this.props.formOnChange(backOn);
     }
+
+    let halfDay = {
+      ...this.props.leaveForm,
+      half_dates: this.state.halfDate
+    };
+    this.props.formOnChange(halfDay);
   };
 
   disabledDate(current) {
-    let workDay = moment()
-      .startOf("month")
-      .monthBusinessWeeks();
-
-    // console.log("working day=======>", workDay);
-
-    // console.log("curent=====>", current);
     return current && current < moment().endOf("day");
   }
 
@@ -189,17 +193,25 @@ class LeaveRequestPage extends Component {
     this.setState({ endOpen: open });
   };
 
-  getDates(startDate, endDate) {
-    let dates = [],
-      currentDate = startDate,
-      addDays = function(days) {
-        const date = new Date(this.valueOf());
-        date.setDate(date.getDate() + days);
-        return date;
-      };
-    while (currentDate <= endDate) {
-      dates.push(currentDate);
-      currentDate = addDays.call(currentDate, 1);
+  getDates(start, end) {
+    var startDate = new Date(start);
+    var endDate = new Date(end);
+    let dates = [];
+    let Weekday = new Array("Sun", "Mon", "Tue", "Wed", "Thuy", "Fri", "Sat");
+    while (startDate <= endDate) {
+      var weekDay = startDate.getDay();
+      if (weekDay < 6 && weekDay > 0) {
+        var month = startDate.getMonth() + 1;
+        if (month <= 9) {
+          month = "0" + month;
+        }
+        var day = startDate.getDate();
+        if (day <= 9) {
+          day = "0" + day;
+        }
+        dates.push(day + "-" + month + "-" + startDate.getFullYear());
+      }
+      startDate.setDate(startDate.getDate() + 1);
     }
     return dates;
   }
@@ -214,8 +226,29 @@ class LeaveRequestPage extends Component {
     console.log(`checked add hald day = ${e.target.checked}`);
   }
 
-  onChangeIsHalfDay(e) {
-    console.log(`checked is half day= ${e.target.checked}`);
+  onChangeIsHalfDay(e, value) {
+    console.log(`${e.target.value} checked is ${e.target.checked}`);
+
+    if (e.target.checked) {
+      this.setState(prevState => ({
+        halfDate: [...prevState.halfDate, e.target.value]
+      }));
+      // this.setState(prevState => ({
+      //   halfDate: update(prevState.halfDate, { $push: [e.target.value] })
+      // }));
+    } else {
+      let array = this.state.halfDate;
+      let index = array.indexOf(e.target.value);
+      this.setState(prevState => ({
+        halfDate: update(prevState.halfDate, { $splice: [[index, 1]] })
+      }));
+    }
+
+    // let newLeave = {
+    //   ...this.props.leaveForm,
+    //   half_dates: this.state.halfDate
+    // };
+    // this.props.formOnChange(newLeave);
   }
 
   handleOnChangeID = value => {
@@ -228,7 +261,6 @@ class LeaveRequestPage extends Component {
       contact_number: `${this.state.contactID}${e.target.value}`
     };
     this.props.formOnChange(newLeave);
-    console.log(newLeave);
   };
 
   handleBlur() {
@@ -240,45 +272,11 @@ class LeaveRequestPage extends Component {
   }
 
   render() {
+    const { from, to, start, end, endOpen } = this.state;
     const { getFieldDecorator } = this.props.form;
-    const { from, to, endOpen } = this.state;
-    const dates = this.getDates(new Date(from), new Date(to));
-    const arr = [];
+    const dates = this.getDates(start, end);
     const elements = [];
     const dateFormat = "DD-MM-YYYY";
-    const now = moment()
-      .startOf("month")
-      .monthBusinessDays();
-
-    dates.map((fulldate, i) => {
-      const date = new Date(fulldate),
-        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
-        day = ("0" + date.getDate()).slice(-2);
-      arr.push([day, mnth, date.getFullYear()].join("-"));
-      return arr;
-    });
-
-    for (let i = 0; i < arr.length; i++) {
-      elements.push(
-        <DatePicker
-          id="half_day"
-          name="half_day"
-          format={dateFormat}
-          defaultValue={moment(arr[i], dateFormat)}
-          disabled
-          style={{
-            width: "50%"
-          }}
-        />,
-        "  Is Half Day  ",
-        <Checkbox
-          id="is_half_day"
-          name="is_half_day"
-          onChange={this.onChangeIsHalfDay}
-        />,
-        <br />
-      );
-    }
 
     const formItemLayout = {
       labelCol: {
@@ -305,9 +303,22 @@ class LeaveRequestPage extends Component {
       </Select>
     );
 
-    if (this.props.loading) {
-      return <h1> loading... </h1>;
+    for (let i = 0; i < dates.length; i++) {
+      elements.push(
+        <Checkbox
+          key={i}
+          id="is_half_day"
+          name="is_half_day"
+          onChange={e => this.onChangeIsHalfDay(e, dates[i])}
+          value={dates[i]}
+        >
+          {" "}
+          {dates[i]}{" "}
+        </Checkbox>,
+        <br />
+      );
     }
+
     return (
       <Layout>
         <HeaderNav />
@@ -333,34 +344,37 @@ class LeaveRequestPage extends Component {
 
             <Form onSubmit={this.handleSubmit} className="login-form">
               <FormItem {...formItemLayout} label="Type Of Leave">
-                <Select
-                  id="type_leave_id"
-                  name="type_leave_id"
-                  placeholder="Select type of leave"
-                  optionFilterProp="children"
-                  onChange={this.handleChangeTypeOfLeave}
-                  onSelect={(value, event) =>
-                    this.handleChangeSelect(value, event)
-                  }
-                  showSearch
-                  onFocus={this.handleFocus}
-                  onBlur={this.handleBlur}
-                  filterOption={(input, option) =>
-                    option.props.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
-                  }
-                  style={formStyle}
-                >
-
-                 {this.props.typeLeave.map(d => <Option key={d.id}>{d.type_name}</Option>)}
-                  {/* <Option value={11}>Annual Leave</Option>
-                  <Option value={22}>Errand Leave</Option>
-                  <Option value={33}>Sick Leave</Option>
-                  <Option value={44}>Marriage Leave</Option>
-                  <Option value={55}>Maternity Leave</Option>
-                  <Option value={66}>Other Leave</Option> */}
-                </Select>
+                {getFieldDecorator("type of leave", {
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(
+                  <Select
+                    id="type_leave_id"
+                    name="type_leave_id"
+                    placeholder="Select type of leave"
+                    optionFilterProp="children"
+                    onChange={this.handleChangeTypeOfLeave}
+                    onSelect={(value, event) =>
+                      this.handleChangeSelect(value, event)
+                    }
+                    showSearch
+                    onFocus={this.handleFocus}
+                    onBlur={this.handleBlur}
+                    filterOption={(input, option) =>
+                      option.props.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                    style={formStyle}
+                  >
+                    {this.props.typeLeave.map(d => (
+                      <Option key={d.id}>{d.type_name}</Option>
+                    ))}
+                  </Select>
+                )}
               </FormItem>
 
               <div id="showMe">
@@ -377,31 +391,47 @@ class LeaveRequestPage extends Component {
                 </FormItem>
               </div>
               <FormItem {...formItemLayout} label="From">
-                <DatePicker
-                  id="date_from"
-                  name="date_from"
-                  disabledDate={this.disabledDate}
-                  format={dateFormat}
-                  value={from}
-                  placeholder="Start"
-                  onChange={this.onStartChange}
-                  onOpenChange={this.handleStartOpenChange}
-                  style={formStyle}
-                />
+                {getFieldDecorator("start date", {
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(
+                  <DatePicker
+                    id="date_from"
+                    name="date_from"
+                    disabledDate={this.disabledDate}
+                    format={dateFormat}
+                    value={from}
+                    placeholder="Start"
+                    onChange={this.onStartChange}
+                    onOpenChange={this.handleStartOpenChange}
+                    style={formStyle}
+                  />
+                )}
               </FormItem>
               <FormItem {...formItemLayout} label="To">
-                <DatePicker
-                  id="date_to"
-                  name="date_to"
-                  disabledDate={this.disabledEndDate}
-                  format={dateFormat}
-                  value={to}
-                  placeholder="End"
-                  onChange={this.onEndChange}
-                  open={endOpen}
-                  onOpenChange={this.handleEndOpenChange}
-                  style={formStyle}
-                />
+                {getFieldDecorator("end date", {
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(
+                  <DatePicker
+                    id="date_to"
+                    name="date_to"
+                    disabledDate={this.disabledEndDate}
+                    format={dateFormat}
+                    value={to}
+                    placeholder="End"
+                    onChange={this.onEndChange}
+                    open={endOpen}
+                    onOpenChange={this.handleEndOpenChange}
+                    style={formStyle}
+                  />
+                )}
               </FormItem>
               <FormItem>
                 <Checkbox
@@ -421,41 +451,63 @@ class LeaveRequestPage extends Component {
               </div>
 
               <FormItem {...formItemLayout} label="Back to work on">
-                <DatePicker
-                  id="back_on"
-                  name="back_on"
-                  disabledDate={this.disabledDateBack}
-                  onChange={this.onBackOn}
-                  format={dateFormat}
-                  placeholder="Back to work"
-                  style={formStyle}
-                />
+                {getFieldDecorator("back to work", {
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(
+                  <DatePicker
+                    id="back_on"
+                    name="back_on"
+                    disabledDate={this.disabledDateBack}
+                    onChange={this.onBackOn}
+                    format={dateFormat}
+                    placeholder="Back to work"
+                    style={formStyle}
+                  />
+                )}
               </FormItem>
 
               <FormItem {...formItemLayout} label="Contact Address">
-                <TextArea
-                  type="text"
-                  id="contact_address"
-                  name="contact_address"
-                  placeholder="contact_address, email, etc"
-                  value={this.props.leaveForm.contact_address}
-                  onChange={this.handleOnChange}
-                  autosize={{ minRows: 2, maxRows: 8 }}
-                  style={formStyle}
-                />
+                {getFieldDecorator("contact address", {
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(
+                  <TextArea
+                    type="text"
+                    id="contact_address"
+                    name="contact_address"
+                    placeholder="contact_address, email, etc"
+                    onChange={this.handleOnChange}
+                    autosize={{ minRows: 2, maxRows: 8 }}
+                    style={formStyle}
+                  />
+                )}
               </FormItem>
 
               <FormItem {...formItemLayout} label="Contact Number">
-                <Input
-                  type="text"
-                  id="contact_number"
-                  name="contact_number"
-                  placeholder="Phone number"
-                  addonBefore={prefixSelector}
-                  // value={this.props.leaveForm.contact_number}
-                  onChange={this.handleOnChangeNumber}
-                  style={formStyle}
-                />
+                {getFieldDecorator("contact number", {
+                  rules: [
+                    {
+                      required: true
+                    }
+                  ]
+                })(
+                  <Input
+                    type="text"
+                    id="contact_number"
+                    name="contact_number"
+                    placeholder="Phone number"
+                    addonBefore={prefixSelector}
+                    onChange={this.handleOnChangeNumber}
+                    style={formStyle}
+                  />
+                )}
               </FormItem>
               <FormItem>
                 <Button
@@ -481,7 +533,7 @@ class LeaveRequestPage extends Component {
 
 const mapStateToProps = state => ({
   leaveForm: state.leaveRequestReducer,
-  typeLeave : state.fetchTypeLeaveReducer.typeLeave
+  typeLeave: state.fetchTypeLeaveReducer.typeLeave
 });
 
 const WrappedLeaveForm = Form.create()(LeaveRequestPage);

@@ -45,7 +45,9 @@ class LeaveRequestPage extends Component {
     this.onChangeAddHalfDay = this.onChangeAddHalfDay.bind(this);
   }
 
+
   componentWillMount() {
+    console.log(" ----------------- Form-Leave-Request ----------------- ");    
     if (!localStorage.getItem("token")) {
       this.props.history.push("/");
     } else if (
@@ -155,26 +157,6 @@ class LeaveRequestPage extends Component {
     this.onChange("to", value);
   };
 
-  onBackOn = value => {
-    if (value !== null) {
-      const date = new Date(value._d),
-        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
-        day = ("0" + date.getDate()).slice(-2);
-      let newDate = [day, mnth, date.getFullYear()].join("-");
-      let backOn = {
-        ...this.props.leaveForm,
-        back_on: newDate
-      };
-      this.props.formOnChange(backOn);
-    }
-
-    let halfDay = {
-      ...this.props.leaveForm,
-      half_dates: this.state.halfDate
-    };
-    this.props.formOnChange(halfDay);
-  };
-
   disabledDate(current) {
     return current && current < moment().endOf("day");
   }
@@ -230,12 +212,12 @@ class LeaveRequestPage extends Component {
     console.log(`${e.target.value} checked is ${e.target.checked}`);
 
     if (e.target.checked) {
-      this.setState(prevState => ({
-        halfDate: [...prevState.halfDate, e.target.value]
-      }));
       // this.setState(prevState => ({
-      //   halfDate: update(prevState.halfDate, { $push: [e.target.value] })
+      //   halfDate: [...prevState.halfDate, e.target.value]
       // }));
+      this.setState(prevState => ({
+        halfDate: update(prevState.halfDate, { $push: [e.target.value] })
+      }));
     } else {
       let array = this.state.halfDate;
       let index = array.indexOf(e.target.value);
@@ -244,12 +226,28 @@ class LeaveRequestPage extends Component {
       }));
     }
 
-    // let newLeave = {
+    // let halfDay = {
     //   ...this.props.leaveForm,
     //   half_dates: this.state.halfDate
     // };
-    // this.props.formOnChange(newLeave);
+    // this.props.formOnChange(halfDay);
+    // console.log("halfday==========>", halfDay);
   }
+
+  onBackOn = value => {
+    if (value !== null) {
+      const date = new Date(value._d),
+        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+        day = ("0" + date.getDate()).slice(-2);
+      let newDate = [day, mnth, date.getFullYear()].join("-");
+      let backOn = {
+        ...this.props.leaveForm,
+        back_on: newDate,
+        half_dates: this.state.halfDate
+      };            
+      this.props.formOnChange(backOn);      
+    }        
+  };
 
   handleOnChangeID = value => {
     this.onChange("contactID", value);

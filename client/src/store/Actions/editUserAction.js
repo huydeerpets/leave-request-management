@@ -47,11 +47,12 @@ export function saveEditUser(savedUser, pusher) {
 			.then(({
 				body,
 				error
-			}) => {
-				console.log("err==========>", error)
-				console.log("err==========>", body)
-				if (body === "Update user success") {
+			}) => {				
+				if (body !==  null) {
+					alert(body)
 					pusher('/admin')					
+				} else if (error !== null) {
+					alert(error)
 				}
 			}).catch(err => {
 				console.log(err)

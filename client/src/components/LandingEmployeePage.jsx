@@ -10,6 +10,11 @@ const { Content } = Layout;
 
 
 export class LandingEmployeePage extends React.Component {
+
+  componentWillMount() {
+    console.log(" ----------------- Employee-Landing-Page ----------------- ");
+  }
+
   componentDidMount() {
     if (!localStorage.getItem("token")) {
       this.props.history.push("/");
@@ -27,10 +32,11 @@ export class LandingEmployeePage extends React.Component {
     const dataType = this.props.userType;
     if(dataSummary){
       for (let i = 0; i < dataSummary.length; i++) {
+        console.log("============",dataSummary)
         summary.push(
           <p>
-            {dataSummary[i].type_name}: {dataSummary[i].used} day out of{" "}
-            {dataSummary[i].leave_remaining} day
+            {dataSummary[i].type_name}: {dataSummary[i].used} days out of{" "}
+            {dataSummary[i].leave_remaining} days
           </p>
         );
       }
@@ -45,7 +51,7 @@ export class LandingEmployeePage extends React.Component {
       typeLeave.push(
         <p>
           {" "}
-          {dataType[j].type_name}: {dataType[j].leave_remaining} day{" "}
+          {dataType[j].type_name}: {dataType[j].leave_remaining} days left{" "}
         </p>
       );
     }
@@ -75,7 +81,7 @@ export class LandingEmployeePage extends React.Component {
                     <h3>
                       {" "}
                       Used so far
-                      <hr
+                      <hr className="id"
                         style={{
                           borderBottom: "1px solid black",
                           width: "276px"
@@ -92,7 +98,7 @@ export class LandingEmployeePage extends React.Component {
                     }}>
                   <h3>
                     Available types
-                    <hr
+                    <hr className="id"
                       style={{
                         borderBottom: "1px solid black",
                         width: "276px"

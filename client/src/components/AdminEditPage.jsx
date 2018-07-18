@@ -52,6 +52,7 @@ class AdminEditPage extends Component {
     }
   }
   componentWillMount() {
+    console.log(" ----------------- Admin-Edit-User ----------------- ");
     let id = Number(this.props.history.location.pathname.split("/").pop());
     let user = this.props.history.location.state.users.filter(
       el => el.employee_number === id

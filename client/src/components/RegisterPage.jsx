@@ -57,11 +57,11 @@ class RegisterPage extends Component {
     });
     this.props.SumbitSignUp(this.props.signupForm);
 
-    if (JSON.stringify(this.props.error) !== "{}") {
-      message.error(JSON.stringify(this.props.error));
-    } else {      
-      message.error(`"regiter failed, please field out all fieled"`);
-    }
+    // if (JSON.stringify(this.props.error) !== "{}") {
+    //   message.error(JSON.stringify(this.props.error));
+    // } else {      
+    //   message.error(`"regiter failed, please field out all fieled"`);
+    // }
   };
 
   handleOnChange = e => {

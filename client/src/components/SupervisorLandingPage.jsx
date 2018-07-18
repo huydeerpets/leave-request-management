@@ -10,6 +10,10 @@ const { Content } = Layout;
 
 export class SupervisorLandingPage extends React.Component {
 
+  componentWillMount() {
+    console.log(" ----------------- Supervisor-Landing-Page ----------------- ");
+  }
+
   componentDidMount() {
     if (!localStorage.getItem("token")) {
       this.props.history.push("/");
@@ -26,18 +30,28 @@ export class SupervisorLandingPage extends React.Component {
     const dataSummary = this.props.userSummary;
     const dataType = this.props.userType;
 
-    for (let i = 0; i < dataSummary.length; i++) {
-      summary.push(
-        <p> {dataSummary[i].type_name}: {dataSummary[i].used} day out of {dataSummary[i].leave_remaining} day</p>
-      );
+    if (dataSummary) {
+      for (let i = 0; i < dataSummary.length; i++) {
+        summary.push(
+          <p>
+            {dataSummary[i].type_name}: {dataSummary[i].used} day out of{" "}
+            {dataSummary[i].leave_remaining} day
+          </p>
+        );
+      }
+    } else {
+      <p />;
     }
 
     for (let j in dataType) {
-      if(dataType[j].type_name === "Sick Leave"){
-        dataType[j].type_name = `${dataType[j].type_name} (up to 10 days)`
+      if (dataType[j].type_name === "Sick Leave") {
+        dataType[j].type_name = `${dataType[j].type_name} (up to 10 days)`;
       }
       typeLeave.push(
-        <p> {dataType[j].type_name}: {dataType[j].leave_remaining} day </p>
+        <p>
+          {" "}
+          {dataType[j].type_name}: {dataType[j].leave_remaining} day{" "}
+        </p>
       );
     }
 
@@ -46,7 +60,7 @@ export class SupervisorLandingPage extends React.Component {
         <Layout>
           <HeaderNav />
 
-            <Content
+          <Content
             className="container"
             style={{
               display: "flex",
@@ -66,7 +80,7 @@ export class SupervisorLandingPage extends React.Component {
                     <h3>
                       {" "}
                       Used so far
-                      <hr
+                      <hr className="id"
                         style={{
                           borderBottom: "1px solid black",
                           width: "276px"
@@ -78,25 +92,26 @@ export class SupervisorLandingPage extends React.Component {
                   </div>
                 </Col>
                 <Col span={12}>
-                <div style={{
+                  <div
+                    style={{
                       float: "right"
-                    }}>
-                  <h3>
-                    Available types
-                    <hr
-                      style={{
-                        borderBottom: "1px solid black",
-                        width: "276px"
-                      }}
-                    />
-                  </h3>
-                  {typeLeave}
+                    }}
+                  >
+                    <h3>
+                      Available types
+                      <hr className="id"
+                        style={{
+                          borderBottom: "1px solid black",
+                          width: "276px"
+                        }}
+                      />
+                    </h3>
+                    {typeLeave}
                   </div>
                 </Col>
               </Row>
             </div>
           </Content>
-
 
           <Footer />
         </Layout>
@@ -104,7 +119,6 @@ export class SupervisorLandingPage extends React.Component {
     );
   }
 }
-
 
 const mapStateToProps = state => ({
   userSummary: state.fetchUserSummaryReducer.userSummary,

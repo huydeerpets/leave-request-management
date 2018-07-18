@@ -13,8 +13,7 @@ export function SupervisorAdd() {
 			.then((resp) => resp.json())
 			.then(({
 				body
-			}) => {
-				console.log(body)
+			}) => {				
 				let payload = {
 					supervisor: body
 				}

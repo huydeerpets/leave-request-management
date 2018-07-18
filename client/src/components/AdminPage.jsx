@@ -83,6 +83,10 @@ class Adminpage extends Component {
     ];
   }
 
+  componentWillMount() {
+    console.log(" ----------------- Admin-Page ----------------- ");
+  }
+
   componentDidMount() {
     if (localStorage.getItem("role") !== "admin") {
       this.props.history.push("/");
@@ -168,7 +172,6 @@ const mapDispatchToProps = dispatch =>
     dispatch
   );
 
-console.log(mapStateToProps);
 export default connect(
   mapStateToProps,
   mapDispatchToProps

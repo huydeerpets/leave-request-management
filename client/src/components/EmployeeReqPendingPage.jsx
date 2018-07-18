@@ -5,9 +5,6 @@ import {
   pendingFetchData,
   deleteRequest
 } from "../store/Actions/employeeAction";
-import HeaderNav from "./menu/HeaderNav";
-import Footer from "./menu/Footer";
-import Loading from "./menu/Loading";
 import {
   Layout,
   Table,
@@ -15,9 +12,15 @@ import {
   Button,
   Divider,
   Popconfirm,
-  message
+  message,
+  Input,
+  Icon
 } from "antd";
+import HeaderNav from "./menu/HeaderNav";
+import Loading from "./menu/Loading";
+import Footer from "./menu/Footer";
 const { Content } = Layout;
+let data;
 
 class EmployeeReqAcceptPage extends Component {
   constructor(props) {
@@ -25,15 +28,146 @@ class EmployeeReqAcceptPage extends Component {
     this.state = {
       loading: false,
       visible: false,
-      user: null
+      user: null,
+      data: this.props.users,
+      filterDropdownVisible: false,
+      filtered: false,
+      searchID: ""
     };
+  }
 
-    this.columns = [
+  componentWillMount() {
+    console.log("------------ Employee-Pending -------------------");
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.users !== this.props.users) {
+      this.setState({ data: nextProps.users });
+    }
+    data = nextProps.users;
+  }
+
+  componentDidMount() {
+    if (!localStorage.getItem("token")) {
+      this.props.history.push("/");
+    } else if (
+      localStorage.getItem("role") !== "employee" &&
+      localStorage.getItem("role") !== "supervisor"
+    ) {
+      this.props.history.push("/");
+    }
+    this.props.pendingFetchData();
+  }
+
+  onSearchID = () => {
+    const { searchID } = this.state;
+    const reg = new RegExp(searchID, "gi");
+    this.setState({
+      filterDropdownIDVisible: false,
+      filtered: !!searchID,
+      data: data
+        .map(record => {
+          const match = String(record.id).match(reg);
+          if (!match) {
+            return null;
+          }
+          return {
+            ...record,
+            ID: (
+              <span>
+                {this.state.data.map(
+                  (text, i) =>
+                    String(text.id) === searchID ? (
+                      <span key={i} className="highlight">
+                        {text}
+                      </span>
+                    ) : (
+                      text
+                    ) // eslint-disable-line
+                )}
+                }
+              </span>
+            )
+          };
+        })
+        .filter(record => !!record)
+    });
+  };
+
+  onInputChangeID = e => {
+    this.setState({
+      searchID: e.target.value
+    });
+  };
+
+  editLeave = (leave, id) => {
+    this.props.history.push({
+      pathname: "/editrequest/" + id,
+      state: { leave: leave }
+    });
+  };
+
+  deleteRequest = (users, id) => {
+    this.props.deleteRequest(users, id);
+  };
+
+  showDetail = record => {
+    this.setState({
+      visible: true,
+      user: record
+    });
+  };
+
+  onSelectChange = selectedRowKeys => {
+    console.log("selected row: ", selectedRowKeys);
+  };
+
+  handleCancel = () => {
+    this.setState({ visible: false });
+  };
+
+  onShowSizeChange(current, pageSize) {
+    console.log(current, pageSize);
+  }
+
+  render() {
+    const { visible, loading } = this.state;
+    const columns = [
       {
         title: "ID",
         dataIndex: "id",
         key: "id",
-        width: 95
+        width: 95,
+        filterDropdown: (
+          <div className="custom-filter-dropdown-id">
+            <Input
+              type="number"
+              ref={ele => (this.searchInput = ele)}
+              placeholder="Search request id"
+              value={this.state.searchID}
+              onChange={this.onInputChangeID}
+              onPressEnter={this.onSearchID}
+            />
+            <Button type="primary" onClick={this.onSearchID}>
+              Search
+            </Button>
+          </div>
+        ),
+        filterIcon: (
+          <Icon
+            type="search"
+            style={{ color: this.state.filtered ? "#108ee9" : "#aaa" }}
+          />
+        ),
+        filterDropdownIDVisible: this.state.filterDropdownIDVisible,
+        onFilterDropdownVisibleChange: visible => {
+          this.setState(
+            {
+              filterDropdownIDVisible: visible
+            },
+            () => this.searchInput && this.searchInput.focus()
+          );
+        }
       },
       {
         title: "Employee Number",
@@ -112,54 +246,6 @@ class EmployeeReqAcceptPage extends Component {
         )
       }
     ];
-  }
-
-  componentDidMount() {
-    if (!localStorage.getItem("token")) {
-      this.props.history.push("/");
-    } else if (
-      localStorage.getItem("role") !== "employee" &&
-      localStorage.getItem("role") !== "supervisor"
-    ) {
-      this.props.history.push("/");
-    }
-    this.props.pendingFetchData();
-  }
-
-  editLeave = (leave, id) => {
-    console.log(id, "--", leave);
-    this.props.history.push({
-      pathname: "/editrequest/" + id,
-      state: { leave: leave }
-    });
-  };
-
-  deleteRequest = (users, id) => {
-    this.props.deleteRequest(users, id);
-    console.log("delete nih", users, "--", id);
-  };
-
-  showDetail = record => {
-    this.setState({
-      visible: true,
-      user: record
-    });
-  };
-
-  onSelectChange = selectedRowKeys => {
-    console.log("selected row: ", selectedRowKeys);
-  };
-
-  handleCancel = () => {
-    this.setState({ visible: false });
-  };
-
-  onShowSizeChange(current, pageSize) {
-    console.log(current, pageSize);
-  }
-
-  render() {
-    const { visible, loading } = this.state;
 
     if (this.props.loading) {
       return <Loading />;
@@ -178,8 +264,8 @@ class EmployeeReqAcceptPage extends Component {
           >
             <div style={{ padding: 20, background: "#fff" }}>
               <Table
-                columns={this.columns}
-                dataSource={this.props.users}
+                columns={columns}
+                dataSource={this.state.data}
                 rowKey={record => record.id}
                 onRowClick={this.onSelectChange}
                 pagination={{
@@ -213,18 +299,25 @@ class EmployeeReqAcceptPage extends Component {
                 Name : {this.state.user && this.state.user.name} <br />
                 Gender : {this.state.user && this.state.user.gender} <br />
                 Email : {this.state.user && this.state.user.email} <br />
-                Type Of Leave : {this.state.user && this.state.user.type_name} <br />
+                Type Of Leave : {this.state.user &&
+                  this.state.user.type_name}{" "}
+                <br />
                 Reason : {this.state.user && this.state.user.reason} <br />
                 From : {this.state.user && this.state.user.date_from} <br />
                 To : {this.state.user && this.state.user.date_to} <br />
-                Half : {this.state.user && this.state.user.half_dates} <br />
+                Half Day : {this.state.user && this.state.user.half_dates}{" "}
+                <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
-                Total Leave : {this.state.user && this.state.user.total} day <br />
-                Leave Balance : {this.state.user && this.state.user.leave_remaining} day <br />
-                Contact Address : {this.state.user && this.state.user.contact_address} <br />
-                Contact Number : {this.state.user && this.state.user.contact_number} <br />
+                Total Leave : {this.state.user &&
+                  this.state.user.total} day <br />
+                Leave Balance :{" "}
+                {this.state.user && this.state.user.leave_remaining} day <br />
+                Contact Address :{" "}
+                {this.state.user && this.state.user.contact_address} <br />
+                Contact Number :{" "}
+                {this.state.user && this.state.user.contact_number} <br />
                 Status : {this.state.user && this.state.user.status}
-                <br />  
+                <br />
               </div>
             </Modal>
           </Content>
@@ -249,7 +342,6 @@ const mapDispatchToProps = dispatch =>
     dispatch
   );
 
-console.log(mapStateToProps);
 export default connect(
   mapStateToProps,
   mapDispatchToProps

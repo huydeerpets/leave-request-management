@@ -118,13 +118,13 @@ func (u *Admin) GetUser(employeeNumber int64) (result structDB.User, err error) 
 
 // UpdateUser ...
 func (u *Admin) UpdateUser(e *structDB.User, employeeNumber int64) (err error) {
+
 	o := orm.NewOrm()
 	qb, errQB := orm.NewQueryBuilder("mysql")
 	if errQB != nil {
 		helpers.CheckErr("Query builder failed @UpdateUser", errQB)
 		return errQB
 	}
-
 	qb.Update(e.TableName()).
 		Set("name = ?",
 			"gender = ?",
@@ -135,6 +135,8 @@ func (u *Admin) UpdateUser(e *structDB.User, employeeNumber int64) (err error) {
 			"role = ?",
 			"supervisor_id = ?").Where("employee_number = ? ")
 	sql := qb.String()
+
+	e.Email = strings.ToLower(e.Email)
 
 	res, errRaw := o.Raw(sql,
 		e.Name,
@@ -157,7 +159,6 @@ func (u *Admin) UpdateUser(e *structDB.User, employeeNumber int64) (err error) {
 		helpers.CheckErr("error get rows affected", errRow)
 		return errRow
 	}
-
 	return err
 }
 
@@ -195,6 +196,7 @@ func (u *Admin) GetLeaveRequestPending() ([]structLogic.RequestPending, error) {
 		leave.TableName()+".reason",
 		leave.TableName()+".date_from",
 		leave.TableName()+".date_to",
+		leave.TableName()+".half_dates",
 		leave.TableName()+".total",
 		leave.TableName()+".back_on",
 		leave.TableName()+".contact_address",
@@ -256,6 +258,7 @@ func (u *Admin) GetLeaveRequest() ([]structLogic.RequestAccept, error) {
 		leave.TableName()+".reason",
 		leave.TableName()+".date_from",
 		leave.TableName()+".date_to",
+		leave.TableName()+".half_dates",
 		leave.TableName()+".total",
 		leave.TableName()+".back_on",
 		leave.TableName()+".contact_address",
@@ -319,6 +322,7 @@ func (u *Admin) GetLeaveRequestReject() ([]structLogic.RequestReject, error) {
 		leave.TableName()+".reason",
 		leave.TableName()+".date_from",
 		leave.TableName()+".date_to",
+		leave.TableName()+".half_dates",
 		leave.TableName()+".total",
 		leave.TableName()+".back_on",
 		leave.TableName()+".contact_address",

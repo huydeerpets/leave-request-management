@@ -11,7 +11,7 @@ type RequestPending struct {
 	Email            string  `json:"email" orm:"column(email)"`
 	Role             string  `json:"role" orm:"column(role)"`
 	TypeName         string  `json:"type_name" orm:"column(type_name)"`
-	LeaveRemaining   int64   `json:"leave_remaining" orm:"column(leave_remaining)"`
+	LeaveRemaining   float64 `json:"leave_remaining" orm:"column(leave_remaining)"`
 	Reason           string  `json:"reason" orm:"column(reason)"`
 	DateFrom         string  `json:"date_from" orm:"column(date_from)"`
 	DateTo           string  `json:"date_to" orm:"column(date_to)"`

@@ -4,7 +4,7 @@ const leave = {
 	date_from: '',
 	date_to: '',
 	half_dates: [],
-	back_on: '',
+	back_on: null,
 	contact_address: '',
 	contact_number: ''
 }

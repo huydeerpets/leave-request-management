@@ -17,6 +17,10 @@ class ResetPasswordPage extends Component {
     };
   }
 
+  componentWillMount() {
+    console.log(" ----------------- Reset-Password ----------------- ");
+  }
+
   componentDidMount() {
     if (
       localStorage.getItem("token") &&

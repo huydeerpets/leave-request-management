@@ -76,7 +76,7 @@ func (l *LeaveRequest) CreateLeaveRequest(employeeNumber int64,
 	getSupervisorID, _ := user.GetSupervisor(employeeNumber)
 	getSupervisor, _ := user.GetEmployee(getSupervisorID.SupervisorID)
 
-	helpers.GoMailSupervisor(getSupervisor.Email, getEmployee.Name, getSupervisor.Name)
+	defer helpers.GoMailSupervisor(getSupervisor.Email, getEmployee.Name, getSupervisor.Name)
 
 	return err
 }

@@ -18,6 +18,10 @@ class LoginPage extends Component {
     this.handleOnChangeLogin = this.handleOnChangeLogin.bind(this);
   }
 
+  componentWillMount() {
+    console.log(" ----------------- Login ----------------- ");
+  }
+
   componentDidMount() {
     if (
       localStorage.getItem("token") &&
