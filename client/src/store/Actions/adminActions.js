@@ -96,7 +96,7 @@ export function pendingFetchData() {
 			}) => {
 				let payload = {
 					loading: false,
-					users: body
+					leave: body
 				}
 				dispatch(pendingFetch(payload))
 			})
@@ -117,7 +117,7 @@ export function acceptFetchData() {
 			}) => {
 				let payload = {
 					loading: false,
-					users: body
+					leave: body
 				}
 				dispatch(acceptFetch(payload))
 			})
@@ -139,7 +139,7 @@ export function rejectFetchData() {
 			}) => {
 				let payload = {
 					loading: false,
-					users: body
+					leave: body
 				}
 				dispatch(rejectFetch(payload))
 			})

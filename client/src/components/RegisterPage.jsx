@@ -218,11 +218,10 @@ class RegisterPage extends Component {
               <div>
                 <Form onSubmit={this.handleSubmit} className="login-form">
                   <FormItem {...formItemLayout} label="Employee Number">
-                    {getFieldDecorator("input-number", {
+                    {getFieldDecorator("employee number", {
                       rules: [
                         {
-                          required: true,
-                          message: "Please input your Employee Number!"
+                          required: true,                          
                         }
                       ]
                     })(
@@ -230,18 +229,17 @@ class RegisterPage extends Component {
                         type="number"
                         id="employee_number"
                         name="employee_number"
-                        placeholder="employee_number"
+                        placeholder="employee number"
                         onChange={this.handleOnChangeNumber}
                       />
                     )}
                   </FormItem>
 
-                  <FormItem {...formItemLayout} label="Name">
+                  <FormItem {...formItemLayout} label="Full Name">
                     {getFieldDecorator("name", {
                       rules: [
                         {
-                          required: true,
-                          message: "Please input your Name!"
+                          required: true,                          
                         }
                       ]
                     })(
@@ -259,12 +257,10 @@ class RegisterPage extends Component {
                     {getFieldDecorator("email", {
                       rules: [
                         {
-                          type: "email",
-                          message: "The input is not valid E-mail!"
+                          type: "email",                          
                         },
                         {
-                          required: true,
-                          message: "Please input your E-mail!"
+                          required: true,                          
                         }
                       ]
                     })(
@@ -279,11 +275,10 @@ class RegisterPage extends Component {
                   </FormItem>
 
                   <FormItem {...formItemLayout} label="Gender">
-                    {getFieldDecorator("select", {
+                    {getFieldDecorator("gender", {
                       rules: [
                         {
-                          required: true,
-                          message: "Please select Gender!"
+                          required: true,                          
                         }
                       ]
                     })(
@@ -315,8 +310,7 @@ class RegisterPage extends Component {
                     {getFieldDecorator("position", {
                       rules: [
                         {
-                          required: true,
-                          message: "Please input your Position!"
+                          required: true,                          
                         }
                       ]
                     })(
@@ -331,11 +325,10 @@ class RegisterPage extends Component {
                   </FormItem>
 
                   <FormItem {...formItemLayout} label="Start Working Date">
-                    {getFieldDecorator("start_working_date", {
+                    {getFieldDecorator("start working date", {
                       rules: [
                         {
-                          required: true,
-                          message: "Please choose your Start Working Date!"
+                          required: true,                          
                         }
                       ]
                     })(
@@ -351,11 +344,10 @@ class RegisterPage extends Component {
                   </FormItem>
 
                   <FormItem {...formItemLayout} label="Mobile Phone">
-                    {getFieldDecorator("mobile_phone", {
+                    {getFieldDecorator("mobile phone", {
                       rules: [
                         {
-                          required: true,
-                          message: "Please input your Mobile Phone!"
+                          required: true,                          
                         }
                       ]
                     })(
@@ -374,8 +366,7 @@ class RegisterPage extends Component {
                     {getFieldDecorator("role", {
                       rules: [
                         {
-                          required: true,
-                          message: "Please input your E-mail!"
+                          required: true,                          
                         }
                       ]
                     })(

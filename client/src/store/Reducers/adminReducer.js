@@ -1,6 +1,7 @@
 let adminState = {
 	loading: true,
-	users: []
+	users: [],
+	leave: [],
 }
 
 export default function adminReducer(state = adminState, action) {

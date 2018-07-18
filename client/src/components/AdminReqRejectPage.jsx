@@ -355,7 +355,7 @@ class AdminReqRejectPage extends Component {
 
 const mapStateToProps = state => ({
   loading: state.adminReducer.loading,
-  users: state.adminReducer.users
+  users: state.adminReducer.leave
 });
 
 const mapDispatchToProps = dispatch =>

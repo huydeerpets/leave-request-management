@@ -5,14 +5,7 @@ import { adminFetchData, deleteUser } from "../store/Actions/adminActions";
 import HeaderNav from "./menu/HeaderAdmin";
 import Footer from "./menu/Footer";
 import Loading from "./menu/Loading";
-import {
-  Layout,
-  Table,
-  Button,
-  Divider,
-  Popconfirm,
-  message,
-} from "antd";
+import { Layout, Table, Button, Divider, Popconfirm, message } from "antd";
 const { Content } = Layout;
 
 class Adminpage extends Component {
@@ -82,9 +75,9 @@ class Adminpage extends Component {
       }
     ];
   }
-  
+
   componentWillMount() {
-    console.log(" ----------------- Admin-Page ----------------- ");    
+    console.log(" ----------------- Admin-Page ----------------- ");
   }
 
   componentDidMount() {
@@ -95,7 +88,6 @@ class Adminpage extends Component {
   }
 
   editUser = (users, employeeNumber) => {
-    console.log(employeeNumber, "--", users);
     this.props.history.push({
       pathname: "/edit-user/" + employeeNumber,
       state: { users: users }
@@ -104,7 +96,6 @@ class Adminpage extends Component {
 
   deleteUser = (users, employeeNumber) => {
     this.props.deleteUser(users, employeeNumber);
-    console.log("delete nih", users, "--", employeeNumber);
   };
 
   onShowSizeChange(current, pageSize) {
