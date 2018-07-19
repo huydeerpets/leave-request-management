@@ -41,7 +41,7 @@ function rejectRequest(payload) {
 
 export function pendingFetchData() {
 	return (dispatch) => {
-		fetch(`${ROOT_API}/api/director/pending/`, {
+		fetch(`${ROOT_API}/api/director/pending`, {
 				method: 'GET',
 			})
 			.then((resp) => resp.json())
@@ -50,7 +50,7 @@ export function pendingFetchData() {
 			}) => {
 				let payload = {
 					loading: false,
-					users: body
+					leave: body
 				}
 				dispatch(pendingFetch(payload))
 			})
@@ -62,7 +62,7 @@ export function pendingFetchData() {
 
 export function acceptFetchData() {
 	return (dispatch) => {
-		fetch(`${ROOT_API}/api/director/accept/`, {
+		fetch(`${ROOT_API}/api/director/accept`, {
 				method: 'GET',
 			})
 			.then((resp) => resp.json())
@@ -71,8 +71,8 @@ export function acceptFetchData() {
 			}) => {
 				let payload = {
 					loading: false,
-					users: body
-				}
+					leave: body
+				}				
 				dispatch(acceptFetch(payload))
 			})
 			.catch(err => {
@@ -93,7 +93,7 @@ export function rejectFetchData() {
 			}) => {
 				let payload = {
 					loading: false,
-					users: body
+					leave: body
 				}
 				dispatch(rejectFetch(payload))
 			})
@@ -112,7 +112,7 @@ export function updateStatusAccept(users, id, enumber) {
 				let newUserlist = users.filter(el => el.id !== id)
 				let payload = {
 					loading: false,
-					users: [
+					leave: [
 						...newUserlist
 					]
 				}
@@ -134,7 +134,7 @@ export function updateStatusReject(users, id, enumber, payload) {
 				let newUserlist = users.filter(el => el.id !== id)
 				let payloads = {
 					loading: false,
-					users: [
+					leave: [
 						...newUserlist
 					]
 				}

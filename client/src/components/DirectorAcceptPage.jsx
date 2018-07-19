@@ -42,7 +42,7 @@ class DirectorAcceptPage extends Component {
     } else if (localStorage.getItem("role") !== "director") {
       this.props.history.push("/");
     }
-    this.props.acceptFetchData();
+    this.props.acceptFetchData();    
   }
 
   onSearch = () => {

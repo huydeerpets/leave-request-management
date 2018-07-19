@@ -2,8 +2,6 @@ import {
 	ROOT_API
 } from "./types.js"
 
-const employeeNumber = localStorage.getItem('id')
-
 function pendingFetch(payload) {
 	return {
 		type: 'FETCH_REQUEST_PENDING',
@@ -34,6 +32,7 @@ function requestDeleted(payload) {
 }
 
 export function pendingFetchData() {
+	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/employee/pending/${employeeNumber}`, {
 				method: 'GET',
@@ -55,6 +54,7 @@ export function pendingFetchData() {
 }
 
 export function acceptFetchData() {
+	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/employee/accept/${employeeNumber}`, {
 				method: 'GET',
@@ -76,6 +76,7 @@ export function acceptFetchData() {
 }
 
 export function rejectFetchData() {
+	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/employee/reject/${employeeNumber}`, {
 				method: 'GET',

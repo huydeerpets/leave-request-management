@@ -2,8 +2,6 @@ import {
 	ROOT_API
 } from "./types.js"
 
-const employeeNumber = localStorage.getItem('id')
-
 export function formOnChange(payload) {
 	return (dispach) => {
 		dispach({
@@ -20,6 +18,7 @@ function clearField() {
 }
 
 export function SumbitLeave(payload) {
+	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/employee/leave/${employeeNumber}`, {
 				method: 'POST',
@@ -48,6 +47,7 @@ export function SumbitLeave(payload) {
 }
 
 export function SumbitLeaveSupervisor(payload) {
+	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/supervisor/leave/${employeeNumber}`, {
 				method: 'POST',

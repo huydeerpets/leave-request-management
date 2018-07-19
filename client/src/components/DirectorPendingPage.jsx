@@ -348,9 +348,7 @@ class DirectorPendingPage extends Component {
               justifyContent: "space-around",
               paddingBottom: "336px"
             }}
-          >
-            {console.log("[Render]: data: ", this.state.data)}
-
+          >            
             <div style={{ padding: 20, background: "#fff" }}>
               <Table
                 columns={columns}
@@ -453,7 +451,7 @@ class DirectorPendingPage extends Component {
 
 const mapStateToProps = state => ({
   loading: state.fetchDirectorReducer.loading,
-  users: state.fetchDirectorReducer.users
+  users: state.fetchDirectorReducer.leave
 });
 
 const mapDispatchToProps = dispatch =>

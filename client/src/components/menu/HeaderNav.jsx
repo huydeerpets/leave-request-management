@@ -34,7 +34,7 @@ export default class HeaderNav extends React.Component {
             style={{ lineHeight: "64px" }}
           >
             <Menu.Item key="1">
-              <NavLink to="/">
+              <NavLink to="/employee">
                 <span>
                   <Icon type="home" />
                 </span>
@@ -47,34 +47,45 @@ export default class HeaderNav extends React.Component {
                 <span>
                   <Icon type="profile" />
                 </span>
-                Profile
-              </NavLink>
-            </Menu.Item>
-
-            <Menu.Item key="3">
-              <NavLink to="/request-leave">
-                <span>
-                  <Icon type="form" />
-                </span>
-                Form Request Leave
+                My Profile
               </NavLink>
             </Menu.Item>
 
             <SubMenu
               title={
                 <span>
-                  <Icon type="schedule" />Leave Request
+                  <Icon type="user" />Employee
                 </span>
               }
             >
-              <Menu.Item key="schedule:1">
-                <NavLink to="/request-pending">Lis Pending Request</NavLink>
+              <Menu.Item key="employee:1">
+                <NavLink to="/request-leave">
+                  <span>
+                    <Icon type="form" />
+                  </span>
+                  Form Request Leave
+                </NavLink>
               </Menu.Item>
-              <Menu.Item key="schedule:2">
-                <NavLink to="/request-accept">List Approve Request</NavLink>
+              <Menu.Item key="employee:2">
+                <NavLink to="/request-pending">
+                  <span>
+                    <Icon type="schedule" />
+                  </span>List Pending Request
+                </NavLink>
               </Menu.Item>
-              <Menu.Item key="schedule:3">
-                <NavLink to="/request-reject">List Reject Request</NavLink>
+              <Menu.Item key="employee:3">
+                <NavLink to="/request-accept">
+                  <span>
+                    <Icon type="schedule" />
+                  </span>List Approve Request
+                </NavLink>
+              </Menu.Item>
+              <Menu.Item key="employee:4">
+                <NavLink to="/request-reject">
+                  <span>
+                    <Icon type="schedule" />
+                  </span>List Reject Request
+                </NavLink>
               </Menu.Item>
             </SubMenu>
 
@@ -113,28 +124,37 @@ export default class HeaderNav extends React.Component {
                 <span>
                   <Icon type="profile" />
                 </span>
-                Profile
+                My Profile
               </NavLink>
             </Menu.Item>
 
             <SubMenu
               title={
                 <span>
-                  <Icon type="schedule" />Leave Request
+                  <Icon type="user" />Supervisor
                 </span>
               }
             >
-              <Menu.Item key="schedule:1">
-                <NavLink to="/supervisor-request-leave">Form Leave Request</NavLink>
+              <Menu.Item key="supervisor:1">
+                <NavLink to="/list-request">
+                  <span>
+                    <Icon type="schedule" />
+                  </span>List Pending Request
+                </NavLink>
               </Menu.Item>
-              <Menu.Item key="schedule:2">
-                <NavLink to="/request-pending">List Request Pending</NavLink>
+              <Menu.Item key="supervisor:2">
+                <NavLink to="/list-accept">
+                  <span>
+                    <Icon type="schedule" />
+                  </span>List Approve Request
+                </NavLink>
               </Menu.Item>
-              <Menu.Item key="schedule:3">
-                <NavLink to="/request-accept">List Request Approve</NavLink>
-              </Menu.Item>
-              <Menu.Item key="schedule:4">
-                <NavLink to="/request-reject">List Request Reject</NavLink>
+              <Menu.Item key="supervisor:3">
+                <NavLink to="/list-reject">
+                  <span>
+                    <Icon type="schedule" />
+                  </span>List Reject Request
+                </NavLink>
               </Menu.Item>
             </SubMenu>
 
@@ -145,18 +165,37 @@ export default class HeaderNav extends React.Component {
                 </span>
               }
             >
-              <Menu.Item key="user:1">
-                <NavLink to="/list-request">List Request Pending</NavLink>
+              <Menu.Item key="employee:1">
+                <NavLink to="/supervisor-request-leave">
+                  <span>
+                    <Icon type="form" />
+                  </span>Form Leave Request
+                </NavLink>
               </Menu.Item>
-              <Menu.Item key="user:2">
-                <NavLink to="/list-accept">List Request Accept</NavLink>
+              <Menu.Item key="employee:2">
+                <NavLink to="/request-pending">
+                  <span>
+                    <Icon type="schedule" />
+                  </span>List Pending Request
+                </NavLink>
               </Menu.Item>
-              <Menu.Item key="user:3">
-                <NavLink to="/list-reject">List Request Reject</NavLink>
+              <Menu.Item key="employee:3">
+                <NavLink to="/request-accept">
+                  <span>
+                    <Icon type="schedule" />
+                  </span>List Approve Request
+                </NavLink>
+              </Menu.Item>
+              <Menu.Item key="employee:4">
+                <NavLink to="/request-reject">
+                  <span>
+                    <Icon type="schedule" />
+                  </span>List Reject Request
+                </NavLink>
               </Menu.Item>
             </SubMenu>
 
-            <Menu.Item key="7">
+            <Menu.Item key="10">
               <ButtonLogout />
             </Menu.Item>
           </Menu>
@@ -191,25 +230,37 @@ export default class HeaderNav extends React.Component {
                 <span>
                   <Icon type="profile" />
                 </span>
-                Profile
+                My Profile
               </NavLink>
             </Menu.Item>
 
             <SubMenu
               title={
                 <span>
-                  <Icon type="user" />Employee
+                  <Icon type="user" />Director
                 </span>
               }
             >
               <Menu.Item key="user:1">
-                <NavLink to="/list-pending-request">List Request Pending</NavLink>
+                <NavLink to="/list-pending-request">
+                  <span>
+                    <Icon type="schedule" />
+                  </span>List Pending Request
+                </NavLink>
               </Menu.Item>
               <Menu.Item key="user:2">
-                <NavLink to="/list-accept-request">List Request Accept</NavLink>
+                <NavLink to="/list-accept-request">
+                  <span>
+                    <Icon type="schedule" />
+                  </span>List Approve Request
+                </NavLink>
               </Menu.Item>
               <Menu.Item key="user:3">
-                <NavLink to="/list-reject-request">List Request Reject</NavLink>
+                <NavLink to="/list-reject-request">
+                  <span>
+                    <Icon type="schedule" />
+                  </span>List Reject Request
+                </NavLink>
               </Menu.Item>
             </SubMenu>
 
@@ -225,8 +276,8 @@ export default class HeaderNav extends React.Component {
           />
         </Header>
       );
-    } else{
-      return null
+    } else {
+      return null;
     }
   }
 }

@@ -15,9 +15,9 @@ type LeaveReason struct {
 
 // UserSumarry ...
 type UserSumarry struct {
-	TypeName       string  `json:"type_name" orm:"column(type_name)"`
-	Used           float64 `json:"used" orm:"column(used)"`
-	LeaveRemaining float64 `json:"leave_remaining" orm:"column(leave_remaining)"`
+	TypeName string  `json:"type_name" orm:"column(type_name)"`
+	Used     float64 `json:"used" orm:"column(used)"`
+	// LeaveRemaining float64 `json:"leave_remaining" orm:"column(leave_remaining)"`
 }
 
 // UserTypeLeave ...

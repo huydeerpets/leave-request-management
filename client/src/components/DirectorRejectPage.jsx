@@ -355,7 +355,7 @@ class DirectorRejectPage extends Component {
 
 const mapStateToProps = state => ({
   loading: state.fetchDirectorReducer.loading,
-  users: state.fetchDirectorReducer.users
+  users: state.fetchDirectorReducer.leave
 });
 
 const mapDispatchToProps = dispatch =>

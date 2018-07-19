@@ -49,7 +49,6 @@ class LoginPage extends Component {
 
   handleSumbitLogin = e => {
     e.preventDefault();
-
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log("Received values of form: ", values);

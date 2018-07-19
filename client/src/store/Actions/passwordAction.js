@@ -2,8 +2,6 @@ import {
 	ROOT_API
 } from "./types.js"
 
-const employeeNumber = localStorage.getItem('id')
-
 export function handleEdit(payload) {
 	return (dispatch) => {
 		dispatch({
@@ -14,6 +12,7 @@ export function handleEdit(payload) {
 }
 
 export function updateNewPassword(savePassword, pusher) {
+	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/user/update/${employeeNumber}`, {
 				method: 'PUT',

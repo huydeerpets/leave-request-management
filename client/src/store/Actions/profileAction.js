@@ -2,7 +2,7 @@ import {
 	ROOT_API
 } from "./types.js"
 
-const employeeNumber = localStorage.getItem('id')
+
 
 function profileloaded(payload) {
 	return {
@@ -12,7 +12,7 @@ function profileloaded(payload) {
 }
 
 export function profileFetchData() {
-
+	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/admin/user/${employeeNumber}/`, {
 				method: 'GET',

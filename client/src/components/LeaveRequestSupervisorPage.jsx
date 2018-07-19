@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { formOnChange, SumbitLeaveSupervisor } from "../store/Actions/leaveRequestAction";
+import {
+  formOnChange,
+  SumbitLeaveSupervisor
+} from "../store/Actions/leaveRequestAction";
 import { typeLeaveFetchData } from "../store/Actions/typeLeaveAction";
 import update from "react-addons-update";
 import HeaderNav from "./menu/HeaderNav";
@@ -46,6 +49,7 @@ class LeaveRequestPage extends Component {
   }
 
   componentWillMount() {
+    console.log(" ----------------- Form-Leave-Request ----------------- ");
     if (!localStorage.getItem("token")) {
       this.props.history.push("/");
     } else if (

@@ -50,7 +50,7 @@ class App extends Component {
               <Route exact path="/reset-password" component={ResetPasswordPage} />
 
 
-              <Route exact path="/admin" component={Adminpage} />
+              <Route path="/admin" component={Adminpage} />
               <Route path="/register-user" component={RegisterPage} />            
               <Route path={`/edit-user/:id`} component={AdminEditPage}/>
               <Route path="/pending-request" component={AdminReqPendingPage} />
@@ -63,8 +63,8 @@ class App extends Component {
               <Route path="/supervisor-request-leave" component={LeaveRequestSupervisorPage} />
 
 
-              <Route exact path="/employee" component={LandingEmployeePage} />
-              <Route path={`/editrequest/:id`} component={LeaveEditPage}/>
+              <Route path="/employee" component={LandingEmployeePage} />
+              <Route exact path={`/editrequest/:id`} component={LeaveEditPage}/>
               <Route exact path="/profile" component={ProfileEditPage} />
               <Route exact path={`/profile/:id`} component={PasswordPage}/>
               
@@ -74,13 +74,13 @@ class App extends Component {
               <Route path="/request-reject" component={EmployeeReqRejectPage} />
 
 
-              <Route exact path="/supervisor" component={SupervisorLandingPage} />
+              <Route path="/supervisor" component={SupervisorLandingPage} />
               <Route path="/list-request" component={SupervisorPendingPage} />
               <Route path="/list-accept" component={SupervisorAcceptPage} />
               <Route path="/list-reject" component={SupervisorRejectPage} />
 
 
-              <Route exact path="/director" component={DirectorLandingPage} />
+              <Route path="/director" component={DirectorLandingPage} />
               <Route path="/list-pending-request" component={DirectorPendingPage} />
               <Route path="/list-accept-request" component={DirectorAcceptPage} />
               <Route path="/list-reject-request" component={DirectorRejectPage} />

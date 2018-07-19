@@ -463,10 +463,11 @@ func (u *User) GetTypeLeave() (result []structDB.TypeLeave, err error) {
 // GetSumarry ...
 func (u *User) GetSumarry(employeeNumber int64) ([]structLogic.UserSumarry, error) {
 	var (
-		sumarry       []structLogic.UserSumarry
-		leave         structDB.LeaveRequest
-		typeLeave     structDB.TypeLeave
-		userTypeLeave structDB.UserTypeLeave
+		sumarry   []structLogic.UserSumarry
+		leave     structDB.LeaveRequest
+		typeLeave structDB.TypeLeave
+		// userTypeLeave structDB.UserTypeLeave
+		// user          structDB.User
 	)
 
 	statSuccessInDirector := constant.StatusSuccessInDirector
@@ -480,18 +481,13 @@ func (u *User) GetSumarry(employeeNumber int64) ([]structLogic.UserSumarry, erro
 
 	qb.Select(
 		typeLeave.TableName()+".type_name",
-		"SUM("+leave.TableName()+".total) as used",
-		userTypeLeave.TableName()+".leave_remaining").
-		From(userTypeLeave.TableName()).
+		"SUM("+leave.TableName()+".total) as used").
+		From(leave.TableName()).
 		InnerJoin(typeLeave.TableName()).
-		On(typeLeave.TableName()+".id"+"="+userTypeLeave.TableName()+".type_leave_id").
-		InnerJoin(leave.TableName()).
-		On(leave.TableName()+".type_leave_id"+"="+userTypeLeave.TableName()+".type_leave_id").
-		Where(userTypeLeave.TableName()+`.employee_number = ? `).
-		And(leave.TableName()+`.status = ?`).
-		GroupBy(userTypeLeave.TableName()+`.type_leave_id`,
-			typeLeave.TableName()+`.type_name`,
-			userTypeLeave.TableName()+`.leave_remaining`)
+		On(typeLeave.TableName() + ".id" + " = " + leave.TableName() + ".type_leave_id").
+		Where(leave.TableName() + `.employee_number = ? `).
+		And(leave.TableName() + `.status = ?`).
+		GroupBy(typeLeave.TableName() + `.type_name`)
 	sql := qb.String()
 
 	_, errRaw := o.Raw(sql, employeeNumber, statSuccessInDirector).QueryRows(&sumarry)

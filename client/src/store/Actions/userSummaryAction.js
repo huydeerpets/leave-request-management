@@ -2,8 +2,6 @@ import {
 	ROOT_API
 } from "./types.js"
 
-const employeeNumber = localStorage.getItem('id')
-
 function userSummary(payload) {
 	return {
 		type: 'FETCH_USER_SUMMARY',
@@ -12,18 +10,34 @@ function userSummary(payload) {
 }
 
 export function userSummaryFetchData() {
+	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
-		fetch(`${ROOT_API}/api/user/summary/${employeeNumber}`, {
-				method: 'GET',
-			})
-			.then((resp) => resp.json())
-			.then(({
-				body
-			}) => {
-				let payload = {
-					userSummary: body
-				}
-				dispatch(userSummary(payload))
+		Promise.all([
+				fetch(`${ROOT_API}/api/user/summary/${employeeNumber}`, {
+					method: 'GET',
+				}),
+				fetch(`${ROOT_API}/api/user/type-leave/${employeeNumber}`, {
+					method: 'GET',
+				})
+			])
+			.then(([respSummary1, respType]) => [respSummary1.json(), respType.json()])
+			.then(([dataSummary, dataType]) => {
+				dataSummary.then((resultSummary) => {
+						dataType.then((resultType) => {
+								let payload = {
+									loading: false,
+									userSummary: resultSummary.body,
+									userType: resultType.body
+								}
+								dispatch(userSummary(payload))
+							})
+							.catch(err => {
+								console.log(err)
+							})
+					})
+					.catch(err => {
+						console.log(err)
+					})
 			})
 			.catch(err => {
 				console.log(err)

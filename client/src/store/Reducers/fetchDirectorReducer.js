@@ -1,6 +1,6 @@
 let directorState = {
     loading: true,
-    users: []
+    leave: []
 }
 
 export default function fetchSupervisorReducer(state = directorState, action) {

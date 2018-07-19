@@ -20,7 +20,7 @@ import fetchDirectorReducer from './Reducers/fetchDirectorReducer'
 import fetchSupervisorReducer from './Reducers/fetchSupervisorReducer'
 import fetchEmployeeReducer from './Reducers/fetchEmployeeReducer'
 import fetchUserSummaryReducer from './Reducers/fetchUserSummaryReducer'
-import fetchUserTypeLeaveReducer from './Reducers/fetchUserTypeLeaveReducer'
+// import fetchUserTypeLeaveReducer from './Reducers/fetchUserTypeLeaveReducer'
 
 
 import profileReducer from './Reducers/profileReducer'
@@ -48,8 +48,7 @@ const appStore = combineReducers({
 	fetchSupervisorReducer,	
 	fetchEmployeeReducer,
 
-	fetchUserSummaryReducer,
-	fetchUserTypeLeaveReducer,
+	fetchUserSummaryReducer,	
 	
 	passwordReducer,
 	fetchTypeLeaveReducer,

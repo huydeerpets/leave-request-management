@@ -1,5 +1,7 @@
 let userSummaryState = {
+    loading: true,
     userSummary: [],
+    userType: []
 }
 
 export default function fetchUserSummaryReducer(state = userSummaryState, action) {

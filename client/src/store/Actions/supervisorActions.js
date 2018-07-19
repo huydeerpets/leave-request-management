@@ -2,8 +2,6 @@ import {
 	ROOT_API
 } from "./types.js"
 
-const employeeNumber = localStorage.getItem('id')
-
 function pendingFetch(payload) {
 	return {
 		type: 'FETCH_LEAVE_PENDING',
@@ -41,6 +39,7 @@ function rejectRequest(payload) {
 }
 
 export function pendingFetchData() {
+	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/supervisor/pending/${employeeNumber}`, {
 				method: 'GET',
@@ -62,6 +61,7 @@ export function pendingFetchData() {
 }
 
 export function acceptFetchData() {
+	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/supervisor/accept/${employeeNumber}`, {
 				method: 'GET',
@@ -84,6 +84,7 @@ export function acceptFetchData() {
 
 
 export function rejectFetchData() {
+	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/supervisor/reject/${employeeNumber}`, {
 				method: 'GET',
@@ -105,6 +106,7 @@ export function rejectFetchData() {
 }
 
 export function updateStatusAccept(users, id, enumber) {
+	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/supervisor/accept/${id}/${enumber}`, {		
 				method: 'PUT',
@@ -126,6 +128,7 @@ export function updateStatusAccept(users, id, enumber) {
 }
 
 export function updateStatusReject(users, id, enumber, payload) {
+	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/supervisor/reject/${id}/${enumber}`, {				
 				method: 'PUT',

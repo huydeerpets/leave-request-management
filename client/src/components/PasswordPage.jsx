@@ -14,7 +14,8 @@ class PasswordPage extends Component {
     this.state = {
       from: null,
       to: null,
-      endOpen: false
+      endOpen: false,
+      confirmDirty: false
     };
 
     this.handleOnChange = this.handleOnChange.bind(this);
@@ -33,9 +34,15 @@ class PasswordPage extends Component {
     }
   }
 
-  updatePassword = () => {    
+  updatePassword = e => {
+    e.preventDefault();
     this.props.updateNewPassword(this.props.passwordForm, url => {
       this.props.history.push(url);
+    });
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        console.log("Received values of form: ", values);
+      }
     });
   };
 
@@ -45,10 +52,32 @@ class PasswordPage extends Component {
       [e.target.name]: e.target.value
     };
     this.props.handleEdit(newPassword);
-    console.log("change", newPassword);
   };
 
-  render() {    
+  handleConfirmBlur = e => {
+    const value = e.target.value;
+    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+  };
+
+  compareToFirstPassword = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value && value !== form.getFieldValue("password")) {
+      callback("Two passwords that you enter is inconsistent!");
+    } else {
+      callback();
+    }
+  };
+
+  validateToNextPassword = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value && this.state.confirmDirty) {
+      form.validateFields(["confirm"], { force: true });
+    }
+    callback();
+  };
+
+  render() {
+    const { getFieldDecorator } = this.props.form;
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -90,36 +119,71 @@ class PasswordPage extends Component {
 
             <Form className="login-form">
               <FormItem {...formItemLayout} label="Old Password">
-                <Input
-                  type="password"
-                  id="old_password"
-                  name="old_password"
-                  placeholder="old password"
-                  onChange={this.handleOnChange}
-                  style={formStyle}
-                />
+                {getFieldDecorator("old password", {
+                  rules: [
+                    {
+                      required: true
+                    },
+                    { min: 7, message: "password length minimum is 7" }
+                  ]
+                })(
+                  <Input
+                    min={5}
+                    step={8}
+                    type="password"
+                    id="old_password"
+                    name="old_password"
+                    placeholder="old password"
+                    onChange={this.handleOnChange}
+                    style={formStyle}
+                  />
+                )}
               </FormItem>
 
               <FormItem {...formItemLayout} label="New Password">
-                <Input
-                  type="password"
-                  id="new_password"
-                  name="new_password"
-                  placeholder="new password"
-                  onChange={this.handleOnChange}
-                  style={formStyle}
-                />
+                {getFieldDecorator("password", {
+                  rules: [
+                    {
+                      required: true
+                    },
+                    { min: 7, message: "password length minimum is 7" },
+                    {
+                      validator: this.validateToNextPassword
+                    }
+                  ]
+                })(
+                  <Input
+                    type="password"
+                    id="new_password"
+                    name="new_password"
+                    placeholder="new password"
+                    onChange={this.handleOnChange}
+                    style={formStyle}
+                  />
+                )}
               </FormItem>
 
               <FormItem {...formItemLayout} label="Confirm Password">
-                <Input
-                  type="password"
-                  id="confirm_password"
-                  name="confirm_password"
-                  placeholder="confirm password"
-                  onChange={this.handleOnChange}
-                  style={formStyle}
-                />
+                {getFieldDecorator("confirm", {
+                  rules: [
+                    {
+                      required: true
+                    },
+                    { min: 7, message: "password length minimum is 7" },
+                    {
+                      validator: this.compareToFirstPassword
+                    }
+                  ]
+                })(
+                  <Input
+                    type="password"
+                    id="confirm_password"
+                    name="confirm_password"
+                    placeholder="confirm password"
+                    onChange={this.handleOnChange}
+                    style={formStyle}
+                  />
+                )}
               </FormItem>
 
               <FormItem>

@@ -49,7 +49,7 @@ export default class HeaderAdmin extends React.Component {
           <SubMenu
             title={
               <span>
-                <Icon type="schedule" />Leave Request
+                <Icon type="user-add" />Employee
               </span>
             }
           >
