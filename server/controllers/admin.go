@@ -22,14 +22,14 @@ type AdminController struct {
 // CreateUser ...
 func (c *AdminController) CreateUser() {
 	var (
-		resp structAPI.RespData
-		user structDB.User
+		resp    structAPI.RespData
+		reqUser structAPI.ReqRegister
 	)
 
 	body := c.Ctx.Input.RequestBody
 	fmt.Println("CREATE-USER=======>", string(body))
 
-	errMarshal := json.Unmarshal(body, &user)
+	errMarshal := json.Unmarshal(body, &reqUser)
 	if errMarshal != nil {
 		helpers.CheckErr("unmarshall req body failed @CreateUser", errMarshal)
 		resp.Error = errors.New("type request malform").Error()
@@ -38,24 +38,37 @@ func (c *AdminController) CreateUser() {
 		return
 	}
 
+	user := structDB.User{
+		EmployeeNumber:   reqUser.EmployeeNumber,
+		Name:             reqUser.Name,
+		Gender:           reqUser.Gender,
+		Position:         reqUser.Position,
+		StartWorkingDate: reqUser.StartWorkingDate,
+		MobilePhone:      reqUser.MobilePhone,
+		Email:            reqUser.Email,
+		Password:         reqUser.Password,
+		Role:             reqUser.Role,
+		SupervisorID:     reqUser.SupervisorID,
+	}
+
 	errAddUser := logic.DBPostAdmin.AddUser(user)
 	if errAddUser != nil {
 		resp.Error = errAddUser.Error()
 		c.Ctx.Output.SetStatus(400)
 	} else {
-		resp.Body = user
+		resp.Body = "create user success"
 	}
 
 	startDate := helpers.GetDay(user.StartWorkingDate)
 	annualLeave := 12 + (12 - startDate)
 	beego.Debug("==>", annualLeave)
 
-	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 11, 12)
-	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 22, 3)
-	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 33, 30)
-	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 44, 2)
-	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 55, 90)
-	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 66, 2)
+	defer logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 11, 12)
+	defer logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 22, 3)
+	defer logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 33, 30)
+	defer logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 44, 2)
+	defer logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 55, 90)
+	defer logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 66, 2)
 
 	err := c.Ctx.Output.JSON(resp, false, false)
 	if err != nil {

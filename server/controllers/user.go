@@ -34,7 +34,7 @@ func (c *UserController) Login() {
 		return
 	}
 
-	result, errLogin := logic.DBPostUser.GetJWT(reqLogin)
+	result, errLogin := logic.DBPostUser.GetJWT(&reqLogin)
 	if errLogin != nil {
 		resp.Error = errLogin.Error()
 		c.Ctx.Output.SetStatus(400)

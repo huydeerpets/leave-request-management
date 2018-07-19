@@ -20,7 +20,7 @@ const SignUp = {
 		email: '',
 		password: makeid(),
 		role: '',
-		supervisor_id: 0
+		supervisor_id: null
 	},
 	error: {},
 }

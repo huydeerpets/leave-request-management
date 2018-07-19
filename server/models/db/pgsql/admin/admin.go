@@ -9,6 +9,7 @@ import (
 	structDB "server/structs/db"
 	structLogic "server/structs/logic"
 
+	"strconv"
 	"strings"
 
 	"github.com/astaxie/beego"
@@ -22,17 +23,31 @@ type Admin struct{}
 // AddUser ...
 func (u *Admin) AddUser(user structDB.User) error {
 	var count int
+	var countEmployeeNumber int
 	o := orm.NewOrm()
 
 	o.Raw(`SELECT count(*) as Count FROM `+user.TableName()+` WHERE email = ?`, user.Email).QueryRow(&count)
+	o.Raw(`SELECT count(*) as Count FROM `+user.TableName()+` WHERE employee_number = ?`, user.EmployeeNumber).QueryRow(&countEmployeeNumber)
+
 	passwordString := user.Password
-	if count > 0 {
+
+	bsEmployeeNumber := []byte(strconv.Itoa(int(user.EmployeeNumber)))
+	arrPassword := []byte(passwordString)
+	// fmt.Println(len(arrPassword) >= 7)
+
+	if len(bsEmployeeNumber) != 5 {
+		return errors.New("Employee number must field and length must be 5")
+	} else if countEmployeeNumber > 0 {
+		return errors.New("Employee number already register")
+	} else if user.Name == "" || user.Gender == "" || user.Position == "" || user.StartWorkingDate == "" || user.MobilePhone == "" || user.Email == "" || user.Password == "" || user.Role == "" {
+		return errors.New("error empty field ")
+	} else if count > 0 {
 		return errors.New("Email already register")
+	} else if len(arrPassword) < 7 {
+		return errors.New("Password length must be 7")
 	} else {
 		hashedBytes, errHash := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
-		if errHash != nil {
-			helpers.CheckErr("error hash password @AddUser", errHash)
-		}
+		helpers.CheckErr("error hash password @AddUser", errHash)
 
 		user.Email = strings.ToLower(user.Email)
 		user.Password = base64.StdEncoding.EncodeToString(hashedBytes)
@@ -43,7 +58,7 @@ func (u *Admin) AddUser(user structDB.User) error {
 			return errors.New("insert users failed")
 		}
 
-		helpers.GoMailRegisterPassword(user.Email, passwordString)
+		defer helpers.GoMailRegisterPassword(user.Email, passwordString)
 
 		return err
 	}

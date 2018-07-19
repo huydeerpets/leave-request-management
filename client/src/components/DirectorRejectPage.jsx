@@ -161,7 +161,7 @@ class DirectorRejectPage extends Component {
               type="number"
               ref={ele => (this.searchInput = ele)}
               placeholder="Search request id"
-              value={this.state.searchID}
+              value={searchID}
               onChange={this.onInputChangeID}
               onPressEnter={this.onSearchID}
             />

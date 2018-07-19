@@ -23,15 +23,14 @@ export function updateNewPassword(savePassword, pusher) {
 				body,
 				error
 			}) => {
-				if (body === "update password success") {
-					alert("update password success")
+				if (body !== null) {
+					alert(body)
 					pusher('/profile')
-				} else if (error === "wrong old password") {
-					alert("wrong old password")
-				} else if (error === "wrong confirm password") {
-					alert("wrong confirm password")
+				} else if (error !== null) {
+					alert(error)
+				} else {
+					alert(error)
 				}
-
 			}).catch(err => {
 				console.log(err)
 			})

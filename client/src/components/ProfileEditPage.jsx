@@ -81,6 +81,7 @@ class ProfileEditPage extends Component {
       if (d.supervisor_id === this.props.user.supervisor_id) {
         supervisorName = d.name;
       }
+      return d
     });
 
     return (

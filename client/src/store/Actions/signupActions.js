@@ -40,13 +40,14 @@ export function SumbitSignUp(payload) {
 				console.log("=================error", respErr)
 				if (respErr === "type request malform") {
 					errMsg = 'regiter failed, please field out all field'
-					dispatch(errorHandle(errMsg))
-				} else if (respErr === "Email already register") {
-					errMsg = 'regiter failed, email already register'
-					dispatch(errorHandle(errMsg))
-				} else {
-					dispatch(clearField())
-					window.location.href = "/admin";
+					alert(errMsg)
+					// dispatch(errorHandle(errMsg))
+				} else if (respErr !== null) {
+					alert(respErr)
+					// dispatch(errorHandle(errMsg))
+				} else if (body !== null) {
+					alert(body)
+					// dispatch(errorHandle(errMsg))
 				}
 
 			}).catch(err => {

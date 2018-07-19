@@ -106,9 +106,8 @@ export function rejectFetchData() {
 }
 
 export function updateStatusAccept(users, id, enumber) {
-	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
-		fetch(`${ROOT_API}/api/supervisor/accept/${id}/${enumber}`, {		
+		fetch(`${ROOT_API}/api/supervisor/accept/${id}/${enumber}`, {
 				method: 'PUT',
 			})
 			.then(response => {
@@ -128,9 +127,8 @@ export function updateStatusAccept(users, id, enumber) {
 }
 
 export function updateStatusReject(users, id, enumber, payload) {
-	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
-		fetch(`${ROOT_API}/api/supervisor/reject/${id}/${enumber}`, {				
+		fetch(`${ROOT_API}/api/supervisor/reject/${id}/${enumber}`, {
 				method: 'PUT',
 				body: JSON.stringify(payload)
 			})

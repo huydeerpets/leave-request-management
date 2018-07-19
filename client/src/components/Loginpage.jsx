@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
-import MediaQuery from "react-responsive";
+// import MediaQuery from "react-responsive";
 import { handleFormInput, submitLogin } from "../store/Actions/loginActions";
 import { Layout, Form, Icon, Input, Button, message } from "antd";
 const { Header, Content } = Layout;
@@ -114,30 +114,56 @@ class LoginPage extends Component {
               <h1> Welcome! </h1>
               <Form onSubmit={this.handleSumbitLogin} className="login-form">
                 <FormItem>
-                  <Input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="email"
-                    value={this.props.loginForm.email}
-                    onChange={this.handleOnChangeLogin}
-                    prefix={
-                      <Icon type="mail" style={{ color: "rgba(0,0,0,.25)" }} />
-                    }
-                  />
+                  {getFieldDecorator("email", {
+                    rules: [
+                      {
+                        type: "email"
+                      },
+                      {
+                        required: true
+                      }
+                    ]
+                  })(
+                    <Input
+                      type="email"
+                      id="email"
+                      name="email"
+                      placeholder="email"
+                      value={this.props.loginForm.email}
+                      onChange={this.handleOnChangeLogin}
+                      prefix={
+                        <Icon
+                          type="mail"
+                          style={{ color: "rgba(0,0,0,.25)" }}
+                        />
+                      }
+                    />
+                  )}
                 </FormItem>
                 <FormItem>
-                  <Input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="password"
-                    value={this.props.loginForm.password}
-                    onChange={this.handleOnChangeLogin}
-                    prefix={
-                      <Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />
-                    }
-                  />
+                  {getFieldDecorator("password", {
+                    rules: [
+                      {
+                        required: true
+                      },
+                      { min: 7, message: "password length minimum is 7" }
+                    ]
+                  })(
+                    <Input
+                      type="password"
+                      id="password"
+                      name="password"
+                      placeholder="password"
+                      value={this.props.loginForm.password}
+                      onChange={this.handleOnChangeLogin}
+                      prefix={
+                        <Icon
+                          type="lock"
+                          style={{ color: "rgba(0,0,0,.25)" }}
+                        />
+                      }
+                    />
+                  )}
                 </FormItem>
 
                 <FormItem>
@@ -162,7 +188,7 @@ class LoginPage extends Component {
             <p>
               <a href="http://opensource.org/licenses/mit-license.php"> MIT</a>.
               The website content is licensed{" "}
-              <a href="http://www.tnis.com" target="_blank">
+              <a href="http://www.tnis.com">
                 &copy; P.T TNIS Service Indonesia
               </a>.
             </p>

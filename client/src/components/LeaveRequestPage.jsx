@@ -20,7 +20,6 @@ const { Content } = Layout;
 const FormItem = Form.Item;
 const { TextArea } = Input;
 const Option = Select.Option;
-let Arrs = [];
 
 class LeaveRequestPage extends Component {
   constructor(props) {

@@ -2,7 +2,10 @@ import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { handleEdit, resetPassword } from "../store/Actions/resetPasswordAction";
+import {
+  handleEdit,
+  resetPassword
+} from "../store/Actions/resetPasswordAction";
 import { Layout, Form, Icon, Input, Button } from "antd";
 const { Header, Content } = Layout;
 const { Footer } = Layout;
@@ -65,7 +68,7 @@ class ResetPasswordPage extends Component {
       [e.target.name]: e.target.value
     };
     this.props.handleEdit(loginForm);
-    console.log("================",loginForm)
+    console.log("================", loginForm);
   };
 
   render() {
@@ -102,8 +105,7 @@ class ResetPasswordPage extends Component {
                         message: "The input is not valid E-mail!"
                       },
                       {
-                        required: true,
-                        message: "Please input your E-mail!"
+                        required: true
                       }
                     ]
                   })(
@@ -142,11 +144,11 @@ class ResetPasswordPage extends Component {
             </div>
           </Content>
 
-           <Footer className="Login-footer">
+          <Footer className="Login-footer">
             <p>
               <a href="http://opensource.org/licenses/mit-license.php"> MIT</a>.
               The website content is licensed{" "}
-              <a href="http://www.tnis.com" target="_blank">
+              <a href="http://www.tnis.com">
                 &copy; P.T TNIS Service Indonesia
               </a>.
             </p>

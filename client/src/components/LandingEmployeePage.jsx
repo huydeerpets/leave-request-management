@@ -18,7 +18,7 @@ export class LandingEmployeePage extends React.Component {
       this.props.history.push("/");
     } else if (localStorage.getItem("role") !== "employee") {
       this.props.history.push("/");
-    }    
+    }
     this.props.userSummaryFetchData();
   }
 
@@ -36,7 +36,7 @@ export class LandingEmployeePage extends React.Component {
         );
       }
     } else {
-      <p />;
+      <p> </p>;
     }
 
     for (let j in dataType) {

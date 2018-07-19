@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Icon } from "antd";
+import { Layout } from "antd";
 const { Footer } = Layout;
 
 export default class FooterLayout extends React.Component {
@@ -9,7 +9,7 @@ export default class FooterLayout extends React.Component {
         <p>
           <a href="http://opensource.org/licenses/mit-license.php"> MIT</a>. The
           website content is licensed{" "}
-          <a href="http://www.tnis.com" target="_blank">
+          <a href="http://www.tnis.com">
           &copy; P.T TNIS Service Indonesia
           </a>.
         </p>

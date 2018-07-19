@@ -127,9 +127,7 @@ class PasswordPage extends Component {
                     { min: 7, message: "password length minimum is 7" }
                   ]
                 })(
-                  <Input
-                    min={5}
-                    step={8}
+                  <Input                  
                     type="password"
                     id="old_password"
                     name="old_password"

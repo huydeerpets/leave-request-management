@@ -21,39 +21,50 @@ import (
 type User struct{}
 
 // GetJWT ...
-func (u *User) GetJWT(loginData structAPI.ReqLogin) (result structAPI.RespLogin, err error) {
-	var user structDB.User
-	var RespLogin structAPI.RespLogin
+func (u *User) GetJWT(loginData *structAPI.ReqLogin) (result structAPI.RespLogin, err error) {
+	var (
+		user      structDB.User
+		RespLogin structAPI.RespLogin
+	)
 
 	o := orm.NewOrm()
-	errRaw := o.Raw(`SELECT * FROM `+user.TableName()+` WHERE email = ?`, loginData.Email).QueryRow(&user)
-	if errRaw != nil {
-		helpers.CheckErr("error get users @GetJWT", errRaw)
-		return RespLogin, errors.New("Failed get user, email not register")
-	}
-	hashBytes, _ := base64.StdEncoding.DecodeString(user.Password)
 
-	errCompare := bcrypt.CompareHashAndPassword(hashBytes, []byte(loginData.Password))
-	if errCompare != nil {
-		helpers.CheckErr("error compare password @GetJWT", errCompare)
-		return RespLogin, errors.New("Wrong Password")
-	}
+	arrPassword := []byte(loginData.Password)
 
-	ezT := helpers.EzToken{
-		Email:   user.Email,
-		ID:      user.EmployeeNumber,
-		Expires: time.Now().Unix() + 3600,
-	}
-	token, err := ezT.GetToken()
-	if err != nil {
-		helpers.CheckErr("error get token @GetJWT", err)
-		return RespLogin, errors.New("Failed Generating token")
-	}
-	RespLogin.Token = token
-	RespLogin.ID = user.EmployeeNumber
-	RespLogin.Role = user.Role
+	if len(arrPassword) < 7 {
+		return result, errors.New("Password length must be 7")
+	} else {
 
-	return RespLogin, err
+		errRaw := o.Raw(`SELECT * FROM `+user.TableName()+` WHERE email = ?`, loginData.Email).QueryRow(&user)
+		if errRaw != nil {
+			helpers.CheckErr("error get users @GetJWT", errRaw)
+			return RespLogin, errors.New("Failed get user, email not register")
+		}
+
+		hashBytes, _ := base64.StdEncoding.DecodeString(user.Password)
+
+		errCompare := bcrypt.CompareHashAndPassword(hashBytes, []byte(loginData.Password))
+		if errCompare != nil {
+			helpers.CheckErr("error compare password @GetJWT", errCompare)
+			return RespLogin, errors.New("Wrong Password")
+		}
+
+		ezT := helpers.EzToken{
+			Email:   user.Email,
+			ID:      user.EmployeeNumber,
+			Expires: time.Now().Unix() + 3600,
+		}
+		token, err := ezT.GetToken()
+		if err != nil {
+			helpers.CheckErr("error get token @GetJWT", err)
+			return RespLogin, errors.New("Failed Generating token")
+		}
+		RespLogin.Token = token
+		RespLogin.ID = user.EmployeeNumber
+		RespLogin.Role = user.Role
+
+		return RespLogin, err
+	}
 }
 
 // ForgotPassword ...
@@ -93,11 +104,16 @@ func (u *User) UpdatePassword(p *structLogic.NewPassword, employeeNumber int64) 
 		return errQB
 	}
 
+	bsNewPassword := []byte(p.NewPassword)
+	bsConfirmPassword := []byte(p.ConfirmPassword)
+
 	resGet, _ := admin.GetUser(employeeNumber)
 	resComparePassword := helpers.ComparePassword(resGet.Password, p.OldPassword)
 
 	if resComparePassword == true {
-		if p.NewPassword == p.ConfirmPassword {
+		if len(bsNewPassword) < 7 && len(bsConfirmPassword) < 7 {
+			return errors.New("Password length minimum must be 7")
+		} else if p.NewPassword == p.ConfirmPassword {
 			qb.Update(user.TableName()).Set("password = ?").
 				Where(`employee_number = ?`)
 			sql := qb.String()

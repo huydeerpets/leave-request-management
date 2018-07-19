@@ -9,7 +9,7 @@ import (
 // IBaseUser ...
 type IBaseUser interface {
 	// GetJWT
-	GetJWT(loginData structAPI.ReqLogin) (
+	GetJWT(loginData *structAPI.ReqLogin) (
 		result structAPI.RespLogin,
 		err error,
 	)
