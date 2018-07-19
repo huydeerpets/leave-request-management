@@ -11,6 +11,7 @@ Package=(
 		"github.com/lib/pq"
 		"github.com/satori/go.uuid"
 		"golang.org/x/crypto/bcrypt"
+		"gopkg.in/gomail.v2"
 		"github.com/dgrijalva/jwt-go/convey"		
 		"github.com/smartystreets/goconvey/convey"	
 )

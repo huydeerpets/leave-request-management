@@ -42,8 +42,7 @@ export class LandingEmployeePage extends React.Component {
     for (let j in dataType) {
       if (dataType[j].type_name === "Annual Leave") {
         typeLeave.push(
-          <p>
-            {" "}
+          <p>            
             {`${dataType[j].type_name} : ${
               dataType[j].leave_remaining
             } days of 12 days`}
