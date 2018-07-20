@@ -7,15 +7,35 @@ import (
 
 // IBaseDirector ...
 type IBaseDirector interface {
-
 	// AcceptByDirector
-	AcceptByDirector(id int64, employeeNumber int64) error
+	AcceptByDirector(
+		id int64,
+		employeeNumber int64,
+	) error
 	// RejectByDirector
-	RejectByDirector(l *structDB.LeaveRequest, id int64, employeeNumber int64) error
+	RejectByDirector(
+		l *structDB.LeaveRequest,
+		id int64,
+		employeeNumber int64,
+	) error
 	// GetDirectorPendingRequest
-	GetDirectorPendingRequest() ([]structLogic.RequestPending, error)
+	GetDirectorPendingRequest() (
+		[]structLogic.RequestPending,
+		error,
+	)
 	// GetDirectorAcceptRequest
-	GetDirectorAcceptRequest() ([]structLogic.RequestAccept, error)
+	GetDirectorAcceptRequest() (
+		[]structLogic.RequestAccept,
+		error,
+	)
 	// GetDirectorRejectRequest
-	GetDirectorRejectRequest() ([]structLogic.RequestReject, error)
+	GetDirectorRejectRequest() (
+		[]structLogic.RequestReject,
+		error,
+	)
+	// CancelRequestLeave
+	CancelRequestLeave(
+		id int64,
+		employeeNumber int64,
+	) (err error)
 }

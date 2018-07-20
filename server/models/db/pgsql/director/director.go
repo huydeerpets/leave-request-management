@@ -264,3 +264,28 @@ func (u *Director) GetDirectorRejectRequest() ([]structLogic.RequestReject, erro
 
 	return reqReject, errRaw
 }
+
+// CancelRequestLeave ...
+func (u *Director) CancelRequestLeave(id int64, employeeNumber int64) (err error) {
+	var (
+		user  logicUser.User
+		leave logicLeave.LeaveRequest
+	)
+
+	getDirector, _ := user.GetDirector()
+	getEmployee, _ := user.GetEmployee(employeeNumber)
+	getLeave, _ := leave.GetLeave(id)
+
+	errUp := leave.UpdateLeaveRemaningCancel(getLeave.Total, employeeNumber, getLeave.TypeLeaveID)
+	if errUp != nil {
+		helpers.CheckErr("error update status @CancelRequestLeave", errUp)
+	}
+
+	helpers.GoMailDirectorCancel(getDirector.Email, getLeave.ID, getEmployee.Name, getDirector.Name)
+	helpers.GoMailEmployeeCancel(getEmployee.Email, getLeave.ID, getEmployee.Name)
+
+	errDelete := leave.DeleteRequest(id)
+	helpers.CheckErr("error delete leave request", errDelete)
+
+	return err
+}

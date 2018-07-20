@@ -27,11 +27,20 @@ type IBaseAdmin interface {
 		employeeNumber int64,
 	) (err error)
 	// GetLeaveRequest
-	GetLeaveRequest() ([]structLogic.RequestAccept, error)
+	GetLeaveRequest() (
+		[]structLogic.RequestAccept,
+		error,
+	)
 	// GetLeaveRequest
-	GetLeaveRequestPending() ([]structLogic.RequestPending, error)
+	GetLeaveRequestPending() (
+		[]structLogic.RequestPending,
+		error,
+	)
 	// GetLeaveRequest
-	GetLeaveRequestReject() ([]structLogic.RequestReject, error)
+	GetLeaveRequestReject() (
+		[]structLogic.RequestReject,
+		error,
+	)
 	// CreateUserTypeLeave
 	CreateUserTypeLeave(
 		employeeNumber int64,
@@ -39,5 +48,14 @@ type IBaseAdmin interface {
 		total float64,
 	) error
 	// UpdateLeaveRemaning
-	UpdateLeaveRemaning(total float64, employeeNumber int64, typeID int64) (err error)
+	UpdateLeaveRemaning(
+		total float64,
+		employeeNumber int64,
+		typeID int64,
+	) (err error)
+	// CancelRequestLeave
+	// CancelRequestLeave(
+	// 	id int64,
+	// 	employeeNumber int64,
+	// ) (err error)
 }

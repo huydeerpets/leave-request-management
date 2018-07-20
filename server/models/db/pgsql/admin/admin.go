@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"server/helpers"
 	"server/helpers/constant"
+
 	structDB "server/structs/db"
 	structLogic "server/structs/logic"
 
@@ -431,3 +432,30 @@ func (u *Admin) CreateUserTypeLeave(employeeNumber int64,
 	}
 	return err
 }
+
+// // CancelRequestLeave ...
+// func (u *Admin) CancelRequestLeave(id int64, employeeNumber int64) error {
+// 	var (
+// 		dbLeave structDB.LeaveRequest
+// 		user    logicUser.User
+// 		leave   logicLeave.LeaveRequest
+// 	)
+
+// 	o := orm.NewOrm()
+
+// 	getDirector, _ := user.GetDirector()
+// 	getEmployee, _ := user.GetEmployee(employeeNumber)
+// 	getLeave, _ := leave.GetLeave(id)
+
+// 	statAcceptDirector := constant.StatusSuccessInDirector
+// 	actionBy := getDirector.Name
+
+// 	errUp := leave.UpdateLeaveRemaningCancel(getLeave.Total, employeeNumber, getLeave.TypeLeaveID)
+// 	if errUp != nil {
+// 		helpers.CheckErr("error update status @CancelRequestLeave", errUp)
+// 	}
+
+// 	// helpers.GoMailDirectorAccept(getEmployee.Email, getLeave.ID, getEmployee.Name, getDirector.Name)
+
+// 	return errRAW
+// }

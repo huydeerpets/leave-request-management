@@ -6,7 +6,6 @@ import (
 
 // IBaseSupervisor ...
 type IBaseSupervisor interface {
-
 	// GetUserPending
 	GetUserPending(supervisorID int64) (
 		[]structLogic.LeavePending,
@@ -23,8 +22,14 @@ type IBaseSupervisor interface {
 		error,
 	)
 	// AcceptBySupervisor
-	AcceptBySupervisor(id int64, employeeNumber int64) error
+	AcceptBySupervisor(
+		id int64,
+		employeeNumber int64,
+	) error
 	// RejectBySupervisor
-	RejectBySupervisor(reason string, id int64, employeeNumber int64) error
-	RejectBySv(l *structLogic.LeaveReason, id int64, employeeNumber int64) error
+	RejectBySv(
+		l *structLogic.LeaveReason,
+		id int64,
+		employeeNumber int64,
+	) error
 }

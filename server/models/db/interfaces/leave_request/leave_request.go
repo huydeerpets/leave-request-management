@@ -8,7 +8,8 @@ import (
 // IBaseLeaveRequest ...
 type IBaseLeaveRequest interface {
 	// CreateLeaveRequest
-	CreateLeaveRequest(employeeNumber int64,
+	CreateLeaveRequest(
+		employeeNumber int64,
 		typeLeaveID int64,
 		reason string,
 		dateFrom string,
@@ -20,7 +21,8 @@ type IBaseLeaveRequest interface {
 		contactLeave string,
 		status string) error
 	// CreateLeaveRequestSupervisor
-	CreateLeaveRequestSupervisor(employeeNumber int64,
+	CreateLeaveRequestSupervisor(
+		employeeNumber int64,
 		typeLeaveID int64,
 		reason string,
 		dateFrom string,
@@ -32,7 +34,10 @@ type IBaseLeaveRequest interface {
 		contactLeave string,
 		status string) error
 	// UpdateRequest
-	UpdateRequest(e *structAPI.UpdateLeaveRequest, id int64) (err error)
+	UpdateRequest(
+		e *structAPI.UpdateLeaveRequest,
+		id int64,
+	) (err error)
 	// DeleteRequest
 	DeleteRequest(id int64) (err error)
 	// GetLeave
@@ -40,4 +45,16 @@ type IBaseLeaveRequest interface {
 		result structLogic.GetLeave,
 		err error,
 	)
+	// UpdateLeaveRemaningApprove
+	UpdateLeaveRemaningApprove(
+		total float64,
+		employeeNumber int64,
+		typeID int64,
+	) (err error)
+	// UpdateLeaveRemaningCancel ...
+	UpdateLeaveRemaningCancel(
+		total float64,
+		employeeNumber int64,
+		typeID int64,
+	) (err error)
 }

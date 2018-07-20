@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"server/helpers"
 	"strconv"
-	"strings"
 
 	logic "server/models/logic/user"
 	structAPI "server/structs/api"
@@ -133,46 +132,6 @@ func (c *SupervisorController) AcceptStatusBySupervisor() {
 	err := c.Ctx.Output.JSON(resp, false, false)
 	if err != nil {
 		helpers.CheckErr("failed giving output @AcceptStatusBySupervisor", err)
-	}
-}
-
-// RejectStatusBySupervisor ...
-func (c *SupervisorController) RejectStatusBySupervisor() {
-	var (
-		resp structAPI.RespData
-	)
-
-	reason := c.Ctx.Input.Param(":reason")
-	strReason := reason
-	strReason = strings.Replace(strReason, "_", " ", -1)
-
-	beego.Debug("===================", reason)
-	idStr := c.Ctx.Input.Param(":id")
-	id, errCon := strconv.ParseInt(idStr, 0, 64)
-	if errCon != nil {
-		helpers.CheckErr("convert id failed @RejectStatusBySupervisor", errCon)
-		resp.Error = errors.New("convert id failed").Error()
-		return
-	}
-
-	employeeStr := c.Ctx.Input.Param(":enumber")
-	employeeNumber, errCon := strconv.ParseInt(employeeStr, 0, 64)
-	if errCon != nil {
-		helpers.CheckErr("convert enum failed @RejectStatusBySupervisor", errCon)
-		resp.Error = errors.New("convert id failed").Error()
-		return
-	}
-
-	errUpStat := logic.DBPostSupervisor.RejectBySupervisor(strReason, id, employeeNumber)
-	if errUpStat != nil {
-		resp.Error = errUpStat.Error()
-	} else {
-		resp.Body = "status leave request has been rejected"
-	}
-
-	err := c.Ctx.Output.JSON(resp, false, false)
-	if err != nil {
-		helpers.CheckErr("failed giving output @RejectStatusBySupervisor", err)
 	}
 }
 

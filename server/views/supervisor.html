@@ -5,7 +5,7 @@
 <head>
     <meta name="viewport" content="width=device-width">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Request Leave</title>
+    <title>Leave Request Pending</title>
     <style>
         @media only screen and (max-width: 620px) {
             table[class=body] h1 {
@@ -107,13 +107,15 @@
                                         <td style="font-family: sans-serif; font-size: 14px; vertical-align: top;">
 
 
-                                            <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">Hello {{.SupervisorName}},</p>
-                                            <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">You have Pending Leave Request from {{.EmployeeName}} </p>
-                                            <br>                             
+                                            <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">Hello
+                                                <strong> {{.SupervisorName}}</strong>,</p>
+                                            <br>
+                                            <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">You have Pending Leave Request from
+                                                <strong style="color: #3498db">{{.EmployeeName}}</strong>
+                                            </p>
                                             <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">Status:
                                                 <strong style="color: #3498db">Pending Supervisor Approval</strong>
-                                            </p>
-                                            <br>
+                                            </p>                                            
                                             <table border="0" cellpadding="0" cellspacing="0" class="btn btn-primary" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; box-sizing: border-box;">
                                                 <tbody>
                                                     <tr>
@@ -131,6 +133,7 @@
                                                     </tr>
                                                 </tbody>
                                             </table>
+                                            <br>
                                             <p style="font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0; Margin-bottom: 15px;">Thank You! Hope it works.</p>
                                         </td>
                                     </tr>

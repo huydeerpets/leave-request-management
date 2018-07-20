@@ -47,6 +47,17 @@ type directorMailReject struct {
 	Reason       string
 }
 
+type directorMailCancel struct {
+	LeaveID      string
+	EmployeeName string
+	DirectorName string
+}
+
+type employeeMailCancel struct {
+	LeaveID      string
+	EmployeeName string
+}
+
 type sendPassword struct {
 	EmployeeName string
 	Password     string
@@ -273,6 +284,82 @@ func GoMailDirectorReject(mailTo string, leaveID string, employeeName string, di
 	m.SetHeader("From", authEmail)
 	m.SetHeader("To", mailTo)
 	m.SetHeader("Subject", "Reject Leave Request")
+	m.Embed(filePrefix + "/tnis.png")
+	m.SetBody("text/html", mailHTML)
+
+	d := gomail.NewDialer(authHost, port, authEmail, authPassword)
+
+	if err := d.DialAndSend(m); err != nil {
+		CheckErr("error email", err)
+	}
+}
+
+// GoMailDirectorCancel ...
+func GoMailDirectorCancel(mailTo string, leaveID string, employeeName string, directorName string) {
+
+	var errParse error
+
+	filePrefix, _ := filepath.Abs("./views")
+	t := template.New("cancel_request_director.html")
+	infoHTML := directorMailCancel{leaveID, employeeName, directorName}
+	t, errParse = t.ParseFiles(filePrefix + "/cancel_request_director.html")
+	if errParse != nil {
+		CheckErr("errParse ", errParse)
+	}
+
+	var tpl bytes.Buffer
+	if err := t.Execute(&tpl, infoHTML); err != nil {
+		CheckErr("err ", err)
+	}
+	mailHTML := tpl.String()
+
+	authEmail := "tnis.noreply@gmail.com"
+	authPassword := constant.GOPWD
+	authHost := "smtp.gmail.com"
+	port := 587
+
+	m := gomail.NewMessage()
+	m.SetHeader("From", authEmail)
+	m.SetHeader("To", mailTo)
+	m.SetHeader("Subject", "Cancle Leave Request")
+	m.Embed(filePrefix + "/tnis.png")
+	m.SetBody("text/html", mailHTML)
+
+	d := gomail.NewDialer(authHost, port, authEmail, authPassword)
+
+	if err := d.DialAndSend(m); err != nil {
+		CheckErr("error email", err)
+	}
+}
+
+// GoMailEmployeeCancel ...
+func GoMailEmployeeCancel(mailTo string, leaveID string, employeeName string) {
+
+	var errParse error
+
+	filePrefix, _ := filepath.Abs("./views")
+	t := template.New("cancel_request_employee.html")
+	infoHTML := employeeMailCancel{leaveID, employeeName}
+	t, errParse = t.ParseFiles(filePrefix + "/cancel_request_employee.html")
+	if errParse != nil {
+		CheckErr("errParse ", errParse)
+	}
+
+	var tpl bytes.Buffer
+	if err := t.Execute(&tpl, infoHTML); err != nil {
+		CheckErr("err ", err)
+	}
+	mailHTML := tpl.String()
+
+	authEmail := "tnis.noreply@gmail.com"
+	authPassword := constant.GOPWD
+	authHost := "smtp.gmail.com"
+	port := 587
+
+	m := gomail.NewMessage()
+	m.SetHeader("From", authEmail)
+	m.SetHeader("To", mailTo)
+	m.SetHeader("Subject", "Cancle Leave Request")
 	m.Embed(filePrefix + "/tnis.png")
 	m.SetBody("text/html", mailHTML)
 

@@ -26,7 +26,9 @@ class AdminReqAcceptPage extends Component {
   }
 
   componentWillMount() {
-    console.log(" ----------------- Admin-List-Approve-Request ----------------- ");
+    console.log(
+      " ----------------- Admin-List-Approve-Request ----------------- "
+    );
   }
 
   componentWillReceiveProps(nextProps) {
@@ -126,6 +128,22 @@ class AdminReqAcceptPage extends Component {
     this.setState({
       searchText: e.target.value
     });
+  };
+
+  handleOk = () => {
+    const id = this.state.user && this.state.user.id;
+    const employeeNumber = this.state.user && this.state.user.employee_number;
+
+    this.setState({ loading: true });
+    setTimeout(() => {
+      this.setState({ loading: false, visible: false });
+      this.updateStatusAccept(this.props.users, id, employeeNumber);
+      window.location.reload();
+    }, 1000);
+  };
+
+  updateStatusAccept = (users, id, enumber) => {
+    // this.props.updateStatusAccept(users, id, enumber);
   };
 
   showDetail = record => {
@@ -306,16 +324,18 @@ class AdminReqAcceptPage extends Component {
             <Modal
               visible={visible}
               title="Detail Leave Request Approved"
+              onOk={this.handleOk}
               onCancel={this.handleCancel}
               style={{ top: "20" }}
               bodyStyle={{ padding: "0" }}
               footer={[
                 <Button
-                  key="cancel"
+                  key="accept"
+                  type="danger"
                   loading={loading}
-                  onClick={this.handleCancel}
+                  onClick={this.handleOk}
                 >
-                  Return
+                  Cancel Request
                 </Button>
               ]}
             >
@@ -353,7 +373,7 @@ class AdminReqAcceptPage extends Component {
 
 const mapStateToProps = state => ({
   loading: state.adminReducer.loading,
-  users: state.adminReducer.users
+  users: state.adminReducer.leave
 });
 
 const mapDispatchToProps = dispatch =>

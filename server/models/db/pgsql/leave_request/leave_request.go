@@ -243,3 +243,63 @@ func (l *LeaveRequest) GetLeave(id int64) (result structLogic.GetLeave, err erro
 	}
 	return result, err
 }
+
+// UpdateLeaveRemaningApprove ...
+func (l *LeaveRequest) UpdateLeaveRemaningApprove(total float64, employeeNumber int64, typeID int64) (err error) {
+	var e *structDB.UserTypeLeave
+	o := orm.NewOrm()
+	qb, errQB := orm.NewQueryBuilder("mysql")
+	if errQB != nil {
+		helpers.CheckErr("Query builder failed @UpdateLeaveRemaningApprove", errQB)
+		return errQB
+	}
+
+	qb.Update(e.TableName()).Set("leave_remaining = leave_remaining - ?").
+		Where(`(employee_number = ? AND type_leave_id = ? )`)
+	sql := qb.String()
+
+	res, errRaw := o.Raw(sql, total, employeeNumber, typeID).Exec()
+
+	if errRaw != nil {
+		helpers.CheckErr("err update @UpdateLeaveRemaningApprove", errRaw)
+		return errors.New("update leave remaining failed")
+	}
+
+	_, errRow := res.RowsAffected()
+	if errRow != nil {
+		helpers.CheckErr("error get rows affected", errRow)
+		return errRow
+	}
+
+	return err
+}
+
+// UpdateLeaveRemaningCancel ...
+func (l *LeaveRequest) UpdateLeaveRemaningCancel(total float64, employeeNumber int64, typeID int64) (err error) {
+	var e *structDB.UserTypeLeave
+	o := orm.NewOrm()
+	qb, errQB := orm.NewQueryBuilder("mysql")
+	if errQB != nil {
+		helpers.CheckErr("Query builder failed @UpdateLeaveRemaningCancel", errQB)
+		return errQB
+	}
+
+	qb.Update(e.TableName()).Set("leave_remaining = leave_remaining + ?").
+		Where(`(employee_number = ? AND type_leave_id = ? )`)
+	sql := qb.String()
+
+	res, errRaw := o.Raw(sql, total, employeeNumber, typeID).Exec()
+
+	if errRaw != nil {
+		helpers.CheckErr("err update @UpdateLeaveRemaningCancel", errRaw)
+		return errors.New("update leave remaining failed")
+	}
+
+	_, errRow := res.RowsAffected()
+	if errRow != nil {
+		helpers.CheckErr("error get rows affected", errRow)
+		return errRow
+	}
+
+	return err
+}

@@ -235,32 +235,6 @@ func (u *Supervisor) AcceptBySupervisor(id int64, employeeNumber int64) error {
 	return errRAW
 }
 
-// RejectBySupervisor ...
-func (u *Supervisor) RejectBySupervisor(reason string, id int64, employeeNumber int64) error {
-	var (
-		dbLeave structDB.LeaveRequest
-		user    logicUser.User
-		leave   logicLeave.LeaveRequest
-	)
-	o := orm.NewOrm()
-
-	getEmployee, _ := user.GetEmployee(employeeNumber)
-	getSupervisorID, _ := user.GetSupervisor(employeeNumber)
-	getSupervisor, _ := user.GetEmployee(getSupervisorID.SupervisorID)
-	getLeave, _ := leave.GetLeave(id)
-
-	statRejectSupervisor := constant.StatusRejectInSuperVisor
-
-	_, errRAW := o.Raw(`UPDATE `+dbLeave.TableName()+` SET status = ?, reject_reason = ? WHERE id = ? AND employee_number = ?`, statRejectSupervisor, reason, id, employeeNumber).Exec()
-	if errRAW != nil {
-		helpers.CheckErr("error update status @RejectBySupervisor", errRAW)
-	}
-
-	helpers.GoMailSupervisorReject(getEmployee.Email, getLeave.ID, getEmployee.Name, getSupervisor.Name, reason)
-
-	return errRAW
-}
-
 // RejectBySv ...
 func (u *Supervisor) RejectBySv(l *structLogic.LeaveReason, id int64, employeeNumber int64) error {
 	var (
