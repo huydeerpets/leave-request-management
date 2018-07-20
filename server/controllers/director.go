@@ -46,7 +46,7 @@ func (c *DirectorController) AcceptStatusByDirector() {
 	if errUpStat != nil {
 		resp.Error = errUpStat.Error()
 	} else {
-		resp.Body = "status leave request has been accepted"
+		resp.Body = "status leave request has been approved"
 	}
 
 	err := c.Ctx.Output.JSON(resp, false, false)

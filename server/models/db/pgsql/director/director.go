@@ -9,6 +9,7 @@ import (
 	logicUser "server/models/db/pgsql/user"
 	structDB "server/structs/db"
 	structLogic "server/structs/logic"
+	"strconv"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
@@ -18,7 +19,7 @@ import (
 type Director struct{}
 
 // AcceptByDirector ...
-func (u *Director) AcceptByDirector(id int64, employeeNumber int64) error {
+func (u *Director) AcceptByDirector(id int64, employeeNumber int64) (err error) {
 	var (
 		dbLeave structDB.LeaveRequest
 		user    logicUser.User
@@ -28,26 +29,44 @@ func (u *Director) AcceptByDirector(id int64, employeeNumber int64) error {
 
 	o := orm.NewOrm()
 
-	getDirector, _ := user.GetDirector()
-	getEmployee, _ := user.GetEmployee(employeeNumber)
-	getLeave, _ := leave.GetLeave(id)
+	getDirector, errGetDirector := user.GetDirector()
+	helpers.CheckErr("err get", errGetDirector)
+
+	getEmployee, errGetEmployee := user.GetEmployee(employeeNumber)
+	helpers.CheckErr("err get", errGetEmployee)
+
+	getLeave, errGetLeave := leave.GetLeave(id)
+	helpers.CheckErr("err get", errGetLeave)
 
 	statAcceptDirector := constant.StatusSuccessInDirector
 	actionBy := getDirector.Name
 
-	_, errRAW := o.Raw(`UPDATE `+dbLeave.TableName()+` SET status = ?, action_by = ? WHERE id = ? AND employee_number = ?`, statAcceptDirector, actionBy, id, employeeNumber).Exec()
-	if errRAW != nil {
-		helpers.CheckErr("error update status @AcceptByDirector", errRAW)
+	resGet, errGet := user.GetUserLeaveRemaining(getLeave.TypeLeaveID, employeeNumber)
+	helpers.CheckErr("err get", errGet)
+
+	strTotal := strconv.FormatFloat(getLeave.Total, 'f', 1, 64)
+	strBalance := strconv.FormatFloat(resGet.LeaveRemaining, 'f', 1, 64)
+
+	if getLeave.Total > float64(resGet.LeaveRemaining) {
+		beego.Warning("error leave balance @PostLeaveRequest")
+		return errors.New("Employee total leave is " + strTotal + " day and employee " + resGet.TypeName + " balance is " + strBalance + " day left")
+	} else {
+		_, errRAW := o.Raw(`UPDATE `+dbLeave.TableName()+` SET status = ?, action_by = ? WHERE id = ? AND employee_number = ?`, statAcceptDirector, actionBy, id, employeeNumber).Exec()
+		if errRAW != nil {
+			helpers.CheckErr("error update status @AcceptByDirector", errRAW)
+		}
+
+		errUp := admin.UpdateLeaveRemaning(getLeave.Total, employeeNumber, getLeave.TypeLeaveID)
+		if errUp != nil {
+			helpers.CheckErr("error update status @AcceptByDirector", errUp)
+		}
+
+		helpers.GoMailDirectorAccept(getEmployee.Email, getLeave.ID, getEmployee.Name, getDirector.Name)
+
+		return errRAW
 	}
 
-	errUp := admin.UpdateLeaveRemaning(getLeave.Total, employeeNumber, getLeave.TypeLeaveID)
-	if errUp != nil {
-		helpers.CheckErr("error update status @AcceptByDirector", errUp)
-	}
-
-	helpers.GoMailDirectorAccept(getEmployee.Email, getLeave.ID, getEmployee.Name, getDirector.Name)
-
-	return errRAW
+	return
 }
 
 // RejectByDirector ...

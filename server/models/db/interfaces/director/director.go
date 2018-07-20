@@ -11,7 +11,7 @@ type IBaseDirector interface {
 	AcceptByDirector(
 		id int64,
 		employeeNumber int64,
-	) error
+	) (err error)
 	// RejectByDirector
 	RejectByDirector(
 		l *structDB.LeaveRequest,

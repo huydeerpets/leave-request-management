@@ -72,7 +72,7 @@ export function acceptFetchData() {
 				let payload = {
 					loading: false,
 					leave: body
-				}				
+				}
 				dispatch(acceptFetch(payload))
 			})
 			.catch(err => {
@@ -108,16 +108,24 @@ export function updateStatusAccept(users, id, enumber) {
 		fetch(`${ROOT_API}/api/director/accept/${id}/${enumber}/`, {
 				method: 'PUT',
 			})
-			.then(response => {
-				let newUserlist = users.filter(el => el.id !== id)
-				let payload = {
-					loading: false,
-					leave: [
-						...newUserlist
-					]
+			.then((resp) => resp.json())
+			.then(({
+				body,
+				error
+			}) => {
+				if (body !== null) {
+					let newUserlist = users.filter(el => el.id !== id)
+					let payload = {
+						loading: false,
+						leave: [
+							...newUserlist
+						]
+					}
+					dispatch(acceptRequest(payload))
+					alert(body)
+				} else {
+					alert(error)
 				}
-				dispatch(acceptRequest(payload))
-
 			}).catch(err => {
 				console.log(err)
 			})
