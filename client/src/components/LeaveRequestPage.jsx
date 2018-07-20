@@ -44,9 +44,8 @@ class LeaveRequestPage extends Component {
     this.onChangeAddHalfDay = this.onChangeAddHalfDay.bind(this);
   }
 
-
   componentWillMount() {
-    console.log(" ----------------- Form-Leave-Request ----------------- ");    
+    console.log(" ----------------- Form-Leave-Request ----------------- ");
     if (!localStorage.getItem("token")) {
       this.props.history.push("/");
     } else if (
@@ -157,7 +156,11 @@ class LeaveRequestPage extends Component {
   };
 
   disabledDate(current) {
-    return current && current < moment().endOf("day");
+    return current && current < moment().startOf("day");
+  }
+
+  disabledDateSick(current) {
+    return current && current < moment().subtract(7, 'days').startOf("day");
   }
 
   disabledDateBack(current) {
@@ -243,9 +246,9 @@ class LeaveRequestPage extends Component {
         ...this.props.leaveForm,
         back_on: newDate,
         half_dates: this.state.halfDate
-      };            
-      this.props.formOnChange(backOn);      
-    }        
+      };
+      this.props.formOnChange(backOn);
+    }
   };
 
   handleOnChangeID = value => {
@@ -387,27 +390,55 @@ class LeaveRequestPage extends Component {
                   />
                 </FormItem>
               </div>
-              <FormItem {...formItemLayout} label="From">
-                {getFieldDecorator("start date", {
-                  rules: [
-                    {
-                      required: true
-                    }
-                  ]
-                })(
-                  <DatePicker
-                    id="date_from"
-                    name="date_from"
-                    disabledDate={this.disabledDate}
-                    format={dateFormat}
-                    value={from}
-                    placeholder="Start"
-                    onChange={this.onStartChange}
-                    onOpenChange={this.handleStartOpenChange}
-                    style={formStyle}
-                  />
-                )}
-              </FormItem>
+
+              {console.log(this.props.leaveForm.type_leave_id)}
+
+              {this.props.leaveForm.type_leave_id === 33 ? (
+                <FormItem {...formItemLayout} label="From">
+                  {getFieldDecorator("start date", {
+                    rules: [
+                      {
+                        required: true
+                      }
+                    ]
+                  })(
+                    <DatePicker
+                      id="date_from"
+                      name="date_from"
+                      disabledDate={this.disabledDateSick}
+                      format={dateFormat}
+                      value={from}
+                      placeholder="Start"
+                      onChange={this.onStartChange}
+                      onOpenChange={this.handleStartOpenChange}
+                      style={formStyle}
+                    />
+                  )}
+                </FormItem>
+              ) : (
+                <FormItem {...formItemLayout} label="From">
+                  {getFieldDecorator("start date", {
+                    rules: [
+                      {
+                        required: true
+                      }
+                    ]
+                  })(
+                    <DatePicker
+                      id="date_from"
+                      name="date_from"
+                      disabledDate={this.disabledDate}
+                      format={dateFormat}
+                      value={from}
+                      placeholder="Start"
+                      onChange={this.onStartChange}
+                      onOpenChange={this.handleStartOpenChange}
+                      style={formStyle}
+                    />
+                  )}
+                </FormItem>
+              )}
+
               <FormItem {...formItemLayout} label="To">
                 {getFieldDecorator("end date", {
                   rules: [
