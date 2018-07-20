@@ -148,7 +148,8 @@ func (u *Admin) UpdateUser(e *structDB.User, employeeNumber int64) (err error) {
 			"mobile_phone = ?",
 			"email= ?",
 			"role = ?",
-			"supervisor_id = ?").Where("employee_number = ? ")
+			"supervisor_id = ?",
+			"updated_at = ?").Where("employee_number = ? ")
 	sql := qb.String()
 
 	e.Email = strings.ToLower(e.Email)
@@ -162,6 +163,7 @@ func (u *Admin) UpdateUser(e *structDB.User, employeeNumber int64) (err error) {
 		e.Email,
 		e.Role,
 		e.SupervisorID,
+		e.UpdatedAt,
 		employeeNumber).Exec()
 
 	if errRaw != nil {

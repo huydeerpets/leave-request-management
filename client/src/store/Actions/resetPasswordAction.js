@@ -22,8 +22,8 @@ export function resetPassword(savePassword, pusher) {
 				body,
 				error
 			}) => {
-				if (body === "reset password success, please check your email") {
-					alert("reset password success, please check your email")
+				if (body !== null ) {
+					alert(body)
 					pusher('/')
 				} else if (error === "email not register") {
 					alert("email not register")

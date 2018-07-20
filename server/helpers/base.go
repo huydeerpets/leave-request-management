@@ -93,3 +93,24 @@ func GetDay(date string) int {
 	var i = int(m)
 	return i
 }
+
+var addedTimeNow = 0
+
+// Now replace helper.Now()
+func Now() time.Time {
+	return time.Now().AddDate(0, 0, addedTimeNow)
+}
+
+// NowLoc ...
+func NowLoc(timeLoc string) (
+	dateTime time.Time,
+	err error,
+) {
+	// "Asia/Bangkok"
+	loc, err := time.LoadLocation(timeLoc)
+	if err != nil {
+		beego.Warning("failed load location", err)
+	}
+	dateTime = Now().In(loc)
+	return
+}

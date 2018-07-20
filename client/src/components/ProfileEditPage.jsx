@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import { profileFetchData } from "../store/Actions/profileAction";
 import { SupervisorAdd } from "../store/Actions/AddSupervisorAction";
 
-import moment from "moment-business-days";
+import moment from "moment-timezone";
 import { Layout, Button, Form, Input, Select, DatePicker } from "antd";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
@@ -13,7 +13,6 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 class ProfileEditPage extends Component {
-
   componentWillMount() {
     console.log(" ----------------- Profile-Page ----------------- ");
   }
@@ -27,21 +26,11 @@ class ProfileEditPage extends Component {
       localStorage.getItem("role") !== "director"
     ) {
       this.props.history.push("/");
-      window.location.href= "/"
+      window.location.href = "/";
     }
 
     this.props.profileFetchData();
     this.props.SupervisorAdd();
-
-    const role = localStorage.getItem("role");
-    let hiddenDiv = document.getElementById("supervisor");
-    if (role === "supervisor") {
-      hiddenDiv.style.display = "none";
-    } else if (role === "director") {
-      hiddenDiv.style.display = "none";
-    } else {
-      hiddenDiv.style.display = "block";
-    }
   }
 
   editPassword = (user, employeeNumber) => {
@@ -81,7 +70,7 @@ class ProfileEditPage extends Component {
       if (d.supervisor_id === this.props.user.supervisor_id) {
         supervisorName = d.name;
       }
-      return d
+      return d;
     });
 
     return (
@@ -199,7 +188,7 @@ class ProfileEditPage extends Component {
                     </Select>
                   </FormItem>
 
-                  <div id="supervisor">
+                  {this.props.user.role === "employee" ? (
                     <FormItem {...formItemLayout} label="Supervisor">
                       <Select
                         id="supervisor_id"
@@ -216,7 +205,24 @@ class ProfileEditPage extends Component {
                         ))}
                       </Select>
                     </FormItem>
-                  </div>
+                  ) : (
+                    ""
+                  )}
+
+                  {this.props.user.updated_at !== "0001-01-01T00:00:00Z" ? (
+                    <FormItem {...formItemLayout} label="Updated At">
+                      <Input
+                        type="text"
+                        id="updated_at"
+                        name="updated_at"
+                        value={moment(this.props.user.updated_at)
+                          .tz("Asia/Jakarta")
+                          .format("DD-MM-YYYY HH:mm")}
+                      />
+                    </FormItem>
+                  ) : (
+                    ""
+                  )}
 
                   <FormItem>
                     <Button

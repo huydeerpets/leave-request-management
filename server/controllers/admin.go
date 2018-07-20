@@ -63,12 +63,12 @@ func (c *AdminController) CreateUser() {
 	annualLeave := 12 + (12 - startDate)
 	beego.Debug("==>", annualLeave)
 
-	defer logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 11, 12)
-	defer logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 22, 3)
-	defer logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 33, 30)
-	defer logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 44, 2)
-	defer logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 55, 90)
-	defer logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 66, 2)
+	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 11, 12)
+	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 22, 3)
+	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 33, 30)
+	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 44, 2)
+	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 55, 90)
+	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 66, 2)
 
 	err := c.Ctx.Output.JSON(resp, false, false)
 	if err != nil {
@@ -148,14 +148,14 @@ func (c *AdminController) GetUser() {
 // UpdateUser ...
 func (c *AdminController) UpdateUser() {
 	var (
-		resp structAPI.RespData
-		user structDB.User
+		resp    structAPI.RespData
+		reqUser structAPI.ReqRegister
 	)
 
 	body := c.Ctx.Input.RequestBody
 	fmt.Println("UPDATE-USER=======>", string(body))
 
-	err := json.Unmarshal(body, &user)
+	err := json.Unmarshal(body, &reqUser)
 	if err != nil {
 		helpers.CheckErr("unmarshall req body failed @UpdateUser", err)
 		resp.Error = errors.New("type request malform").Error()
@@ -169,6 +169,24 @@ func (c *AdminController) UpdateUser() {
 		helpers.CheckErr("convert id failed @UpdateUser", errCon)
 		resp.Error = errors.New("convert id failed").Error()
 		return
+	}
+
+	resTime, errTime := helpers.NowLoc("Asia/Jakarta")
+	helpers.CheckErr("err time", errTime)
+	fmt.Println(resTime)
+
+	user := structDB.User{
+		EmployeeNumber:   reqUser.EmployeeNumber,
+		Name:             reqUser.Name,
+		Gender:           reqUser.Gender,
+		Position:         reqUser.Position,
+		StartWorkingDate: reqUser.StartWorkingDate,
+		MobilePhone:      reqUser.MobilePhone,
+		Email:            reqUser.Email,
+		Password:         reqUser.Password,
+		Role:             reqUser.Role,
+		SupervisorID:     reqUser.SupervisorID,
+		UpdatedAt:        resTime,
 	}
 
 	errUpdate := logic.DBPostAdmin.UpdateUser(&user, employeeNumber)

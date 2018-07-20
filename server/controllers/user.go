@@ -193,7 +193,7 @@ func (c *UserController) UpdateNewPassword() {
 	if errUpPassword != nil {
 		resp.Error = errUpPassword.Error()
 	} else {
-		resp.Body = "update password success"
+		resp.Body = "Update password success"
 	}
 
 	err := c.Ctx.Output.JSON(resp, false, false)
