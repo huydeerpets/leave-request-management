@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { acceptFetchData } from "../store/Actions/adminActions";
+import {
+  acceptFetchData,
+  cancelRequestLeave
+} from "../store/Actions/adminActions";
 import { Layout, Table, Modal, Button, Input, Icon } from "antd";
 import HeaderNav from "./menu/HeaderAdmin";
 import Footer from "./menu/Footer";
@@ -137,13 +140,13 @@ class AdminReqAcceptPage extends Component {
     this.setState({ loading: true });
     setTimeout(() => {
       this.setState({ loading: false, visible: false });
-      this.updateStatusAccept(this.props.users, id, employeeNumber);
-      window.location.reload();
+      this.cancelRequestLeave(this.props.users, id, employeeNumber);
+      // window.location.reload();
     }, 1000);
   };
 
-  updateStatusAccept = (users, id, enumber) => {
-    // this.props.updateStatusAccept(users, id, enumber);
+  cancelRequestLeave = (users, id, enumber) => {
+    this.props.cancelRequestLeave(users, id, enumber);
   };
 
   showDetail = record => {
@@ -379,7 +382,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      acceptFetchData
+      acceptFetchData,
+      cancelRequestLeave
     },
     dispatch
   );

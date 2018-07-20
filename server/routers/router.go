@@ -77,20 +77,26 @@ func init() {
 			&controllers.AdminController{},
 			"delete:DeleteUser",
 		),
-		// get leave request success
+		// get leave request pending
 		beego.NSRouter("/admin/leave/pending",
 			&controllers.AdminController{},
 			"get:GetRequestPending",
 		),
-		// get leave request success
+		// get leave request approve
 		beego.NSRouter("/admin/leave/accept",
 			&controllers.AdminController{},
 			"get:GetRequestAccept",
 		),
-		// get leave request success
+		// get leave request reject
 		beego.NSRouter("/admin/leave/reject",
 			&controllers.AdminController{},
 			"get:GetRequestReject",
+		),
+
+		// canceled leave request by admin
+		beego.NSRouter("/admin/leave/cancel/:id:int/:enumber:int",
+			&controllers.DirectorController{},
+			"put:CancelRequestLeave",
 		),
 
 		// ========================= employee ========================= //

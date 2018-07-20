@@ -26,6 +26,10 @@ export default function adminReducer(state = adminState, action) {
 			return {
 				...action.payload
 			}
+		case 'CANCEL_LEAVE_REQUEST':
+			return {
+				...action.payload
+			}
 		default:
 			return state
 	}

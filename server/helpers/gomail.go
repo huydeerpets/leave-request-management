@@ -73,9 +73,9 @@ func GoMailEmployee(mailTo string, leaveID string, employeeName string, supervis
 	var errParse error
 
 	filePrefix, _ := filepath.Abs("./views")
-	t := template.New("template.html")
+	t := template.New("employee.html")
 	infoHTML := employeeMail{leaveID, employeeName, supervisorName}
-	t, errParse = t.ParseFiles(filePrefix + "/template.html")
+	t, errParse = t.ParseFiles(filePrefix + "/employee.html")
 	if errParse != nil {
 		CheckErr("errParse ", errParse)
 	}

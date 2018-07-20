@@ -166,3 +166,39 @@ func (c *DirectorController) GetDirectorRejectLeave() {
 		helpers.CheckErr("failed giving output @GetDirectorPendingLeave", err)
 	}
 }
+
+// CancelRequestLeave ...
+func (c *DirectorController) CancelRequestLeave() {
+	var (
+		resp       structAPI.RespData
+		dbDirector db.Director
+	)
+
+	idStr := c.Ctx.Input.Param(":id")
+	id, errCon := strconv.ParseInt(idStr, 0, 64)
+	if errCon != nil {
+		helpers.CheckErr("convert id failed @CancelRequestLeave", errCon)
+		resp.Error = errors.New("convert id failed").Error()
+		return
+	}
+
+	employeeStr := c.Ctx.Input.Param(":enumber")
+	employeeNumber, errCon := strconv.ParseInt(employeeStr, 0, 64)
+	if errCon != nil {
+		helpers.CheckErr("convert enum failed @CancelRequestLeave", errCon)
+		resp.Error = errors.New("convert id failed").Error()
+		return
+	}
+
+	errUpStat := dbDirector.CancelRequestLeave(id, employeeNumber)
+	if errUpStat != nil {
+		resp.Error = errUpStat.Error()
+	} else {
+		resp.Body = "leave request has been canceled and deleted"
+	}
+
+	err := c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		helpers.CheckErr("failed giving output @CancelRequestLeave", err)
+	}
+}

@@ -37,6 +37,14 @@ function userDeleted(payload) {
 	}
 }
 
+function cancelRequest(payload) {
+	return {
+		type: 'CANCEL_LEAVE_REQUEST',
+		payload: payload
+	}
+}
+
+
 export function adminFetchData() {
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/admin/user/`, {
@@ -144,6 +152,27 @@ export function rejectFetchData() {
 				dispatch(rejectFetch(payload))
 			})
 			.catch(err => {
+				console.log(err)
+			})
+	}
+}
+
+export function cancelRequestLeave(users, id, enumber) {
+	return (dispatch) => {
+		fetch(`${ROOT_API}/api/admin/leave/cancel/${id}/${enumber}/`, {
+				method: 'PUT',
+			})
+			.then(response => {
+				let newUserlist = users.filter(el => el.id !== id)
+				let payload = {
+					loading: false,
+					leave: [
+						...newUserlist
+					]
+				}
+				dispatch(cancelRequest(payload))
+
+			}).catch(err => {
 				console.log(err)
 			})
 	}

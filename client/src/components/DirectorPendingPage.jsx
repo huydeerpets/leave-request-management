@@ -155,7 +155,7 @@ class DirectorPendingPage extends Component {
     setTimeout(() => {
       this.setState({ loadingA: false, visible: false });
       this.updateStatusAccept(this.props.users, id, employeeNumber);
-      window.location.reload();
+      // window.location.reload();
     }, 1000);
   };
 
