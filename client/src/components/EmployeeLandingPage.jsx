@@ -8,7 +8,7 @@ import Footer from "./menu/Footer";
 import { Layout, Row, Col } from "antd";
 const { Content } = Layout;
 
-export class LandingEmployeePage extends React.Component {
+export class EmployeeLandingPage extends React.Component {
   componentWillMount() {
     console.log(" ----------------- Employee-Landing-Page ----------------- ");
   }
@@ -174,4 +174,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(LandingEmployeePage);
+)(EmployeeLandingPage);

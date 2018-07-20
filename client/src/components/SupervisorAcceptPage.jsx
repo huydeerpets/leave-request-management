@@ -26,7 +26,7 @@ class SupervisorAcceptPage extends Component {
   }
 
   componentWillMount() {
-    console.log(" ----------------- Supervisor-Accept ----------------- ");
+    console.log(" ----------------- Supervisor-List-Approve-Request ----------------- ");
   }
 
   componentWillReceiveProps(nextProps) {

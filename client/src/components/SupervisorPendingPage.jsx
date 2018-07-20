@@ -36,7 +36,7 @@ class SupervisorPendingPage extends Component {
   }
 
   componentWillMount() {
-    console.log(" ----------------- Supervisor-Pending ----------------- ");
+    console.log(" ----------------- Supervisor-List-Pending-Request ----------------- ");
   }
 
   componentWillReceiveProps(nextProps) {

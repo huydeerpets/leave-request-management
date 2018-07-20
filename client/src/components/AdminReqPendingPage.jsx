@@ -26,7 +26,7 @@ class AdminReqPendingPage extends Component {
   }
 
   componentWillMount() {
-    console.log(" ----------------- Admin-Pending ----------------- ");
+    console.log(" ----------------- Admin-List-Pending-Request ----------------- ");
   }
 
   componentWillReceiveProps(nextProps) {

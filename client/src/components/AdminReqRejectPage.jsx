@@ -26,7 +26,7 @@ class AdminReqRejectPage extends Component {
   }
 
   componentWillMount() {
-    console.log(" ----------------- Admin-Reject ----------------- ");
+    console.log(" ----------------- Admin-List-Reject-Request ----------------- ");
   }
 
   componentWillReceiveProps(nextProps) {

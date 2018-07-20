@@ -26,7 +26,7 @@ class DirectorAcceptPage extends Component {
   }
 
   componentWillMount() {
-    console.log(" ----------------- Director-Accept ----------------- ");
+    console.log(" ----------------- Director-List-Approve-Request ----------------- ");
   }
 
   componentWillReceiveProps(nextProps) {

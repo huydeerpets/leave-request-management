@@ -26,7 +26,7 @@ class DirectorRejectPage extends Component {
   }
 
   componentWillMount() {
-    console.log("------------ Director-Reject -------------------");
+    console.log("------------ Director-List-Reject-Request -------------------");
   }
 
   componentWillReceiveProps(nextProps) {

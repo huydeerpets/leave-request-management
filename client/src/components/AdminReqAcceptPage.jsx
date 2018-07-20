@@ -26,7 +26,7 @@ class AdminReqAcceptPage extends Component {
   }
 
   componentWillMount() {
-    console.log(" ----------------- Admin-Accept ----------------- ");
+    console.log(" ----------------- Admin-List-Approve-Request ----------------- ");
   }
 
   componentWillReceiveProps(nextProps) {

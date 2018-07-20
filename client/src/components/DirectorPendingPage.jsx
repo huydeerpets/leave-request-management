@@ -33,7 +33,7 @@ class DirectorPendingPage extends Component {
   }
 
   componentWillMount() {
-    console.log(" ----------------- Director-Pending ----------------- ");
+    console.log(" ----------------- Director-List-Pending-Request ----------------- ");
   }
 
   componentWillReceiveProps(nextProps) {

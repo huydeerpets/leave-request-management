@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { formOnChange, SumbitLeave } from "../store/Actions/leaveRequestAction";
+import {
+  formOnChange,
+  SumbitLeave,
+  SumbitLeaveSupervisor
+} from "../store/Actions/leaveRequestAction";
 import { typeLeaveFetchData } from "../store/Actions/typeLeaveAction";
 import update from "react-addons-update";
 import HeaderNav from "./menu/HeaderNav";
@@ -65,6 +69,16 @@ class LeaveRequestPage extends Component {
       }
     });
     this.props.SumbitLeave(this.props.leaveForm);
+  };
+
+  handleSubmitSupervisor = e => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        console.log("Received values of form: ", values);
+      }
+    });
+    this.props.SumbitLeaveSupervisor(this.props.leaveForm);
   };
 
   handleOnChange = e => {
@@ -160,7 +174,13 @@ class LeaveRequestPage extends Component {
   }
 
   disabledDateSick(current) {
-    return current && current < moment().subtract(7, 'days').startOf("day");
+    return (
+      current &&
+      current <
+        moment()
+          .subtract(7, "days")
+          .startOf("day")
+    );
   }
 
   disabledDateBack(current) {
@@ -277,6 +297,8 @@ class LeaveRequestPage extends Component {
     const dates = this.getDates(start, end);
     const elements = [];
     const dateFormat = "DD-MM-YYYY";
+    const role = localStorage.getItem("role");
+    console.log(role);
 
     const formItemLayout = {
       labelCol: {
@@ -391,9 +413,8 @@ class LeaveRequestPage extends Component {
                 </FormItem>
               </div>
 
-              {console.log(this.props.leaveForm.type_leave_id)}
-
-              {this.props.leaveForm.type_leave_id === 33 ? (
+              {this.props.leaveForm.type_leave_id === 33 ||
+              this.props.leaveForm.type_leave_id === 11 ? (
                 <FormItem {...formItemLayout} label="From">
                   {getFieldDecorator("start date", {
                     rules: [
@@ -537,18 +558,34 @@ class LeaveRequestPage extends Component {
                   />
                 )}
               </FormItem>
-              <FormItem>
-                <Button
-                  onClick={this.handleSubmit}
-                  htmlType="submit"
-                  type="primary"
-                  style={{
-                    width: "35%"
-                  }}
-                >
-                  Create
-                </Button>
-              </FormItem>
+
+              {role === "employee" ? (
+                <FormItem>
+                  <Button
+                    onClick={this.handleSubmit}
+                    htmlType="submit"
+                    type="primary"
+                    style={{
+                      width: "35%"
+                    }}
+                  >
+                    Create
+                  </Button>
+                </FormItem>
+              ) : (
+                <FormItem>
+                  <Button
+                    onClick={this.handleSubmitSupervisor}
+                    htmlType="submit"
+                    type="primary"
+                    style={{
+                      width: "35%"
+                    }}
+                  >
+                    CREATE
+                  </Button>
+                </FormItem>
+              )}
             </Form>
           </div>
         </Content>
@@ -571,6 +608,7 @@ const mapDispatchToProps = dispatch =>
     {
       formOnChange,
       SumbitLeave,
+      SumbitLeaveSupervisor,
       typeLeaveFetchData
     },
     dispatch

@@ -24,7 +24,7 @@ class EmployeeReqAcceptPage extends Component {
   }
 
   componentWillMount() {
-    console.log("------------ Employee-Accept -------------------");
+    console.log("------------ Employee-List-Approve-Request -------------------");
   }
 
   componentWillReceiveProps(nextProps) {

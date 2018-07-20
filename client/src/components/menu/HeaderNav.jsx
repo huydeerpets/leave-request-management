@@ -59,7 +59,7 @@ export default class HeaderNav extends React.Component {
               }
             >
               <Menu.Item key="employee:1">
-                <NavLink to="/request-leave">
+                <NavLink to="/employee-leave-request">
                   <span>
                     <Icon type="form" />
                   </span>
@@ -67,21 +67,21 @@ export default class HeaderNav extends React.Component {
                 </NavLink>
               </Menu.Item>
               <Menu.Item key="employee:2">
-                <NavLink to="/request-pending">
+                <NavLink to="/employee-request-pending">
                   <span>
                     <Icon type="schedule" />
                   </span>List Pending Request
                 </NavLink>
               </Menu.Item>
               <Menu.Item key="employee:3">
-                <NavLink to="/request-accept">
+                <NavLink to="/employee-request-approve">
                   <span>
                     <Icon type="schedule" />
                   </span>List Approve Request
                 </NavLink>
               </Menu.Item>
               <Menu.Item key="employee:4">
-                <NavLink to="/request-reject">
+                <NavLink to="/employee-request-reject">
                   <span>
                     <Icon type="schedule" />
                   </span>List Reject Request
@@ -136,21 +136,21 @@ export default class HeaderNav extends React.Component {
               }
             >
               <Menu.Item key="supervisor:1">
-                <NavLink to="/list-request">
+                <NavLink to="/supervisor-pending-request">
                   <span>
                     <Icon type="schedule" />
                   </span>List Pending Request
                 </NavLink>
               </Menu.Item>
               <Menu.Item key="supervisor:2">
-                <NavLink to="/list-accept">
+                <NavLink to="/supervisor-approve-request">
                   <span>
                     <Icon type="schedule" />
                   </span>List Approve Request
                 </NavLink>
               </Menu.Item>
               <Menu.Item key="supervisor:3">
-                <NavLink to="/list-reject">
+                <NavLink to="/supervisor-reject-request">
                   <span>
                     <Icon type="schedule" />
                   </span>List Reject Request
@@ -166,28 +166,28 @@ export default class HeaderNav extends React.Component {
               }
             >
               <Menu.Item key="employee:1">
-                <NavLink to="/supervisor-request-leave">
+                <NavLink to="/employee-leave-request">
                   <span>
                     <Icon type="form" />
                   </span>Form Leave Request
                 </NavLink>
               </Menu.Item>
               <Menu.Item key="employee:2">
-                <NavLink to="/request-pending">
+                <NavLink to="/employee-request-pending">
                   <span>
                     <Icon type="schedule" />
                   </span>List Pending Request
                 </NavLink>
               </Menu.Item>
               <Menu.Item key="employee:3">
-                <NavLink to="/request-accept">
+                <NavLink to="/employee-request-approve">
                   <span>
                     <Icon type="schedule" />
                   </span>List Approve Request
                 </NavLink>
               </Menu.Item>
               <Menu.Item key="employee:4">
-                <NavLink to="/request-reject">
+                <NavLink to="/employee-request-reject">
                   <span>
                     <Icon type="schedule" />
                   </span>List Reject Request
@@ -242,21 +242,21 @@ export default class HeaderNav extends React.Component {
               }
             >
               <Menu.Item key="user:1">
-                <NavLink to="/list-pending-request">
+                <NavLink to="/director-pending-request">
                   <span>
                     <Icon type="schedule" />
                   </span>List Pending Request
                 </NavLink>
               </Menu.Item>
               <Menu.Item key="user:2">
-                <NavLink to="/list-accept-request">
+                <NavLink to="/director-approve-request">
                   <span>
                     <Icon type="schedule" />
                   </span>List Approve Request
                 </NavLink>
               </Menu.Item>
               <Menu.Item key="user:3">
-                <NavLink to="/list-reject-request">
+                <NavLink to="/director-reject-request">
                   <span>
                     <Icon type="schedule" />
                   </span>List Reject Request

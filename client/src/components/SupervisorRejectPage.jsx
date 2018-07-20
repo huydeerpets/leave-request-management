@@ -26,7 +26,7 @@ class SupervisorRejectPage extends Component {
   }
 
   componentWillMount() {
-    console.log(" ----------------- Supervisor-Reject ----------------- ");
+    console.log(" ----------------- Supervisor-List-Reject-Request ----------------- ");
   }
 
   componentWillReceiveProps(nextProps) {

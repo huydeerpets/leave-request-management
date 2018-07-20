@@ -16,11 +16,10 @@ import AdminReqRejectPage from './components/AdminReqRejectPage';
 import AdminEditPage from './components/AdminEditPage';
 
 import LeaveRequestPage from './components/LeaveRequestPage';
-import LeaveRequestSupervisorPage from './components/LeaveRequestSupervisorPage';
 import LeaveEditPage from './components/LeaveEditPage';
 import ProfileEditPage from './components/ProfileEditPage';
 
-import LandingEmployeePage from './components/LandingEmployeePage';
+import EmployeeLandingPage from './components/EmployeeLandingPage';
 import EmployeeReqPendingPage from './components/EmployeeReqPendingPage';
 import EmployeeReqAcceptPage from './components/EmployeeReqAcceptPage';
 import EmployeeReqRejectPage from './components/EmployeeReqRejectPage';
@@ -53,37 +52,33 @@ class App extends Component {
               <Route path="/admin" component={Adminpage} />
               <Route path="/register-user" component={RegisterPage} />            
               <Route path={`/edit-user/:id`} component={AdminEditPage}/>
-              <Route path="/pending-request" component={AdminReqPendingPage} />
-              <Route path="/approve-request" component={AdminReqAcceptPage} />              
-              <Route path="/reject-request" component={AdminReqRejectPage} />
+              <Route path="/list-pending-request" component={AdminReqPendingPage} />
+              <Route path="/list-approve-request" component={AdminReqAcceptPage} />              
+              <Route path="/list-reject-request" component={AdminReqRejectPage} />
               
-
-
-              <Route path="/request-leave" component={LeaveRequestPage} />
-              <Route path="/supervisor-request-leave" component={LeaveRequestSupervisorPage} />
-
-
-              <Route path="/employee" component={LandingEmployeePage} />
-              <Route exact path={`/editrequest/:id`} component={LeaveEditPage}/>
+             
               <Route exact path="/profile" component={ProfileEditPage} />
               <Route exact path={`/profile/:id`} component={PasswordPage}/>
-              
 
-              <Route path="/request-pending" component={EmployeeReqPendingPage} />
-              <Route path="/request-accept" component={EmployeeReqAcceptPage} />
-              <Route path="/request-reject" component={EmployeeReqRejectPage} />
+              <Route path="/employee" component={EmployeeLandingPage} />
+              <Route path="/employee-leave-request" component={LeaveRequestPage} />                          
+              <Route exact path={`/editrequest/:id`} component={LeaveEditPage}/>
+
+              <Route path="/employee-request-pending" component={EmployeeReqPendingPage} />
+              <Route path="/employee-request-approve" component={EmployeeReqAcceptPage} />
+              <Route path="/employee-request-reject" component={EmployeeReqRejectPage} />
 
 
               <Route path="/supervisor" component={SupervisorLandingPage} />
-              <Route path="/list-request" component={SupervisorPendingPage} />
-              <Route path="/list-accept" component={SupervisorAcceptPage} />
-              <Route path="/list-reject" component={SupervisorRejectPage} />
+              <Route path="/supervisor-pending-request" component={SupervisorPendingPage} />
+              <Route path="/supervisor-approve-request" component={SupervisorAcceptPage} />
+              <Route path="/supervisor-reject-request" component={SupervisorRejectPage} />
 
 
               <Route path="/director" component={DirectorLandingPage} />
-              <Route path="/list-pending-request" component={DirectorPendingPage} />
-              <Route path="/list-accept-request" component={DirectorAcceptPage} />
-              <Route path="/list-reject-request" component={DirectorRejectPage} />
+              <Route path="/director-pending-request" component={DirectorPendingPage} />
+              <Route path="/director-approve-request" component={DirectorAcceptPage} />
+              <Route path="/director-reject-request" component={DirectorRejectPage} />
               
               <Route component={Notfound} />
             </Switch>
