@@ -55,6 +55,11 @@ func init() {
 			&controllers.LeaveController{},
 			"post:PostLeaveRequestSupervisor",
 		),
+		// get report leave request
+		beego.NSRouter("/leave/report",
+			&controllers.LeaveController{},
+			"get:GetReportCSV",
+		),
 
 		// ========================= admin ========================= //
 		// register user

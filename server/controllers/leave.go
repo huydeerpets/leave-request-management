@@ -7,6 +7,7 @@ import (
 	"server/helpers"
 	"server/helpers/constant"
 	"strconv"
+	"time"
 
 	db "server/models/db/pgsql/leave_request"
 	userLogic "server/models/db/pgsql/user"
@@ -273,4 +274,25 @@ func (c *LeaveController) DeleteRequest() {
 	if err != nil {
 		helpers.CheckErr("failed giving output @DeleteRequest", err)
 	}
+}
+
+// GetReportCSV is controller for get data penjualan
+func (c *LeaveController) GetReportCSV() {
+	var dbLeave db.LeaveRequest
+
+	var reqDt = structAPI.RequestReport{
+		FromDate: c.Ctx.Input.Query("fromDate"),
+		ToDate:   c.Ctx.Input.Query("toDate"),
+	}
+
+	dt := time.Now()
+	nameFl := "report_leave_request_" + dt.Format("20060102")
+	path := constant.GOPATH + "/src/" + constant.GOAPP + "/storages/" + nameFl + ".csv"
+
+	errGet := dbLeave.ReportLeaveRequest(reqDt, path)
+	if errGet != nil {
+		beego.Debug("Error get csv @GetReportCSV", errGet)
+	}
+
+	c.Ctx.Output.Download(path, nameFl+".csv")
 }

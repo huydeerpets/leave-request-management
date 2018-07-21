@@ -3,10 +3,12 @@ package leave
 import (
 	"errors"
 	"server/helpers"
+	"server/helpers/constant"
 	logicUser "server/models/db/pgsql/user"
 	structAPI "server/structs/api"
 	structDB "server/structs/db"
 	structLogic "server/structs/logic"
+	"strconv"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
@@ -302,4 +304,126 @@ func (l *LeaveRequest) UpdateLeaveRemaningCancel(total float64, employeeNumber i
 	}
 
 	return err
+}
+
+// ReportLeaveRequest ...
+func (l *LeaveRequest) ReportLeaveRequest(query structAPI.RequestReport,
+	path string) (err error) {
+	var (
+		report        []structLogic.ReportLeaveRequest
+		user          structDB.User
+		leave         structDB.LeaveRequest
+		typeLeave     structDB.TypeLeave
+		userTypeLeave structDB.UserTypeLeave
+	)
+	statAcceptDirector := constant.StatusSuccessInDirector
+
+	o := orm.NewOrm()
+	qb, errQB := orm.NewQueryBuilder("mysql")
+	if errQB != nil {
+		helpers.CheckErr("Query builder failed @ReportLeaveRequest", errQB)
+		return errQB
+	}
+
+	qb.Select(
+		leave.TableName()+".id",
+		user.TableName()+".employee_number",
+		user.TableName()+".name",
+		user.TableName()+".gender",
+		user.TableName()+".position",
+		user.TableName()+".start_working_date",
+		user.TableName()+".email",
+		typeLeave.TableName()+".type_name",
+		leave.TableName()+".reason",
+		leave.TableName()+".date_from",
+		leave.TableName()+".date_to",
+		leave.TableName()+".half_dates",
+		leave.TableName()+".total",
+		leave.TableName()+".back_on",
+		userTypeLeave.TableName()+".leave_remaining",
+		leave.TableName()+".contact_address",
+		leave.TableName()+".contact_number").
+		From(user.TableName()).
+		InnerJoin(leave.TableName()).
+		On(user.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
+		InnerJoin(typeLeave.TableName()).
+		On(typeLeave.TableName() + ".id" + "=" + leave.TableName() + ".type_leave_id").
+		InnerJoin(userTypeLeave.TableName()).
+		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
+		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
+		Where(`(leave_request.created_at >= ? OR leave_request.created_at <= ? )`).
+		And(leave.TableName() + `.status = ? `)
+	sql := qb.String()
+
+	count, errRaw := o.Raw(sql, query.FromDate, query.ToDate, statAcceptDirector).QueryRows(&report)
+	if errRaw != nil {
+		helpers.CheckErr("Failed Query Select @ReportLeaveRequest", errRaw)
+		return errRaw
+	}
+	beego.Debug("Total leave request =", count)
+
+	// Write CSV
+	l.WriteCsv(path, report)
+
+	return err
+}
+
+// WriteCsv ...
+func (l *LeaveRequest) WriteCsv(path string, res []structLogic.ReportLeaveRequest) error {
+
+	w, err := helpers.NewCsvWriter(path)
+	if err != nil {
+		beego.Debug(err)
+		return err
+	}
+
+	w.Write([]string{
+		"No.",
+		"Request ID",
+		"Employee Number",
+		"Name",
+		"Gender",
+		"Position",
+		"Start Working Date",
+		"Email",
+		"Type Lave",
+		"Reason",
+		"From",
+		"To",
+		"Half Day",
+		"Back To Work",
+		"Total Leave",
+		"Leave Balance",
+		"Contact Address",
+		"Contact Number",
+	})
+
+	count := len(res)
+
+	for i := 0; i < count; i++ {
+		w.Write([]string{
+			strconv.Itoa(int(i+1)) + ".",
+			strconv.Itoa(int(res[i].ID)),
+			strconv.Itoa(int(res[i].EmployeeNumber)),
+			res[i].Name,
+			res[i].Gender,
+			res[i].Position,
+			res[i].StartWorkingDate,
+			res[i].Email,
+			res[i].TypeName,
+			res[i].Reason,
+			res[i].DateFrom,
+			res[i].DateTo,
+			res[i].HalfDates,
+			res[i].BackOn,
+			strconv.FormatFloat(res[i].Total, 'f', 1, 64) + " days",
+			strconv.FormatFloat(res[i].LeaveRemaining, 'f', 1, 64) + " days",
+			res[i].ContactAddress,
+			res[i].ContactNumber,
+		})
+
+	}
+	w.Flush()
+
+	return nil
 }

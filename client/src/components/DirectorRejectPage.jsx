@@ -320,7 +320,7 @@ class DirectorRejectPage extends Component {
               ]}
             >
               <div style={{ padding: 10, background: "#fff" }}>
-                s ID : {this.state.user && this.state.user.id} <br />
+                ID : {this.state.user && this.state.user.id} <br />
                 Name : {this.state.user && this.state.user.name} <br />
                 Gender : {this.state.user && this.state.user.gender} <br />
                 Email : {this.state.user && this.state.user.email} <br />
@@ -340,7 +340,7 @@ class DirectorRejectPage extends Component {
                 Contact Address :{" "}
                 {this.state.user && this.state.user.contact_address} <br />
                 Contact Number :{" "}
-                {this.state.user && this.state.user.contact_number}
+                {this.state.user && this.state.user.contact_number}<br />
                 Reject Reason :{" "}
                 {this.state.user && this.state.user.reject_reason}
               </div>
