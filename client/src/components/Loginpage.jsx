@@ -45,6 +45,8 @@ class LoginPage extends Component {
     ) {
       this.props.history.push("/employee");
     }
+
+    this.props.form.validateFields();
   }
 
   handleSumbitLogin = e => {
@@ -87,8 +89,21 @@ class LoginPage extends Component {
     this.props.handleFormInput(loginForm);
   };
 
+  hasErrors(fieldsError) {
+    return Object.keys(fieldsError).some(field => fieldsError[field]);
+  }
+
   render() {
-    const { getFieldDecorator } = this.props.form;
+    const {
+      getFieldDecorator,
+      getFieldsError,
+      getFieldError,
+      isFieldTouched
+    } = this.props.form;
+
+    const emailError = isFieldTouched("email") && getFieldError("email");
+    const passwordError =
+      isFieldTouched("password") && getFieldError("password");
     return (
       <div>
         <Layout className="App">
@@ -99,7 +114,6 @@ class LoginPage extends Component {
               </h1>
             </div>
           </Header>
-
           <Content
             className="container"
             style={{
@@ -113,7 +127,10 @@ class LoginPage extends Component {
             >
               <h1> Welcome! </h1>
               <Form onSubmit={this.handleSumbitLogin} className="login-form">
-                <FormItem>
+                <FormItem
+                  validateStatus={emailError ? "error" : ""}
+                  help={emailError || ""}
+                >
                   {getFieldDecorator("email", {
                     rules: [
                       {
@@ -140,7 +157,10 @@ class LoginPage extends Component {
                     />
                   )}
                 </FormItem>
-                <FormItem>
+                <FormItem
+                  validateStatus={passwordError ? "error" : ""}
+                  help={passwordError || ""}
+                >
                   {getFieldDecorator("password", {
                     rules: [
                       {
@@ -173,6 +193,7 @@ class LoginPage extends Component {
                     htmlType="submit"
                     className="login-form-button"
                     onClick={this.handleSumbitLogin}
+                    disabled={this.hasErrors(getFieldsError())}
                   >
                     LOGIN
                   </Button>

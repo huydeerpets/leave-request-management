@@ -51,9 +51,12 @@ export function saveEditLeave(savedLeave, pusher) {
 				body,
 				error
 			}) => {
-				console.log("err==========>", body)
-				if (body === "Update leave success") {
-					pusher('/request-pending')
+				
+				if (body !== null) {
+					console.log("err==========>", body)
+					pusher('/employee-request-pending')
+				} else if (error !== null) {
+					console.log("err==========>", error)
 				}
 			}).catch(err => {
 				console.log(err)

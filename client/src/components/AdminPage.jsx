@@ -119,7 +119,7 @@ class Adminpage extends Component {
               paddingBottom: "336px"
             }}
           >
-            <div style={{ padding: 150, background: "#fff", minHeight: 360 }}>
+            <div style={{ padding: 40, background: "#fff"}}>
               <Table
                 columns={this.columns}
                 dataSource={this.props.users}

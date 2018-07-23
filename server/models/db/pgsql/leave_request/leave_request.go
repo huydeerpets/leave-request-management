@@ -166,7 +166,7 @@ func (l *LeaveRequest) UpdateRequest(e *structAPI.UpdateLeaveRequest, id int64) 
 			"date_to = ?",
 			"half_dates = ?",
 			"back_on = ?",
-			"total",
+			"total = ?",
 			"contact_address = ?",
 			"contact_number = ?").Where("id = ? ")
 	sql := qb.String()
@@ -176,7 +176,7 @@ func (l *LeaveRequest) UpdateRequest(e *structAPI.UpdateLeaveRequest, id int64) 
 		e.Reason,
 		e.DateFrom,
 		e.DateTo,
-		isHalfDay,
+		"{"+isHalfDay+"}",
 		e.BackOn,
 		e.Total,
 		e.ContactAddress,
@@ -386,7 +386,7 @@ func (l *LeaveRequest) WriteCsv(path string, res []structLogic.ReportLeaveReques
 		"Position",
 		"Start Working Date",
 		"Email",
-		"Type Lave",
+		"Type_ Lave",
 		"Reason",
 		"From",
 		"To",

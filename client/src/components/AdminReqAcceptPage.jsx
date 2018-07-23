@@ -3,13 +3,24 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import {
   acceptFetchData,
-  cancelRequestLeave
+  cancelRequestLeave,
+  downloadReport
 } from "../store/Actions/adminActions";
-import { Layout, Table, Modal, Button, Input, Icon } from "antd";
+import {
+  Layout,
+  Table,
+  Modal,
+  Button,
+  Input,
+  Icon,
+  Form,
+  DatePicker
+} from "antd";
 import HeaderNav from "./menu/HeaderAdmin";
 import Footer from "./menu/Footer";
 import Loading from "./menu/Loading";
 const { Content } = Layout;
+const FormItem = Form.Item;
 let data;
 
 class AdminReqAcceptPage extends Component {
@@ -24,7 +35,9 @@ class AdminReqAcceptPage extends Component {
       filterDropdownNameVisible: false,
       filtered: false,
       searchText: "",
-      searchID: ""
+      searchID: "",
+      from: null,
+      to: null
     };
   }
 
@@ -168,8 +181,43 @@ class AdminReqAcceptPage extends Component {
     console.log(current, pageSize);
   }
 
+  onStartChange = value => {
+    if (value !== null) {
+      const date = new Date(value._d),
+        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+        day = ("0" + date.getDate()).slice(-2);
+      let dateFrom = [date.getFullYear(), mnth, day].join("-");
+      this.setState({
+        from: dateFrom
+      });
+    }
+  };
+
+  onEndChange = value => {
+    if (value !== null) {
+      const date = new Date(value._d),
+        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+        day = ("0" + date.getDate()).slice(-2);
+      let dateTo = [date.getFullYear(), mnth, day].join("-");
+      this.setState({
+        to: dateTo
+      });
+    }
+  };
+
+  handleSubmit = e => {
+    e.preventDefault();
+    this.downloadReport(this.state.from, this.state.to);
+  };
+
+  downloadReport = (from, to) => {
+    this.props.downloadReport(from, to);
+  };
+
   render() {
     const { visible, loading } = this.state;
+    console.log("from", this.state.from);
+    console.log("to", this.state.to);
     const columns = [
       {
         title: "ID",
@@ -309,6 +357,30 @@ class AdminReqAcceptPage extends Component {
             }}
           >
             <div style={{ padding: 20, background: "#fff" }}>
+              <Form layout="inline" onSubmit={this.handleSubmit}>
+                <FormItem label="From">
+                  <DatePicker
+                    id="date_from"
+                    name="date_from"
+                    placeholder="Start"
+                    onChange={this.onStartChange}
+                  />
+                </FormItem>
+                <FormItem label="From">
+                  <DatePicker
+                    id="date_from"
+                    name="date_from"
+                    placeholder="Start"
+                    onChange={this.onEndChange}
+                  />
+                </FormItem>
+                <FormItem>
+                  <Button type="primary" htmlType="submit">
+                    GET
+                  </Button>
+                </FormItem>
+              </Form>
+
               <Table
                 columns={columns}
                 dataSource={this.state.data}
@@ -383,7 +455,8 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       acceptFetchData,
-      cancelRequestLeave
+      cancelRequestLeave,
+      downloadReport
     },
     dispatch
   );

@@ -1,11 +1,12 @@
 const leaveState = {
 	loading: true,
 	leave: {
-		type_leave_id: '',
+		type_leave_id: null,
 		reason: '',
 		date_from: '',
 		date_to: '',
-		back_on: '',
+		half_dates: [],
+		back_on: null,
 		contact_address: '',
 		contact_number: ''
 	}

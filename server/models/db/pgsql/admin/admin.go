@@ -134,6 +134,10 @@ func (u *Admin) GetUser(employeeNumber int64) (result structDB.User, err error) 
 
 // UpdateUser ...
 func (u *Admin) UpdateUser(e *structDB.User, employeeNumber int64) (err error) {
+	var (
+		user  structLogic.GetEmployee
+		count int
+	)
 
 	o := orm.NewOrm()
 	qb, errQB := orm.NewQueryBuilder("mysql")
@@ -141,42 +145,53 @@ func (u *Admin) UpdateUser(e *structDB.User, employeeNumber int64) (err error) {
 		helpers.CheckErr("Query builder failed @UpdateUser", errQB)
 		return errQB
 	}
-	qb.Update(e.TableName()).
-		Set("name = ?",
-			"gender = ?",
-			"position = ?",
-			"start_working_date = ?",
-			"mobile_phone = ?",
-			"email= ?",
-			"role = ?",
-			"supervisor_id = ?",
-			"updated_at = ?").Where("employee_number = ? ")
-	sql := qb.String()
 
-	e.Email = strings.ToLower(e.Email)
+	o.Raw(`SELECT name, email FROM `+e.TableName()+` WHERE employee_number = ?`, employeeNumber).QueryRow(&user)
+	if e.Email == user.Email {
+		qb.Update(e.TableName()).
+			Set("name = ?",
+				"gender = ?",
+				"position = ?",
+				"start_working_date = ?",
+				"mobile_phone = ?",
+				"email= ?",
+				"role = ?",
+				"supervisor_id = ?",
+				"updated_at = ?").Where("employee_number = ? ")
+		sql := qb.String()
 
-	res, errRaw := o.Raw(sql,
-		e.Name,
-		e.Gender,
-		e.Position,
-		e.StartWorkingDate,
-		e.MobilePhone,
-		e.Email,
-		e.Role,
-		e.SupervisorID,
-		e.UpdatedAt,
-		employeeNumber).Exec()
+		e.Email = strings.ToLower(e.Email)
 
-	if errRaw != nil {
-		helpers.CheckErr("err update @UpdateUser", errRaw)
-		return errors.New("update user failed")
+		res, errRaw := o.Raw(sql,
+			e.Name,
+			e.Gender,
+			e.Position,
+			e.StartWorkingDate,
+			e.MobilePhone,
+			e.Email,
+			e.Role,
+			e.SupervisorID,
+			e.UpdatedAt,
+			employeeNumber).Exec()
+
+		if errRaw != nil {
+			helpers.CheckErr("err update @UpdateUser", errRaw)
+			return errors.New("update user failed")
+		}
+
+		_, errRow := res.RowsAffected()
+		if errRow != nil {
+			helpers.CheckErr("error get rows affected", errRow)
+			return errRow
+		}
+
+	} else {
+		o.Raw(`SELECT count(*) as Count FROM `+e.TableName()+` WHERE email = ?`, e.Email).QueryRow(&count)
+		if count > 0 {
+			return errors.New("Email already register")
+		}
 	}
 
-	_, errRow := res.RowsAffected()
-	if errRow != nil {
-		helpers.CheckErr("error get rows affected", errRow)
-		return errRow
-	}
 	return err
 }
 

@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import update from "react-addons-update";
+import moment from "moment-business-days";
 import {
   fetchedEdit,
   handleEdit,
   saveEditLeave
 } from "../store/Actions/editRequestAction";
 import { typeLeaveFetchData } from "../store/Actions/typeLeaveAction";
-import moment from "moment-business-days";
 import {
   Layout,
   Button,
@@ -18,6 +19,7 @@ import {
   DatePicker
 } from "antd";
 import HeaderNav from "./menu/HeaderNav";
+import Loading from "./menu/Loading";
 import Footer from "./menu/Footer";
 const { Content } = Layout;
 const { TextArea } = Input;
@@ -31,16 +33,18 @@ class LeaveEditPage extends Component {
     this.state = {
       from: null,
       to: null,
+      start: null,
+      end: null,
       endOpen: false,
       typeName: null,
+      halfDate: [],
+      type: null
     };
 
     this.saveEdit = this.saveEdit.bind(this);
     this.handleOnChange = this.handleOnChange.bind(this);
     this.handleChangeTypeOfLeave = this.handleChangeTypeOfLeave.bind(this);
     this.disabledDateBack = this.disabledDateBack.bind(this);
-    this.handleOnChangeNumber = this.handleOnChangeNumber.bind(this);
-    this.handleOnChangeID = this.handleOnChangeID.bind(this);
   }
 
   componentWillMount() {
@@ -86,23 +90,22 @@ class LeaveEditPage extends Component {
   };
 
   handleOnChange = e => {
-    let edit = {
+    let newLeave = {
       ...this.props.leave,
       [e.target.name]: e.target.value
     };
-    this.props.handleEdit(edit);
+    this.props.handleEdit(newLeave);
   };
 
-  handleChangeTypeOfLeave(value) {
-    let newLeave = {
+  handleChangeTypeOfLeave(value) {    
+    let typeLeave = {
       ...this.props.leave,
       type_leave_id: Number(value)
     };
-    this.props.handleEdit(newLeave);
-    this.props.leave.type_name;
+    this.props.handleEdit(typeLeave);
   }
 
-  handleChangeSelect(value, event) {
+  handleChangeSelect(value) {
     console.log("selected=======>", value);
   }
 
@@ -134,14 +137,16 @@ class LeaveEditPage extends Component {
         mnth = ("0" + (date.getMonth() + 1)).slice(-2),
         day = ("0" + date.getDate()).slice(-2);
       let newDate = [day, mnth, date.getFullYear()].join("-");
+      let newStart = [mnth, day, date.getFullYear()].join("-");
+
       let dateFrom = {
         ...this.props.leave,
         date_from: newDate
       };
 
       this.props.handleEdit(dateFrom);
+      this.onChange("start", newStart);
     }
-
     this.onChange("from", value);
   };
 
@@ -151,37 +156,29 @@ class LeaveEditPage extends Component {
         mnth = ("0" + (date.getMonth() + 1)).slice(-2),
         day = ("0" + date.getDate()).slice(-2);
       let newDate = [day, mnth, date.getFullYear()].join("-");
+      let newEnd = [mnth, day, date.getFullYear()].join("-");
       let dateTo = {
         ...this.props.leave,
         date_to: newDate
       };
-
       this.props.handleEdit(dateTo);
+      this.onChange("end", newEnd);
     }
-
     this.onChange("to", value);
   };
 
-  onBackOn = value => {
-    if (value !== null) {
-      const date = new Date(value._d),
-        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
-        day = ("0" + date.getDate()).slice(-2);
-      let newDate = [day, mnth, date.getFullYear()].join("-");
-      let backOn = {
-        ...this.props.leave,
-        back_on: newDate
-      };
-
-      this.props.handleEdit(backOn);
-    }
-  };
-
   disabledDate(current) {
-    let workDay = moment()
-      .startOf("month")
-      .monthBusinessWeeks();
-    return current && current < moment().endOf("day");
+    return current && current < moment().startOf("day");
+  }
+
+  disabledDateSick(current) {
+    return (
+      current &&
+      current <
+        moment()
+          .subtract(7, "days")
+          .startOf("day")
+    );
   }
 
   disabledDateBack(current) {
@@ -198,17 +195,24 @@ class LeaveEditPage extends Component {
     this.setState({ endOpen: open });
   };
 
-  getDates(startDate, endDate) {
-    let dates = [],
-      currentDate = startDate,
-      addDays = function(days) {
-        const date = new Date(this.valueOf());
-        date.setDate(date.getDate() + days);
-        return date;
-      };
-    while (currentDate <= endDate) {
-      dates.push(currentDate);
-      currentDate = addDays.call(currentDate, 1);
+  getDates(start, end) {
+    var startDate = new Date(start);
+    var endDate = new Date(end);
+    let dates = [];
+    while (startDate <= endDate) {
+      var weekDay = startDate.getDay();
+      if (weekDay < 6 && weekDay > 0) {
+        var month = startDate.getMonth() + 1;
+        if (month <= 9) {
+          month = "0" + month;
+        }
+        var day = startDate.getDate();
+        if (day <= 9) {
+          day = "0" + day;
+        }
+        dates.push(day + "-" + month + "-" + startDate.getFullYear());
+      }
+      startDate.setDate(startDate.getDate() + 1);
     }
     return dates;
   }
@@ -223,21 +227,41 @@ class LeaveEditPage extends Component {
     console.log(`checked add hald day = ${e.target.checked}`);
   }
 
-  onChangeIsHalfDay(e) {
-    console.log(`checked is half day= ${e.target.checked}`);
+  onChangeIsHalfDay(e, value) {
+    console.log(`${e.target.value} checked is ${e.target.checked}`);
+    if (e.target.checked) {
+      this.setState(prevState => ({
+        halfDate: update(prevState.halfDate, { $push: [e.target.value] })
+      }));
+    } else {
+      let array = this.state.halfDate;
+      let index = array.indexOf(e.target.value);
+      this.setState(prevState => ({
+        halfDate: update(prevState.halfDate, { $splice: [[index, 1]] })
+      }));
+    }
+
+    // let halfDay = {
+    //   ...this.props.leave,
+    //   half_dates: this.state.halfDate
+    // };
+    // this.props.handleEdit(halfDay);
+    // console.log("halfday==========>", halfDay);
   }
 
-  handleOnChangeID = value => {
-    this.onChange("contactID", value);
-  };
-
-  handleOnChangeNumber = e => {
-    let newLeave = {
-      ...this.props.leave,
-      contact_number: e.target.value
-    };
-    this.props.handleEdit(newLeave);
-    console.log(newLeave);
+  onBackOn = value => {
+    if (value !== null) {
+      const date = new Date(value._d),
+        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+        day = ("0" + date.getDate()).slice(-2);
+      let newDate = [day, mnth, date.getFullYear()].join("-");
+      let backOn = {
+        ...this.props.leave,
+        back_on: newDate,
+        half_dates: this.state.halfDate
+      };
+      this.props.handleEdit(backOn);
+    }
   };
 
   handleBlur() {
@@ -250,44 +274,33 @@ class LeaveEditPage extends Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { from, to, endOpen } = this.state;
-    const dates = this.getDates(new Date(from), new Date(to));
-    const arr = [];
+    const { from, to, start, end, endOpen } = this.state;
     const elements = [];
+    const dates = this.getDates(start, end);
     const dateFormat = "DD-MM-YYYY";
-    const now = moment()
-      .startOf("month")
-      .monthBusinessDays();
+    const role = localStorage.getItem("role");
 
-    dates.map((fulldate, i) => {
-      const date = new Date(fulldate),
-        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
-        day = ("0" + date.getDate()).slice(-2);
-      arr.push([day, mnth, date.getFullYear()].join("-"));
-      return arr;
-    });
-
-    for (let i = 0; i < arr.length; i++) {
+    for (let i = 0; i < dates.length; i++) {
       elements.push(
-        <DatePicker
-          id="half_day"
-          name="half_day"
-          format={dateFormat}
-          defaultValue={moment(arr[i], dateFormat)}
-          disabled
-          style={{
-            width: "50%"
-          }}
-        />,
-        "  Is Half Day  ",
         <Checkbox
+          key={i}
           id="is_half_day"
           name="is_half_day"
-          onChange={this.onChangeIsHalfDay}
-        />,
+          onChange={e => this.onChangeIsHalfDay(e, dates[i])}
+          value={dates[i]}
+        >
+          {dates[i]}
+        </Checkbox>,
         <br />
       );
     }
+    // let typeID;
+    // this.props.typeLeave.map(d => {
+    //   if (d.id === 22) {
+    //     typeID = d.type_name;
+    //   }
+    //   return d;
+    // });
 
     const formItemLayout = {
       labelCol: {
@@ -306,7 +319,7 @@ class LeaveEditPage extends Component {
     };
 
     if (this.props.loading) {
-      return <h1> loading... </h1>;
+      return <Loading />;
     }
     return (
       <Layout>
@@ -329,7 +342,7 @@ class LeaveEditPage extends Component {
               minHeight: 360
             }}
           >
-            <h1> Form Leave Request </h1>
+            <h1> Form Edit Leave Request </h1>
 
             <Form onSubmit={this.handleSubmit} className="login-form">
               <FormItem {...formItemLayout} label="Type Of Leave">
@@ -342,19 +355,16 @@ class LeaveEditPage extends Component {
                   onSelect={(value, event) =>
                     this.handleChangeSelect(value, event)
                   }
+                  defaultValue={this.props.leave.type_name}
+                  // value={typeID}
+                  style={formStyle}
                   onFocus={this.handleFocus}
                   onBlur={this.handleBlur}
-                  showSearch
-                  filterOption={(input, option) =>
-                    option.props.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
-                  }
-                  value={this.props.leave.type_name}
-                  style={formStyle}
                 >
                   {this.props.typeLeave.map(d => (
-                    <Option key={d.id}>{d.type_name}</Option>
+                    <Option key={d.id} value={d.id}>
+                      {d.type_name}
+                    </Option>
                   ))}
                 </Select>
               </FormItem>
@@ -416,6 +426,7 @@ class LeaveEditPage extends Component {
                   {elements}
                 </FormItem>
               </div>
+
               <FormItem {...formItemLayout} label="Back to work on">
                 <DatePicker
                   id="back_on"
@@ -449,7 +460,7 @@ class LeaveEditPage extends Component {
                   name="contact_number"
                   placeholder="Phone number"
                   value={this.props.leave.contact_number}
-                  onChange={this.handleOnChangeNumber}
+                  onChange={this.handleOnChange}
                   style={formStyle}
                 />
               </FormItem>

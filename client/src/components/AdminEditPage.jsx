@@ -184,19 +184,20 @@ class AdminEditPage extends Component {
     } else if (role === "employee") {
       hiddenDiv.style.display = "block";
     }
-
-    this.props.supervisor.map(d => {
-      if (d.supervisor_id === this.props.user.supervisor_id) {
-        supervisorName = d.name;
-      }
-      return d
-    });
+    
+    if (this.props.supervisor) {
+      this.props.supervisor.map(d => {
+        if (d.supervisor_id === this.props.user.supervisor_id) {
+          supervisorName = d.name;
+        }
+        return d;
+      });
+    }
 
     return (
       <div>
         <Layout>
           <HeaderNav />
-
           <Content
             className="container"
             style={{

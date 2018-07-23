@@ -56,6 +56,7 @@ export function saveEditUser(savedUser, pusher) {
 					pusher('/admin')
 				} else if (error !== null) {
 					alert(error)
+					console.log(error)
 				}
 			}).catch(err => {
 				console.log(err)

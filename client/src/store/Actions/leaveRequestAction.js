@@ -37,7 +37,7 @@ export function SumbitLeave(payload) {
 					alert('create failed, please field out all field')
 				} else {
 					dispatch(clearField())
-					window.location.href = "/request-pending";
+					window.location.href = "/employee-request-pending";
 					alert('create leave request success')
 				}
 			}).catch(err => {
@@ -64,7 +64,7 @@ export function SumbitLeaveSupervisor(payload) {
 					alert('create failed, please field out all field')
 				} else {
 					dispatch(clearField())
-					window.location.href = "/request-pending";
+					window.location.href = "/employee-request-pending";
 					alert('create leave request success')
 				}
 			}).catch(err => {

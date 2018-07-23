@@ -25,7 +25,6 @@ func (c *UserController) Login() {
 	var reqLogin structAPI.ReqLogin
 
 	body := c.Ctx.Input.RequestBody
-	fmt.Println("LOGIN=======>", string(body))
 	err := json.Unmarshal(body, &reqLogin)
 	if err != nil {
 		helpers.CheckErr("unmarshall req body failed @Login", err)
@@ -51,8 +50,7 @@ func (c *UserController) Login() {
 // PasswordReset ...
 func (c *UserController) PasswordReset() {
 	var (
-		resp structAPI.RespData
-		// reqEmail structAPI.ReqForgot
+		resp   structAPI.RespData
 		dbUser structLogic.PasswordReset
 	)
 

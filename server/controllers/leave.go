@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
+	"net/url"
 	"server/helpers"
 	"server/helpers/constant"
 	"strconv"
@@ -276,7 +278,7 @@ func (c *LeaveController) DeleteRequest() {
 	}
 }
 
-// GetReportCSV is controller for get data penjualan
+// GetReportCSV ...
 func (c *LeaveController) GetReportCSV() {
 	var dbLeave db.LeaveRequest
 
@@ -294,5 +296,18 @@ func (c *LeaveController) GetReportCSV() {
 		beego.Debug("Error get csv @GetReportCSV", errGet)
 	}
 
-	c.Ctx.Output.Download(path, nameFl+".csv")
+	// c.Ctx.ResponseWriter.Header().Set("Content-Description", "File Transfer")
+	// c.Ctx.ResponseWriter.Header().Set("Content-Type", "text/csv")
+	// c.Ctx.ResponseWriter.Header().Set("Content-Disposition", "attachment; filename="+nameFl+".csv")
+
+	c.Ctx.Output.Header("Content-Disposition", "attachment; filename="+url.PathEscape(nameFl+".csv"))
+	c.Ctx.Output.Header("Content-Description", "File Transfer")
+	c.Ctx.Output.Header("Content-Type", "application/ctet-stream")
+	c.Ctx.Output.Header("Content-Transfer-Encoding", "binary")
+	c.Ctx.Output.Header("Expires", "0")
+	c.Ctx.Output.Header("Cache-Control", "must-revalidate")
+	c.Ctx.Output.Header("Pragma", "public")
+	http.ServeFile(c.Ctx.Output.Context.ResponseWriter, c.Ctx.Output.Context.Request, path)
+
+	// c.Ctx.Output.Download(path, nameFl+".csv")
 }

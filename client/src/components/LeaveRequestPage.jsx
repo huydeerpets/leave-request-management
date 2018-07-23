@@ -1,16 +1,16 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import update from "react-addons-update";
+import moment from "moment-business-days";
 import {
   formOnChange,
   SumbitLeave,
   SumbitLeaveSupervisor
 } from "../store/Actions/leaveRequestAction";
 import { typeLeaveFetchData } from "../store/Actions/typeLeaveAction";
-import update from "react-addons-update";
 import HeaderNav from "./menu/HeaderNav";
 import Footer from "./menu/Footer";
-import moment from "moment-business-days";
 import {
   Layout,
   Form,
@@ -298,7 +298,6 @@ class LeaveRequestPage extends Component {
     const elements = [];
     const dateFormat = "DD-MM-YYYY";
     const role = localStorage.getItem("role");
-    console.log(role);
 
     const formItemLayout = {
       labelCol: {
@@ -334,8 +333,7 @@ class LeaveRequestPage extends Component {
           onChange={e => this.onChangeIsHalfDay(e, dates[i])}
           value={dates[i]}
         >
-          {" "}
-          {dates[i]}{" "}
+          {dates[i]}
         </Checkbox>,
         <br />
       );

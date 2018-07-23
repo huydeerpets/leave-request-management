@@ -1,6 +1,7 @@
 import {
 	ROOT_API
 } from "./types.js"
+import saveAs from "file-saver"
 
 function pendingFetch(payload) {
 	return {
@@ -91,8 +92,6 @@ export function deleteUser(users, employeeNumber) {
 	}
 }
 
-
-
 export function pendingFetchData() {
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/admin/leave/pending/`, {
@@ -174,6 +173,34 @@ export function cancelRequestLeave(users, id, enumber) {
 
 			}).catch(err => {
 				console.log(err)
+			})
+	}
+}
+
+export function downloadReport(from, to) {
+	return (dispatch) => {
+		fetch(`${ROOT_API}/api/leave/report?fromDate=${from}&toDate=${to}`, {
+				method: 'GET',
+				responseType: 'blob',
+			})
+			.then(response => response.blob())
+			.then(blob => URL.createObjectURL(blob))
+			// .then(url => {
+			// 	console.log(url)
+			// 	window.open(url, '_blank');
+			// 	URL.revokeObjectURL(url);
+			// })
+			// .then((response) => {
+			// 	const url = window.URL.createObjectURL(new Blob([response.blob()]));
+			// 	console.log("================", url)
+			// 	const link = document.createElement('a');
+			// 	link.href = url;
+			// 	link.setAttribute('download', 'file.csv');
+			// 	document.body.appendChild(link);
+			// 	link.click();
+			// })
+			.catch(err => {
+				console.log("err", err)
 			})
 	}
 }
