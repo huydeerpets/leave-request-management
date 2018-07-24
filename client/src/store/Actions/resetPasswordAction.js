@@ -1,6 +1,10 @@
 import {
 	ROOT_API
 } from "./types.js"
+import {
+	message
+} from "antd";
+
 
 export function handleEdit(payload) {
 	return (dispatch) => {
@@ -22,14 +26,14 @@ export function resetPassword(savePassword, pusher) {
 				body,
 				error
 			}) => {
-				if (body !== null ) {
-					alert(body)
+				if (body !== null) {
+					message.success(body)					
 					pusher('/')
-				} else if (error === "email not register") {
-					alert("email not register")
+				} else {
+					message.error(error)
 				}
 			}).catch(err => {
-				console.log(err)
+				message.error(err)
 			})
 	}
 }

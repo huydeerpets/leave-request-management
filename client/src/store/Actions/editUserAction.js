@@ -1,6 +1,9 @@
 import {
 	ROOT_API
 } from "./types.js"
+import {
+	message
+} from "antd";
 
 function fetchUser(payload) {
 	return {
@@ -52,14 +55,13 @@ export function saveEditUser(savedUser, pusher) {
 				error
 			}) => {
 				if (body !== null) {
-					alert(body)
+					message.success(body)
 					pusher('/admin')
-				} else if (error !== null) {
-					alert(error)
-					console.log(error)
+				} else {
+					message.error(error)
 				}
 			}).catch(err => {
-				console.log(err)
+				message.error(err)
 			})
 	}
 }

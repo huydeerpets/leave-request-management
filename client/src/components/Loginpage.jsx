@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
 // import MediaQuery from "react-responsive";
 import { handleFormInput, submitLogin } from "../store/Actions/loginActions";
-import { Layout, Form, Icon, Input, Button, message } from "antd";
+import { Layout, Form, Icon, Input, Button } from "antd";
 const { Header, Content } = Layout;
 const { Footer } = Layout;
 const FormItem = Form.Item;
@@ -53,27 +53,13 @@ class LoginPage extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log("Received values of form: ", values);
+        console.log("Received values of form");
       }
     });
 
     this.props.submitLogin(this.props.loginForm, url => {
       this.props.history.push(url);
     });
-
-    // message.error(JSON.stringify(this.props.error.message));
-    // if (this.props.error.is_error === true) {
-    //   message.error(JSON.stringify(this.props.error.message));
-    // } else if (this.props.error.is_error === false) {
-    //   message.success("Login success!");
-    // }
-    // if (this.props.success) {
-    //   message.success("Login success");
-    // } else if (JSON.stringify(this.props.error) !== "{}") {
-    //   message.error(JSON.stringify(this.props.error));
-    // } else {
-    //   message.error(`"please check your email and password"`);
-    // }
   };
 
   handleOnChangeLogin = e => {
@@ -165,8 +151,7 @@ class LoginPage extends Component {
                     rules: [
                       {
                         required: true
-                      },
-                      { min: 7, message: "password length minimum is 7" }
+                      }
                     ]
                   })(
                     <Input

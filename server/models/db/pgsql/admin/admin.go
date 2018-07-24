@@ -34,14 +34,13 @@ func (u *Admin) AddUser(user structDB.User) error {
 
 	bsEmployeeNumber := []byte(strconv.Itoa(int(user.EmployeeNumber)))
 	arrPassword := []byte(passwordString)
-	// fmt.Println(len(arrPassword) >= 7)
 
 	if len(bsEmployeeNumber) != 5 {
 		return errors.New("Employee number must field and length must be 5")
 	} else if countEmployeeNumber > 0 {
 		return errors.New("Employee number already register")
 	} else if user.Name == "" || user.Gender == "" || user.Position == "" || user.StartWorkingDate == "" || user.MobilePhone == "" || user.Email == "" || user.Password == "" || user.Role == "" {
-		return errors.New("error empty field ")
+		return errors.New("Error empty field ")
 	} else if count > 0 {
 		return errors.New("Email already register")
 	} else if len(arrPassword) < 7 {

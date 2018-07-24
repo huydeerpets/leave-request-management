@@ -2,8 +2,6 @@ import {
 	ROOT_API
 } from "./types.js"
 
-
-
 function profileloaded(payload) {
 	return {
 		type: 'PROFILE_LOADED',

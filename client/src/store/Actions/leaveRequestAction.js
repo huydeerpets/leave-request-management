@@ -1,6 +1,9 @@
 import {
 	ROOT_API
 } from "./types.js"
+import {
+	message
+} from "antd";
 
 export function formOnChange(payload) {
 	return (dispach) => {
@@ -17,7 +20,7 @@ function clearField() {
 	}
 }
 
-export function SumbitLeave(payload) {
+export function SumbitLeave(payload, pusher) {
 	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/employee/leave/${employeeNumber}`, {
@@ -29,24 +32,23 @@ export function SumbitLeave(payload) {
 				body,
 				error
 			}) => {
-
 				let respErr = error
-				if (respErr !== null) {
-					alert(respErr)
-				} else if (respErr === "type request malform") {
-					alert('create failed, please field out all field')
-				} else {
+				if (body !== null) {
 					dispatch(clearField())
-					window.location.href = "/employee-request-pending";
-					alert('create leave request success')
+					pusher('/employee-request-pending')
+					message.success('Create leave request success')
+				} else if (error === "type request malform") {
+					message.error('Create failed, please check all field!')
+				} else {
+					message.error(error)
 				}
 			}).catch(err => {
-				console.log(err)
+				message.error('Create failed, please check all field!')
 			})
 	}
 }
 
-export function SumbitLeaveSupervisor(payload) {
+export function SumbitLeaveSupervisor(payload, pusher) {
 	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/supervisor/leave/${employeeNumber}`, {
@@ -58,17 +60,17 @@ export function SumbitLeaveSupervisor(payload) {
 				body,
 				error
 			}) => {
-				let respErr = error
-				if (respErr === "type request malform") {
-					console.log(respErr)
-					alert('create failed, please field out all field')
-				} else {
+				if (body !== null) {
 					dispatch(clearField())
-					window.location.href = "/employee-request-pending";
-					alert('create leave request success')
+					pusher('/employee-request-pending')
+					message.success('Create leave request success')
+				} else if (error === "type request malform") {
+					message.error('Create failed, please check all field!')
+				} else {
+					message.error(error)
 				}
 			}).catch(err => {
-				console.log(err)
+				message.error('Create failed, please check all field!')
 			})
 	}
 }

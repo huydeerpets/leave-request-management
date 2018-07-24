@@ -82,7 +82,6 @@ export function acceptFetchData() {
 	}
 }
 
-
 export function rejectFetchData() {
 	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {

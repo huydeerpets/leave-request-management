@@ -30,14 +30,12 @@ function acceptRequest(payload) {
 	}
 }
 
-
 function rejectRequest(payload) {
 	return {
 		type: 'REJECT_LEAVE_PENDING',
 		payload: payload
 	}
 }
-
 
 export function pendingFetchData() {
 	return (dispatch) => {
@@ -80,7 +78,6 @@ export function acceptFetchData() {
 			})
 	}
 }
-
 
 export function rejectFetchData() {
 	return (dispatch) => {

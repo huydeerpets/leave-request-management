@@ -300,6 +300,8 @@ func (c *LeaveController) GetReportCSV() {
 	// c.Ctx.ResponseWriter.Header().Set("Content-Type", "text/csv")
 	// c.Ctx.ResponseWriter.Header().Set("Content-Disposition", "attachment; filename="+nameFl+".csv")
 
+
+	c.Ctx.Output.Header("Access-Control-Allow-Origin", "*")
 	c.Ctx.Output.Header("Content-Disposition", "attachment; filename="+url.PathEscape(nameFl+".csv"))
 	c.Ctx.Output.Header("Content-Description", "File Transfer")
 	c.Ctx.Output.Header("Content-Type", "application/ctet-stream")
@@ -307,6 +309,7 @@ func (c *LeaveController) GetReportCSV() {
 	c.Ctx.Output.Header("Expires", "0")
 	c.Ctx.Output.Header("Cache-Control", "must-revalidate")
 	c.Ctx.Output.Header("Pragma", "public")
+
 	http.ServeFile(c.Ctx.Output.Context.ResponseWriter, c.Ctx.Output.Context.Request, path)
 
 	// c.Ctx.Output.Download(path, nameFl+".csv")

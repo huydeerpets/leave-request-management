@@ -68,7 +68,9 @@ class LeaveRequestPage extends Component {
         console.log("Received values of form: ", values);
       }
     });
-    this.props.SumbitLeave(this.props.leaveForm);
+    this.props.SumbitLeave(this.props.leaveForm, url => {
+      this.props.history.push(url);
+    });
   };
 
   handleSubmitSupervisor = e => {
@@ -78,7 +80,9 @@ class LeaveRequestPage extends Component {
         console.log("Received values of form: ", values);
       }
     });
-    this.props.SumbitLeaveSupervisor(this.props.leaveForm);
+    this.props.SumbitLeaveSupervisor(this.props.leaveForm, url => {
+      this.props.history.push(url);
+    });
   };
 
   handleOnChange = e => {

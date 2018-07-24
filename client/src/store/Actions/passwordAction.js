@@ -1,6 +1,9 @@
 import {
 	ROOT_API
 } from "./types.js"
+import {
+	message
+} from "antd";
 
 export function handleEdit(payload) {
 	return (dispatch) => {
@@ -24,15 +27,13 @@ export function updateNewPassword(savePassword, pusher) {
 				error
 			}) => {
 				if (body !== null) {
-					alert(body)
+					message.success(body)
 					pusher('/profile')
-				} else if (error !== null) {
-					alert(error)
 				} else {
-					alert(error)
+					message.error(error)
 				}
 			}).catch(err => {
-				console.log(err)
+				message.error(err)
 			})
 	}
 }

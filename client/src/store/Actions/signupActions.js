@@ -1,6 +1,9 @@
 import {
 	ROOT_API
 } from "./types.js"
+import {
+	message
+} from "antd";
 
 export function formOnchange(payload) {
 	return (dispatch) => {
@@ -35,24 +38,17 @@ export function SumbitSignUp(payload) {
 				body,
 				error
 			}) => {
-				const respErr = error
-				let errMsg
-				console.log("=================error", respErr)
-				if (respErr === "type request malform") {
-					errMsg = 'regiter failed, please field out all field'
-					alert(errMsg)
-					// dispatch(errorHandle(errMsg))
-				} else if (respErr !== null) {
-					alert(respErr)
-					// dispatch(errorHandle(errMsg))
-				} else if (body !== null) {
-					alert(body)
-					// dispatch(errorHandle(errMsg))
+				if (body !== null) {
+					message.success(body)
+				} else if (error === "type request malform") {
+					let errMsg = 'Error empty field!'
+					message.error(errMsg)
+				} else {
+					message.error(error)
 				}
-
 			}).catch(err => {
-				let errMsg = 'regiter failed, please field out all field'
-				dispatch(errorHandle(errMsg))
+				let errMsg = 'Regiter failed, please check all field!'
+				message.error(errMsg)
 			})
 	}
 }

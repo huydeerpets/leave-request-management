@@ -62,7 +62,7 @@ class PasswordPage extends Component {
   compareToFirstPassword = (rule, value, callback) => {
     const form = this.props.form;
     if (value && value !== form.getFieldValue("password")) {
-      callback("Two passwords that you enter is inconsistent!");
+      callback("Wrong confirm password!");
     } else {
       callback();
     }
@@ -81,11 +81,11 @@ class PasswordPage extends Component {
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
-        sm: { span: 8 }
+        sm: { span: 10 }
       },
       wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 16 }
+        sm: { span: 10 }
       },
       style: {}
     };
@@ -108,11 +108,11 @@ class PasswordPage extends Component {
         >
           <div
             style={{
-              padding: 150,
+              padding: 50,
               paddingBottom: 50,
               paddingTop: 50,
               background: "#fff",
-              minHeight: 360
+              // minHeight: 360
             }}
           >
             <h1> Form Update Password </h1>

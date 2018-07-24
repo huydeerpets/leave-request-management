@@ -16,7 +16,6 @@ function acceptFetch(payload) {
 	}
 }
 
-
 function rejectFetch(payload) {
 	return {
 		type: 'FETCH_REQUEST_REJECT',

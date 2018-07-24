@@ -1,6 +1,9 @@
 import {
 	ROOT_API
-} from "./types.js"
+} from "./types.js";
+import {
+	message
+} from "antd";
 
 function fetchRequest(payload) {
 	return {
@@ -51,15 +54,14 @@ export function saveEditLeave(savedLeave, pusher) {
 				body,
 				error
 			}) => {
-				
 				if (body !== null) {
-					console.log("err==========>", body)
+					message.body(body)
 					pusher('/employee-request-pending')
 				} else if (error !== null) {
-					console.log("err==========>", error)
+					message.error(error)
 				}
 			}).catch(err => {
-				console.log(err)
+				message.error(err)
 			})
 	}
 }
