@@ -5,3 +5,10 @@ type RequestReport struct {
 	FromDate string
 	ToDate   string
 }
+
+// RequestReportTypeLeave ...
+type RequestReportTypeLeave struct {
+	FromDate    string
+	ToDate      string
+	TypeLeaveID int64
+}

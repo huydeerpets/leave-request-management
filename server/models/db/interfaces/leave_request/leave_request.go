@@ -72,4 +72,9 @@ type IBaseLeaveRequest interface {
 		res []structLogic.ReportLeaveRequest,
 		err error,
 	)
+	// ReportLeaveRequestTypeLeave
+	ReportLeaveRequestTypeLeave(query *structAPI.RequestReportTypeLeave) (
+		res []structLogic.ReportLeaveRequest,
+		err error,
+	)
 }

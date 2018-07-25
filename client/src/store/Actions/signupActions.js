@@ -20,14 +20,7 @@ function clearField(msg) {
 	}
 }
 
-function errorHandle(err) {
-	return {
-		type: "HANDLE_ERROR",
-		message: err
-	}
-}
-
-export function SumbitSignUp(payload) {
+export function SumbitSignUp(payload, pusher) {
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/admin/user/register`, {
 				method: 'POST',
@@ -40,12 +33,14 @@ export function SumbitSignUp(payload) {
 			}) => {
 				if (body !== null) {
 					message.success(body)
+					dispatch(clearField)
+					pusher('/admin')
 				} else if (error === "type request malform") {
 					let errMsg = 'Error empty field!'
-					message.error(errMsg)
+					message.error(errMsg)					
 				} else {
-					message.error(error)
-				}
+					message.error(error)					
+				}				
 			}).catch(err => {
 				let errMsg = 'Regiter failed, please check all field!'
 				message.error(errMsg)

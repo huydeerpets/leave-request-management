@@ -4,15 +4,7 @@ import { connect } from "react-redux";
 import { formOnchange, SumbitSignUp } from "../store/Actions/signupActions";
 import { SupervisorAdd } from "../store/Actions/AddSupervisorAction";
 
-import {
-  Layout,
-  Form,
-  Input,
-  Select,
-  Button,
-  DatePicker,
-  message
-} from "antd";
+import { Layout, Form, Input, Select, Button, DatePicker, message } from "antd";
 import HeaderNav from "./menu/HeaderAdmin";
 import Footer from "./menu/Footer";
 const { Content } = Layout;
@@ -56,13 +48,9 @@ class RegisterPage extends Component {
         console.log("Received values of form: ", values);
       }
     });
-    this.props.SumbitSignUp(this.props.signupForm);
-
-    // if (JSON.stringify(this.props.error) !== "{}") {
-    //   message.error(JSON.stringify(this.props.error));
-    // } else {      
-    //   message.error(`"regiter failed, please field out all fieled"`);
-    // }
+    this.props.SumbitSignUp(this.props.signupForm, url => {
+      this.props.history.push(url);
+    });
   };
 
   handleOnChange = e => {
@@ -71,6 +59,7 @@ class RegisterPage extends Component {
       [e.target.name]: e.target.value
     };
     this.props.formOnchange(newUser);
+    console.log(newUser);
 
     this.props.form.setFieldsValue({
       [e.target.name]: e.target.value
@@ -96,7 +85,8 @@ class RegisterPage extends Component {
   handleOnChangeNumber = e => {
     let employee_num = {
       ...this.props.signupForm,
-      employee_number: Number(e.target.value)
+      employee_number: Number(e.target.value),
+      password: this.makeid()
     };
     this.props.formOnchange(employee_num);
   };
@@ -164,6 +154,19 @@ class RegisterPage extends Component {
     console.log("focus");
   }
 
+  makeid() {
+    var x = 10;
+    var text = "";
+    var possible =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*?";
+  
+    for (var i = 0; i < 7; i++)
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+  
+    return text;
+    // setTimeout(makeid, x * 1000);
+  }
+
   render() {
     const { getFieldDecorator } = this.props.form;
     const dateFormat = "DD-MM-YYYY";
@@ -177,7 +180,7 @@ class RegisterPage extends Component {
         xs: { span: 24 },
         sm: { span: 16 }
       }
-    };    
+    };
     const formStyle = {
       width: "100%"
     };
@@ -221,7 +224,7 @@ class RegisterPage extends Component {
                     {getFieldDecorator("employee number", {
                       rules: [
                         {
-                          required: true,                          
+                          required: true
                         }
                       ]
                     })(
@@ -239,7 +242,7 @@ class RegisterPage extends Component {
                     {getFieldDecorator("name", {
                       rules: [
                         {
-                          required: true,                          
+                          required: true
                         }
                       ]
                     })(
@@ -257,10 +260,10 @@ class RegisterPage extends Component {
                     {getFieldDecorator("email", {
                       rules: [
                         {
-                          type: "email",                          
+                          type: "email"
                         },
                         {
-                          required: true,                          
+                          required: true
                         }
                       ]
                     })(
@@ -278,7 +281,7 @@ class RegisterPage extends Component {
                     {getFieldDecorator("gender", {
                       rules: [
                         {
-                          required: true,                          
+                          required: true
                         }
                       ]
                     })(
@@ -310,7 +313,7 @@ class RegisterPage extends Component {
                     {getFieldDecorator("position", {
                       rules: [
                         {
-                          required: true,                          
+                          required: true
                         }
                       ]
                     })(
@@ -328,7 +331,7 @@ class RegisterPage extends Component {
                     {getFieldDecorator("start working date", {
                       rules: [
                         {
-                          required: true,                          
+                          required: true
                         }
                       ]
                     })(
@@ -347,7 +350,7 @@ class RegisterPage extends Component {
                     {getFieldDecorator("mobile phone", {
                       rules: [
                         {
-                          required: true,                          
+                          required: true
                         }
                       ]
                     })(
@@ -366,7 +369,7 @@ class RegisterPage extends Component {
                     {getFieldDecorator("role", {
                       rules: [
                         {
-                          required: true,                          
+                          required: true
                         }
                       ]
                     })(
@@ -428,8 +431,7 @@ class RegisterPage extends Component {
                     type="password"
                     id="password"
                     name="password"
-                    placeholder="password"
-                    value={this.props.signupForm.password}
+                    placeholder="password"                    
                     onChange={this.handleOnChange}
                     disabled
                     style={{ display: "none" }}
@@ -440,7 +442,10 @@ class RegisterPage extends Component {
                       onClick={this.handleSubmit}
                       htmlType="submit"
                       type="primary"
-                    > CREATE</Button>
+                    >
+                      {" "}
+                      CREATE
+                    </Button>
                   </FormItem>
                 </Form>
               </div>
@@ -463,8 +468,7 @@ class RegisterPage extends Component {
 }
 
 const mapStateToProps = state => ({
-  signupForm: state.signupReducer.user,
-  error: state.signupReducer.error,
+  signupForm: state.signupReducer,
   supervisor: state.AddSupervisorReducer.supervisor
 });
 

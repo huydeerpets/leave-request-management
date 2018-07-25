@@ -63,12 +63,14 @@ func (c *AdminController) CreateUser() {
 	annualLeave := 12 + (12 - startDate)
 	beego.Debug("==>", annualLeave)
 
-	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 11, 12)
-	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 22, 3)
-	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 33, 30)
-	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 44, 2)
-	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 55, 90)
-	logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 66, 2)
+	if reqUser.Role == "employee" || reqUser.Role == "supervisor" {
+		logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 11, 12)
+		logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 22, 3)
+		logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 33, 30)
+		logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 44, 2)
+		logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 55, 90)
+		logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 66, 2)
+	}
 
 	err := c.Ctx.Output.JSON(resp, false, false)
 	if err != nil {

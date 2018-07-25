@@ -1,4 +1,5 @@
 function makeid() {
+	var x = 10;
 	var text = "";
 	var possible =
 		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*?";
@@ -7,40 +8,32 @@ function makeid() {
 		text += possible.charAt(Math.floor(Math.random() * possible.length));
 
 	return text;
+	// setTimeout(makeid, x * 1000);
 }
+
 
 const SignUp = {
-	user: {
-		employee_number: '',
-		name: '',
-		gender: '',
-		position: '',
-		start_working_date: '',
-		mobile_phone: '',
-		email: '',
-		password: makeid(),
-		role: '',
-		supervisor_id: null
-	},
-	error: {},
+	employee_number: '',
+	name: '',
+	gender: '',
+	position: '',
+	start_working_date: '',
+	mobile_phone: '',
+	email: '',
+	password:'',
+	role: '',
+	supervisor_id: null
 }
-
 
 const SignupReducer = (state = SignUp, action) => {
 	switch (action.type) {
 		case 'SIGNUP_USER':
 			return {
-				...state,
-				user: action.payload
+				...action.payload
 			}
 		case 'CLEAR_FIELD':
 			return {
-				...state,
-			}
-		case 'HANDLE_ERROR':
-			return {
-				...state,
-				error: action.message
+				...SignUp
 			}
 		default:
 			return state

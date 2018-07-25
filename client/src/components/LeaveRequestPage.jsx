@@ -415,8 +415,8 @@ class LeaveRequestPage extends Component {
                 </FormItem>
               </div>
 
-              {this.props.leaveForm.type_leave_id === 33 ||
-              this.props.leaveForm.type_leave_id === 11 ? (
+              {this.props.leaveForm.type_leave_id === 22 ||
+              this.props.leaveForm.type_leave_id === 33 ? (
                 <FormItem {...formItemLayout} label="From">
                   {getFieldDecorator("start date", {
                     rules: [

@@ -337,7 +337,7 @@ func (l *LeaveRequest) DownloadReportCSV(query *structAPI.RequestReport,
 		leave.TableName()+".reason",
 		leave.TableName()+".date_from",
 		leave.TableName()+".date_to",
-		leave.TableName()+".half_dates",
+		"array_to_string("+leave.TableName()+".half_dates, ', ') as half_dates",
 		leave.TableName()+".total",
 		leave.TableName()+".back_on",
 		userTypeLeave.TableName()+".leave_remaining",
@@ -458,7 +458,7 @@ func (l *LeaveRequest) ReportLeaveRequest(query *structAPI.RequestReport) (res [
 		leave.TableName()+".reason",
 		leave.TableName()+".date_from",
 		leave.TableName()+".date_to",
-		leave.TableName()+".half_dates",
+		"array_to_string("+leave.TableName()+".half_dates, ', ') as half_dates",
 		leave.TableName()+".total",
 		leave.TableName()+".back_on",
 		userTypeLeave.TableName()+".leave_remaining",
@@ -472,11 +472,72 @@ func (l *LeaveRequest) ReportLeaveRequest(query *structAPI.RequestReport) (res [
 		InnerJoin(userTypeLeave.TableName()).
 		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
 		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
-		Where(leave.TableName() + `.status = ? `).
-		And(leave.TableName() + `.created_at >= ?`).And(leave.TableName() + `.created_at <= ?`)
+		Where("to_date(" + leave.TableName() + ".date_from, 'DD MM YYYY') >= ? ").
+		And("to_date(" + leave.TableName() + ".date_from, 'DD MM YYYY') <= ? ").
+		And(leave.TableName() + `.status = ? `)
 	sql := qb.String()
 
-	count, errRaw := o.Raw(sql, statAcceptDirector, query.FromDate, query.ToDate).QueryRows(&report)
+	count, errRaw := o.Raw(sql, query.FromDate, query.ToDate, statAcceptDirector).QueryRows(&report)
+	if errRaw != nil {
+		helpers.CheckErr("Failed Query Select @ReportLeaveRequest", errRaw)
+		return nil, errRaw
+	}
+	beego.Debug("Total leave request =", count)
+
+	return report, err
+}
+
+// ReportLeaveRequestTypeLeave ...
+func (l *LeaveRequest) ReportLeaveRequestTypeLeave(query *structAPI.RequestReportTypeLeave) (res []structLogic.ReportLeaveRequest, err error) {
+	var (
+		report        []structLogic.ReportLeaveRequest
+		user          structDB.User
+		leave         structDB.LeaveRequest
+		typeLeave     structDB.TypeLeave
+		userTypeLeave structDB.UserTypeLeave
+	)
+	statAcceptDirector := constant.StatusSuccessInDirector
+
+	o := orm.NewOrm()
+	qb, errQB := orm.NewQueryBuilder("mysql")
+	if errQB != nil {
+		helpers.CheckErr("Query builder failed @ReportLeaveRequest", errQB)
+		return report, errQB
+	}
+
+	qb.Select(
+		leave.TableName()+".id",
+		user.TableName()+".employee_number",
+		user.TableName()+".name",
+		user.TableName()+".gender",
+		user.TableName()+".position",
+		user.TableName()+".start_working_date",
+		user.TableName()+".email",
+		typeLeave.TableName()+".type_name",
+		leave.TableName()+".reason",
+		leave.TableName()+".date_from",
+		leave.TableName()+".date_to",
+		"array_to_string("+leave.TableName()+".half_dates, ', ') as half_dates",
+		leave.TableName()+".total",
+		leave.TableName()+".back_on",
+		userTypeLeave.TableName()+".leave_remaining",
+		leave.TableName()+".contact_address",
+		leave.TableName()+".contact_number").
+		From(leave.TableName()).
+		InnerJoin(user.TableName()).
+		On(user.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
+		InnerJoin(typeLeave.TableName()).
+		On(typeLeave.TableName() + ".id" + "=" + leave.TableName() + ".type_leave_id").
+		InnerJoin(userTypeLeave.TableName()).
+		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
+		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
+		Where("to_date(" + leave.TableName() + ".date_from, 'DD MM YYYY') >= ? ").
+		And("to_date(" + leave.TableName() + ".date_from, 'DD MM YYYY') <= ? ").
+		And(leave.TableName() + `.status = ?`).
+		And(leave.TableName() + `.type_leave_id = ?`)
+	sql := qb.String()
+
+	count, errRaw := o.Raw(sql, statAcceptDirector, query.FromDate, query.ToDate, query.TypeLeaveID).QueryRows(&report)
 	if errRaw != nil {
 		helpers.CheckErr("Failed Query Select @ReportLeaveRequest", errRaw)
 		return nil, errRaw
