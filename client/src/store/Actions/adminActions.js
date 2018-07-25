@@ -218,6 +218,38 @@ export function downloadReport(from, to) {
 	}
 }
 
+export function downloadReportTypeLeave(from, to, id) {
+	return (dispatch) => {
+		fetch(`${ROOT_API}/api/leave/report/type?fromDate=${from}&toDate=${to}&typeID=${id}`, {
+				method: 'GET',
+				// responseType: 'blob',
+			})
+			.then((resp) => resp.json())
+			.then(({
+				body,
+				error
+			}) => {				
+				if (body !== null) {
+					const url = window.URL.createObjectURL(new Blob([arrayToCSV(body)]));
+					const link = document.createElement('a');
+					link.href = url;
+					link.setAttribute('download', 'report_leave_request_by_type_leave.xlsx');
+					document.body.appendChild(link);
+					link.click();
+					message.success('Download success')					
+				} else if (body === null) {					
+					message.error('Data is not available')
+				} else {
+					message.error(error)
+				}
+			})
+			.catch(err => {
+				message.error(err)
+				console.log("err", err)
+			})
+	}
+}
+
 function arrayToCSV(objArray) {
 	const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
 	let str = `${Object.keys(array[0]).map(value => `"${value}"`).join(",")}` + '\r\n';

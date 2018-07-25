@@ -33,7 +33,7 @@ export class SupervisorLandingPage extends React.Component {
       for (let i = 0; i < dataSummary.length; i++) {
         summary.push(
           <p>
-            {dataSummary[i].type_name}: {dataSummary[i].used} days
+            {dataSummary[i].type_name}: {dataSummary[i].used} day(s)
           </p>
         );
       }

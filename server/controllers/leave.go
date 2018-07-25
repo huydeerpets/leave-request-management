@@ -340,3 +340,30 @@ func (c *LeaveController) GetReportLeaveRequest() {
 		helpers.CheckErr("failed giving output @GetReportLeaveRequest", err)
 	}
 }
+
+// GetReportLeaveRequestTypeLeave ...
+func (c *LeaveController) GetReportLeaveRequestTypeLeave() {
+	var (
+		resp    structAPI.RespData
+		dbLeave db.LeaveRequest
+	)
+
+	var reqDt = structAPI.RequestReportTypeLeave{
+		FromDate:    c.Ctx.Input.Query("fromDate"),
+		ToDate:      c.Ctx.Input.Query("toDate"),
+		TypeLeaveID: c.Ctx.Input.Query("typeID"),
+	}
+
+	resGet, errGetAcc := dbLeave.ReportLeaveRequestTypeLeave(&reqDt)
+	if errGetAcc != nil {
+		resp.Error = errGetAcc.Error()
+		c.Ctx.Output.SetStatus(400)
+	} else {
+		resp.Body = resGet
+	}
+
+	err := c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		helpers.CheckErr("failed giving output @GetReportLeaveRequest", err)
+	}
+}

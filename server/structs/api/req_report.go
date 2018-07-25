@@ -10,5 +10,5 @@ type RequestReport struct {
 type RequestReportTypeLeave struct {
 	FromDate    string
 	ToDate      string
-	TypeLeaveID int64
+	TypeLeaveID string
 }

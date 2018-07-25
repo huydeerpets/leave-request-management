@@ -537,7 +537,12 @@ func (l *LeaveRequest) ReportLeaveRequestTypeLeave(query *structAPI.RequestRepor
 		And(leave.TableName() + `.type_leave_id = ?`)
 	sql := qb.String()
 
-	count, errRaw := o.Raw(sql, statAcceptDirector, query.FromDate, query.ToDate, query.TypeLeaveID).QueryRows(&report)
+	// id, errCon := strconv.ParseInt(query.TypeLeaveID, 0, 64)
+	// if errCon != nil {
+	// 	helpers.CheckErr("convert id failed @ReportLeaveRequestTypeLeave", errCon)
+	// }
+
+	count, errRaw := o.Raw(sql, query.FromDate, query.ToDate, statAcceptDirector, query.TypeLeaveID).QueryRows(&report)
 	if errRaw != nil {
 		helpers.CheckErr("Failed Query Select @ReportLeaveRequest", errRaw)
 		return nil, errRaw

@@ -4,7 +4,8 @@ import { connect } from "react-redux";
 import {
   acceptFetchData,
   cancelRequestLeave,
-  downloadReport
+  downloadReport,
+  downloadReportTypeLeave
 } from "../store/Actions/adminActions";
 import {
   Layout,
@@ -14,13 +15,16 @@ import {
   Input,
   Icon,
   Form,
-  DatePicker
+  DatePicker,
+  Select
 } from "antd";
 import HeaderNav from "./menu/HeaderAdmin";
 import Footer from "./menu/Footer";
 import Loading from "./menu/Loading";
 const { Content } = Layout;
 const FormItem = Form.Item;
+const { TextArea } = Input;
+const Option = Select.Option;
 let data;
 
 class AdminReqAcceptPage extends Component {
@@ -37,7 +41,10 @@ class AdminReqAcceptPage extends Component {
       searchText: "",
       searchID: "",
       from: null,
-      to: null
+      to: null,
+      start: null,
+      end: null,
+      id: null
     };
   }
 
@@ -180,6 +187,15 @@ class AdminReqAcceptPage extends Component {
     console.log(current, pageSize);
   }
 
+  handleSubmit = e => {
+    e.preventDefault();
+    this.downloadReport(this.state.from, this.state.to);
+  };
+
+  downloadReport = (from, to) => {
+    this.props.downloadReport(from, to);
+  };
+
   onStartChange = value => {
     if (value !== null) {
       const date = new Date(value._d),
@@ -204,18 +220,52 @@ class AdminReqAcceptPage extends Component {
     }
   };
 
-  handleSubmit = e => {
+  handleSubmitReportType = e => {
     e.preventDefault();
-    this.downloadReport(this.state.from, this.state.to);
+    this.downloadReportTypeLeave(
+      this.state.start,
+      this.state.end,
+      this.state.id
+    );
   };
 
-  downloadReport = (from, to) => {
-    this.props.downloadReport(from, to);
+  downloadReportTypeLeave = (from, to, id) => {
+    this.props.downloadReportTypeLeave(from, to, id);
+  };
+
+  onStartChangeDate = value => {
+    if (value !== null) {
+      const date = new Date(value._d),
+        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+        day = ("0" + date.getDate()).slice(-2);
+      let dateFrom = [date.getFullYear(), mnth, day].join("-");
+      this.setState({
+        start: dateFrom
+      });
+    }
+  };
+
+  onEndChangeDate = value => {
+    if (value !== null) {
+      const date = new Date(value._d),
+        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+        day = ("0" + date.getDate()).slice(-2);
+      let dateTo = [date.getFullYear(), mnth, day].join("-");
+      this.setState({
+        end: dateTo
+      });
+    }
+  };
+
+  handleChangeSelect = value => {
+    console.log(value);
+    this.setState({
+      id: value
+    });
   };
 
   render() {
     const { visible, loading } = this.state;
-
     const columns = [
       {
         title: "ID",
@@ -355,7 +405,7 @@ class AdminReqAcceptPage extends Component {
             }}
           >
             <div style={{ padding: 20, background: "#fff" }}>
-              <Form              
+              <Form
                 id="myForm"
                 layout="inline"
                 onSubmit={this.handleSubmit}
@@ -378,6 +428,54 @@ class AdminReqAcceptPage extends Component {
                     defaultValue={this.state.to}
                     onChange={this.onEndChange}
                   />
+                </FormItem>
+                <FormItem>
+                  <Button type="primary" htmlType="submit">
+                    GET
+                  </Button>
+                </FormItem>
+              </Form>
+
+              <Form
+                id="myForm"
+                layout="inline"
+                onSubmit={this.handleSubmitReportType}
+                style={{ marginRight: 405 }}
+              >
+                <FormItem>
+                  <DatePicker
+                    id="date_from"
+                    name="date_from"
+                    placeholder="Start"
+                    defaultValue={this.state.start}
+                    onChange={this.onStartChangeDate}
+                  />
+                </FormItem>
+                <FormItem>
+                  <DatePicker
+                    id="date_from"
+                    name="date_from"
+                    placeholder="End"
+                    defaultValue={this.state.end}
+                    onChange={this.onEndChangeDate}
+                  />
+                </FormItem>
+                <FormItem>
+                  <Select
+                    style={{ width: 180 }}
+                    id="type_of_leave"
+                    name="type_of_leave"
+                    placeholder="Type of Leave"
+                    optionFilterProp="children"
+                    onChange={this.handleChangeSelect}
+                  >
+                    <Option value="11">Annual Leave</Option>
+                    <Option value="22">Errand Leave</Option>
+                    <Option value="33">Sick Leave</Option>
+                    <Option value="44">Marriage Leave</Option>
+                    <Option value="55">Maternity Leave</Option>
+                    <Option value="66">Other Leave</Option>
+                  </Select>
                 </FormItem>
                 <FormItem>
                   <Button type="primary" htmlType="submit">
@@ -461,7 +559,8 @@ const mapDispatchToProps = dispatch =>
     {
       acceptFetchData,
       cancelRequestLeave,
-      downloadReport
+      downloadReport,
+      downloadReportTypeLeave
     },
     dispatch
   );
