@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"server/helpers"
 	"strconv"
 
@@ -21,10 +20,13 @@ type UserController struct {
 
 // Login ...
 func (c *UserController) Login() {
-	var resp structAPI.RespData
-	var reqLogin structAPI.ReqLogin
+	var (
+		resp     structAPI.RespData
+		reqLogin structAPI.ReqLogin
+	)
 
 	body := c.Ctx.Input.RequestBody
+
 	err := json.Unmarshal(body, &reqLogin)
 	if err != nil {
 		helpers.CheckErr("unmarshall req body failed @Login", err)
@@ -55,7 +57,6 @@ func (c *UserController) PasswordReset() {
 	)
 
 	body := c.Ctx.Input.RequestBody
-	fmt.Println("EMAIL-RESET=======>", string(body))
 
 	errMarshal := json.Unmarshal(body, &dbUser)
 	if errMarshal != nil {
@@ -79,87 +80,6 @@ func (c *UserController) PasswordReset() {
 	}
 }
 
-// GetRequestPending ...
-func (c *UserController) GetRequestPending() {
-	var (
-		resp structAPI.RespData
-	)
-	idStr := c.Ctx.Input.Param(":id")
-	employeeNumber, errCon := strconv.ParseInt(idStr, 0, 64)
-	if errCon != nil {
-		helpers.CheckErr("convert id failed @GetRequestPending", errCon)
-		resp.Error = errors.New("convert id failed").Error()
-		return
-	}
-
-	resGet, errGetPend := logic.DBPostUser.GetPendingRequest(employeeNumber)
-	if errGetPend != nil {
-		resp.Error = errGetPend.Error()
-		c.Ctx.Output.SetStatus(400)
-	} else {
-		resp.Body = resGet
-	}
-
-	err := c.Ctx.Output.JSON(resp, false, false)
-	if err != nil {
-		helpers.CheckErr("failed giving output @GetRequestPending", err)
-	}
-}
-
-// GetRequestAccept ...
-func (c *UserController) GetRequestAccept() {
-	var (
-		resp structAPI.RespData
-	)
-	idStr := c.Ctx.Input.Param(":id")
-	employeeNumber, errCon := strconv.ParseInt(idStr, 0, 64)
-	if errCon != nil {
-		helpers.CheckErr("convert id failed @GetRequestAccept", errCon)
-		resp.Error = errors.New("convert id failed").Error()
-		return
-	}
-
-	resGet, errGetAccept := logic.DBPostUser.GetAcceptRequest(employeeNumber)
-	if errGetAccept != nil {
-		resp.Error = errGetAccept.Error()
-		c.Ctx.Output.SetStatus(400)
-	} else {
-		resp.Body = resGet
-	}
-
-	err := c.Ctx.Output.JSON(resp, false, false)
-	if err != nil {
-		helpers.CheckErr("failed giving output @GetRequestAccept", err)
-	}
-}
-
-// GetRequestReject ...
-func (c *UserController) GetRequestReject() {
-	var (
-		resp structAPI.RespData
-	)
-	idStr := c.Ctx.Input.Param(":id")
-	employeeNumber, errCon := strconv.ParseInt(idStr, 0, 64)
-	if errCon != nil {
-		helpers.CheckErr("convert id failed @GetRequestReject", errCon)
-		resp.Error = errors.New("convert id failed").Error()
-		return
-	}
-
-	resGet, errGetReject := logic.DBPostUser.GetRejectRequest(employeeNumber)
-	if errGetReject != nil {
-		resp.Error = errGetReject.Error()
-		c.Ctx.Output.SetStatus(400)
-	} else {
-		resp.Body = resGet
-	}
-
-	err := c.Ctx.Output.JSON(resp, false, false)
-	if err != nil {
-		helpers.CheckErr("failed giving output @GetRequestReject", err)
-	}
-}
-
 // UpdateNewPassword ...
 func (c *UserController) UpdateNewPassword() {
 	var (
@@ -168,7 +88,6 @@ func (c *UserController) UpdateNewPassword() {
 	)
 
 	body := c.Ctx.Input.RequestBody
-	fmt.Println("NEW-PASSWORD=======>", string(body))
 
 	errMarshal := json.Unmarshal(body, &newPwd)
 	if errMarshal != nil {

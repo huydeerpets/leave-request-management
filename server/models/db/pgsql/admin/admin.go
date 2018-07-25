@@ -3,7 +3,6 @@ package admin
 import (
 	"encoding/base64"
 	"errors"
-	"fmt"
 	"server/helpers"
 	"server/helpers/constant"
 
@@ -120,8 +119,8 @@ func (u *Admin) GetUser(employeeNumber int64) (result structDB.User, err error) 
 	qb.Limit(1)
 	sql := qb.String()
 
-	res, _ := helpers.HashPassword(result.Password)
-	fmt.Println("hash================>", res)
+	// res, errHas := helpers.HashPassword(result.Password)
+	// fmt.Println("hash================>", res)
 
 	errRaw := o.Raw(sql, employeeNumber).QueryRow(&result)
 	if errRaw != nil {
@@ -228,7 +227,7 @@ func (u *Admin) GetLeaveRequestPending() ([]structLogic.RequestPending, error) {
 		leave.TableName()+".reason",
 		leave.TableName()+".date_from",
 		leave.TableName()+".date_to",
-		leave.TableName()+".half_dates",
+		"array_to_string("+leave.TableName()+".half_dates, ', ') as half_dates",
 		leave.TableName()+".total",
 		leave.TableName()+".back_on",
 		leave.TableName()+".contact_address",
@@ -290,7 +289,7 @@ func (u *Admin) GetLeaveRequest() ([]structLogic.RequestAccept, error) {
 		leave.TableName()+".reason",
 		leave.TableName()+".date_from",
 		leave.TableName()+".date_to",
-		leave.TableName()+".half_dates",
+		"array_to_string("+leave.TableName()+".half_dates, ', ') as half_dates",
 		leave.TableName()+".total",
 		leave.TableName()+".back_on",
 		leave.TableName()+".contact_address",
@@ -354,7 +353,7 @@ func (u *Admin) GetLeaveRequestReject() ([]structLogic.RequestReject, error) {
 		leave.TableName()+".reason",
 		leave.TableName()+".date_from",
 		leave.TableName()+".date_to",
-		leave.TableName()+".half_dates",
+		"array_to_string("+leave.TableName()+".half_dates, ', ') as half_dates",
 		leave.TableName()+".total",
 		leave.TableName()+".back_on",
 		leave.TableName()+".contact_address",

@@ -49,7 +49,7 @@ func (u *Supervisor) GetUserPending(supervisorID int64) ([]structLogic.LeavePend
 		leave.TableName()+".reason",
 		leave.TableName()+".date_from",
 		leave.TableName()+".date_to",
-		leave.TableName()+".half_dates",
+		"array_to_string("+leave.TableName()+".half_dates, ', ') as half_dates",
 		leave.TableName()+".total",
 		leave.TableName()+".back_on",
 		leave.TableName()+".contact_address",
@@ -113,7 +113,7 @@ func (u *Supervisor) GetUserAccept(supervisorID int64) ([]structLogic.LeaveAccep
 		leave.TableName()+".reason",
 		leave.TableName()+".date_from",
 		leave.TableName()+".date_to",
-		leave.TableName()+".half_dates",
+		"array_to_string("+leave.TableName()+".half_dates, ', ') as half_dates",
 		leave.TableName()+".total",
 		leave.TableName()+".back_on",
 		leave.TableName()+".contact_address",
@@ -176,7 +176,7 @@ func (u *Supervisor) GetUserReject(supervisorID int64) ([]structLogic.LeaveRejec
 		leave.TableName()+".reason",
 		leave.TableName()+".date_from",
 		leave.TableName()+".date_to",
-		leave.TableName()+".half_dates",
+		"array_to_string("+leave.TableName()+".half_dates, ', ') as half_dates",
 		leave.TableName()+".total",
 		leave.TableName()+".back_on",
 		leave.TableName()+".contact_address",
@@ -242,6 +242,7 @@ func (u *Supervisor) RejectBySv(l *structLogic.LeaveReason, id int64, employeeNu
 		user    logicUser.User
 		leave   logicLeave.LeaveRequest
 	)
+
 	o := orm.NewOrm()
 
 	getEmployee, _ := user.GetEmployee(employeeNumber)

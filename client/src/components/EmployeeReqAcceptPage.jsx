@@ -108,18 +108,6 @@ class EmployeeReqAcceptPage extends Component {
     console.log(current, pageSize);
   }
 
-  stringCustom(value) {
-    if (value !== null) {
-      var vString = value;
-      var vArr = vString.split("");
-      let arr = [];
-      for (let i = 1; i < vArr.length - 1; i++) {
-        arr.push(vArr[i]);
-      }
-      return arr.join("");
-    }
-  }
-
   render() {
     const { visible, loading } = this.state;
 
@@ -275,10 +263,7 @@ class EmployeeReqAcceptPage extends Component {
                 Reason : {this.state.user && this.state.user.reason} <br />
                 From : {this.state.user && this.state.user.date_from} <br />
                 To : {this.state.user && this.state.user.date_to} <br />
-                Half Day :{" "}
-                {this.stringCustom(
-                  this.state.user && this.state.user.half_dates
-                )}{" "}
+                Half Day : {this.state.user && this.state.user.half_dates}
                 <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
                 Total Leave : {this.state.user &&

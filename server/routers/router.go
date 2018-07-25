@@ -11,32 +11,16 @@ func init() {
 	beego.Router("/", &controllers.MainController{})
 	ns := beego.NewNamespace("/api",
 
-		// user login
+		// ========================= user ========================= //
+		// login
 		beego.NSRouter("/login",
 			&controllers.UserController{},
 			"post:Login",
 		),
+		// password reset
 		beego.NSRouter("/user/password-reset",
 			&controllers.UserController{},
 			"put:PasswordReset",
-		),
-
-		beego.NSRouter("/user/type-leave",
-			&controllers.UserController{},
-			"get:GetTypeLeave",
-		),
-		beego.NSRouter("/user/supervisor",
-			&controllers.UserController{},
-			"get:GetSupervisors",
-		),
-
-		beego.NSRouter("/user/summary/:id:int",
-			&controllers.UserController{},
-			"get:GetUserSummary",
-		),
-		beego.NSRouter("/user/type-leave/:id:int",
-			&controllers.UserController{},
-			"get:GetUserTypeLeave",
 		),
 
 		// upadate new password
@@ -45,6 +29,31 @@ func init() {
 			"put:UpdateNewPassword",
 		),
 
+		// get employee sumarry
+		beego.NSRouter("/user/summary/:id:int",
+			&controllers.UserController{},
+			"get:GetUserSummary",
+		),
+
+		// get employee type leave
+		beego.NSRouter("/user/type-leave/:id:int",
+			&controllers.UserController{},
+			"get:GetUserTypeLeave",
+		),
+
+		// get type leave
+		beego.NSRouter("/user/type-leave",
+			&controllers.UserController{},
+			"get:GetTypeLeave",
+		),
+
+		// get supervisor
+		beego.NSRouter("/user/supervisor",
+			&controllers.UserController{},
+			"get:GetSupervisors",
+		),
+
+		// ========================= leave-request ========================= //
 		// create leave request for employee, update leave request, delete leave request
 		beego.NSRouter("/employee/leave/:id:int ",
 			&controllers.LeaveController{},
@@ -110,21 +119,31 @@ func init() {
 			"put:CancelRequestLeave",
 		),
 
-		// ========================= employee ========================= //
-		// get pending request in employee
-		beego.NSRouter("/employee/pending/:id:int ",
-			&controllers.UserController{},
-			"get:GetRequestPending",
+		// ========================= director ========================= //
+		// accept status by director
+		beego.NSRouter("/director/accept/:id:int/:enumber:int",
+			&controllers.DirectorController{},
+			"put:AcceptStatusByDirector",
 		),
-		// get accept request in employee
-		beego.NSRouter("/employee/accept/:id:int ",
-			&controllers.UserController{},
-			"get:GetRequestAccept",
+		// reject status by director
+		beego.NSRouter("/director/reject/:id:int/:enumber:int",
+			&controllers.DirectorController{},
+			"put:RejectStatusByDirector",
 		),
-		// get reject request in employee
-		beego.NSRouter("/employee/reject/:id:int ",
-			&controllers.UserController{},
-			"get:GetRequestReject",
+		// get status pending in director
+		beego.NSRouter("/director/pending/",
+			&controllers.DirectorController{},
+			"get:GetDirectorPendingLeave",
+		),
+		// get status accept in director
+		beego.NSRouter("/director/accept/",
+			&controllers.DirectorController{},
+			"get:GetDirectorAcceptLeave",
+		),
+		// get status reject in director
+		beego.NSRouter("/director/reject/",
+			&controllers.DirectorController{},
+			"get:GetDirectorRejectLeave",
 		),
 
 		// ========================= supervisor ========================= //
@@ -154,31 +173,21 @@ func init() {
 			"get:GetRejectLeave",
 		),
 
-		// ========================= director ========================= //
-		// accept status by director
-		beego.NSRouter("/director/accept/:id:int/:enumber:int",
-			&controllers.DirectorController{},
-			"put:AcceptStatusByDirector",
+		// ========================= employee ========================= //
+		// get all pending request
+		beego.NSRouter("/employee/pending/:id:int ",
+			&controllers.EmployeeController{},
+			"get:GetRequestPending",
 		),
-		// reject status by director
-		beego.NSRouter("/director/reject/:id:int/:enumber:int",
-			&controllers.DirectorController{},
-			"put:RejectStatusByDirector",
+		// get all accept request
+		beego.NSRouter("/employee/accept/:id:int ",
+			&controllers.EmployeeController{},
+			"get:GetRequestAccept",
 		),
-		// get status pending in director
-		beego.NSRouter("/director/pending/",
-			&controllers.DirectorController{},
-			"get:GetDirectorPendingLeave",
-		),
-		// get status accept in director
-		beego.NSRouter("/director/accept/",
-			&controllers.DirectorController{},
-			"get:GetDirectorAcceptLeave",
-		),
-		// get status reject in director
-		beego.NSRouter("/director/reject/",
-			&controllers.DirectorController{},
-			"get:GetDirectorRejectLeave",
+		// get all reject request in employee
+		beego.NSRouter("/employee/reject/:id:int ",
+			&controllers.EmployeeController{},
+			"get:GetRequestReject",
 		),
 	)
 	beego.AddNamespace(ns)
