@@ -24,7 +24,9 @@ class EmployeeReqAcceptPage extends Component {
   }
 
   componentWillMount() {
-    console.log("------------ Employee-List-Approve-Request -------------------");
+    console.log(
+      "------------ Employee-List-Approve-Request -------------------"
+    );
   }
 
   componentWillReceiveProps(nextProps) {
@@ -106,14 +108,27 @@ class EmployeeReqAcceptPage extends Component {
     console.log(current, pageSize);
   }
 
+  stringCustom(value) {
+    if (value !== null) {
+      var vString = value;
+      var vArr = vString.split("");
+      let arr = [];
+      for (let i = 1; i < vArr.length - 1; i++) {
+        arr.push(vArr[i]);
+      }
+      return arr.join("");
+    }
+  }
+
   render() {
     const { visible, loading } = this.state;
+
     const columns = [
       {
         title: "ID",
         dataIndex: "id",
         key: "id",
-        width: 95,
+        width: 90,
         filterDropdown: (
           <div className="custom-filter-dropdown-id">
             <Input
@@ -149,7 +164,7 @@ class EmployeeReqAcceptPage extends Component {
         title: "Employee Number",
         dataIndex: "employee_number",
         key: "employee_number",
-        width: 95
+        width: 100
       },
       {
         title: "Name",
@@ -212,7 +227,7 @@ class EmployeeReqAcceptPage extends Component {
             style={{
               display: "flex",
               margin: "18px 10px 0",
-              justifyContent: "space-around",
+              justifyContent: "center",
               paddingBottom: "336px"
             }}
           >
@@ -249,6 +264,7 @@ class EmployeeReqAcceptPage extends Component {
               ]}
             >
               <div style={{ padding: 10, background: "#fff" }}>
+                {console.log(this.state.user && this.state.user.half_dates)}
                 ID : {this.state.user && this.state.user.id} <br />
                 Name : {this.state.user && this.state.user.name} <br />
                 Gender : {this.state.user && this.state.user.gender} <br />
@@ -259,7 +275,10 @@ class EmployeeReqAcceptPage extends Component {
                 Reason : {this.state.user && this.state.user.reason} <br />
                 From : {this.state.user && this.state.user.date_from} <br />
                 To : {this.state.user && this.state.user.date_to} <br />
-                Half Day : {this.state.user && this.state.user.half_dates}{" "}
+                Half Day :{" "}
+                {this.stringCustom(
+                  this.state.user && this.state.user.half_dates
+                )}{" "}
                 <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
                 Total Leave : {this.state.user &&

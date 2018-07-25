@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"net/http"
-	"net/url"
 	"server/helpers"
 	"server/helpers/constant"
 	"strconv"
@@ -278,8 +276,8 @@ func (c *LeaveController) DeleteRequest() {
 	}
 }
 
-// GetReportCSV ...
-func (c *LeaveController) GetReportCSV() {
+// GetDownloadReportCSV ...
+func (c *LeaveController) GetDownloadReportCSV() {
 	var dbLeave db.LeaveRequest
 
 	var reqDt = structAPI.RequestReport{
@@ -288,29 +286,57 @@ func (c *LeaveController) GetReportCSV() {
 	}
 
 	dt := time.Now()
-	nameFl := "report_leave_request_" + dt.Format("20060102")
-	path := constant.GOPATH + "/src/" + constant.GOAPP + "/storages/" + nameFl + ".csv"
+	fileName := "report_leave_request_" + dt.Format("20060102")
+	path := constant.GOPATH + "/src/" + constant.GOAPP + "/storages/" + fileName + ".csv"
 
-	errGet := dbLeave.ReportLeaveRequest(reqDt, path)
+	errGet := dbLeave.DownloadReportCSV(&reqDt, path)
 	if errGet != nil {
-		beego.Debug("Error get csv @GetReportCSV", errGet)
+		beego.Debug("Error get csv @GetDownloadReportCSV", errGet)
 	}
 
-	// c.Ctx.ResponseWriter.Header().Set("Content-Description", "File Transfer")
-	// c.Ctx.ResponseWriter.Header().Set("Content-Type", "text/csv")
-	// c.Ctx.ResponseWriter.Header().Set("Content-Disposition", "attachment; filename="+nameFl+".csv")
+	// c.Ctx.Output.Header("Content-Disposition", "attachment; filename="+url.PathEscape(fileName+".csv"))
+	// c.Ctx.Output.Header("Content-Description", "File Transfer")
+	// c.Ctx.Output.Header("Content-Transfer-Encoding", "binary")
+	// c.Ctx.Output.Header("Content-Type", "application/ctet-stream")
+	// c.Ctx.Output.Header("Expires", "0")
+	// c.Ctx.Output.Header("Cache-Control", "must-revalidate")
+	// c.Ctx.Output.Header("Pragma", "public")
 
+	// fileName := url.QueryEscape(fileName)
+	// c.Ctx.Output.Header("Content-Type", "application/ctet-stream")
+	// c.Ctx.Output.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s;filename*=utf-8''%s", fileName, fileName))
+	// c.Ctx.Output.Header("Content-Description", "File Transfer")
+	// c.Ctx.Output.Header("Content-Transfer-Encoding", "binary")
+	// c.Ctx.Output.Header("Expires", "0")
+	// c.Ctx.Output.Header("Cache-Control", "no-cache, no-store, must-revalidate")
+	// c.Ctx.Output.Header("Pragma", "no-cache")
 
-	c.Ctx.Output.Header("Access-Control-Allow-Origin", "*")
-	c.Ctx.Output.Header("Content-Disposition", "attachment; filename="+url.PathEscape(nameFl+".csv"))
-	c.Ctx.Output.Header("Content-Description", "File Transfer")
-	c.Ctx.Output.Header("Content-Type", "application/ctet-stream")
-	c.Ctx.Output.Header("Content-Transfer-Encoding", "binary")
-	c.Ctx.Output.Header("Expires", "0")
-	c.Ctx.Output.Header("Cache-Control", "must-revalidate")
-	c.Ctx.Output.Header("Pragma", "public")
+	c.Ctx.Output.Download(path, fileName+".csv")
+	// http.ServeFile(c.Ctx.Output.Context.ResponseWriter, c.Ctx.Output.Context.Request, path)
+}
 
-	http.ServeFile(c.Ctx.Output.Context.ResponseWriter, c.Ctx.Output.Context.Request, path)
+// GetReportLeaveRequest ...
+func (c *LeaveController) GetReportLeaveRequest() {
+	var (
+		resp    structAPI.RespData
+		dbLeave db.LeaveRequest
+	)
 
-	// c.Ctx.Output.Download(path, nameFl+".csv")
+	var reqDt = structAPI.RequestReport{
+		FromDate: c.Ctx.Input.Query("fromDate"),
+		ToDate:   c.Ctx.Input.Query("toDate"),
+	}
+
+	resGet, errGetAcc := dbLeave.ReportLeaveRequest(&reqDt)
+	if errGetAcc != nil {
+		resp.Error = errGetAcc.Error()
+		c.Ctx.Output.SetStatus(400)
+	} else {
+		resp.Body = resGet
+	}
+
+	err := c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		helpers.CheckErr("failed giving output @GetReportLeaveRequest", err)
+	}
 }

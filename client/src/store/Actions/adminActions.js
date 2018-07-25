@@ -1,7 +1,9 @@
 import {
 	ROOT_API
 } from "./types.js"
-import saveAs from "file-saver"
+import {
+	message
+} from "antd"
 
 function pendingFetch(payload) {
 	return {
@@ -77,7 +79,6 @@ export function deleteUser(users, employeeNumber) {
 				body
 			}) => {
 				let newUserlist = users.filter(el => el.employee_number !== employeeNumber)
-				console.log(newUserlist)
 				let payload = {
 					loading: false,
 					users: [
@@ -161,46 +162,68 @@ export function cancelRequestLeave(users, id, enumber) {
 		fetch(`${ROOT_API}/api/admin/leave/cancel/${id}/${enumber}/`, {
 				method: 'PUT',
 			})
-			.then(response => {
-				let newUserlist = users.filter(el => el.id !== id)
-				let payload = {
-					loading: false,
-					leave: [
-						...newUserlist
-					]
+			.then((resp) => resp.json())
+			.then(({
+				body,
+				error
+			}) => {
+				if (body !== null) {
+					let newUserlist = users.filter(el => el.id !== id)
+					let payload = {
+						loading: false,
+						leave: [
+							...newUserlist
+						]
+					}
+					dispatch(cancelRequest(payload))
+					message.success(body)
+				} else {
+					message.error(error)
 				}
-				dispatch(cancelRequest(payload))
-
 			}).catch(err => {
-				console.log(err)
+				message.error(err)
 			})
 	}
 }
 
 export function downloadReport(from, to) {
 	return (dispatch) => {
-		fetch(`${ROOT_API}/api/leave/report?fromDate=${from}&toDate=${to}`, {
+		fetch(`${ROOT_API}/api/leave/reports?fromDate=${from}&toDate=${to}`, {
 				method: 'GET',
-				responseType: 'blob',
+				// responseType: 'blob',
 			})
-			.then(response => response.blob())
-			.then(blob => URL.createObjectURL(blob))
-			// .then(url => {
-			// 	console.log(url)
-			// 	window.open(url, '_blank');
-			// 	URL.revokeObjectURL(url);
-			// })
-			// .then((response) => {
-			// 	const url = window.URL.createObjectURL(new Blob([response.data()));
-			// 	console.log("================", url)
-			// 	const link = document.createElement('a');
-			// 	link.href = url;
-			// 	link.setAttribute('download', 'file.csv');
-			// 	document.body.appendChild(link);
-			// 	link.click();
-			// })
+			.then((resp) => resp.json())
+			.then(({
+				body,
+				error
+			}) => {				
+				if (body !== null) {
+					const url = window.URL.createObjectURL(new Blob([arrayToCSV(body)]));
+					const link = document.createElement('a');
+					link.href = url;
+					link.setAttribute('download', 'report_leave_request.xlsx');
+					document.body.appendChild(link);
+					link.click();
+					message.success('Download success')					
+				} else if (body === null) {					
+					message.error('Data is not available')
+				} else {
+					message.error(error)
+				}
+			})
 			.catch(err => {
+				message.error(err)
 				console.log("err", err)
 			})
 	}
+}
+
+function arrayToCSV(objArray) {
+	const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
+	let str = `${Object.keys(array[0]).map(value => `"${value}"`).join(",")}` + '\r\n';
+
+	return array.reduce((str, next) => {
+		str += `${Object.values(next).map(value => `"${value}"`).join(",")}` + '\r\n';
+		return str;
+	}, str);
 }

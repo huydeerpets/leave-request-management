@@ -57,12 +57,19 @@ type IBaseLeaveRequest interface {
 		employeeNumber int64,
 		typeID int64,
 	) (err error)
-	ReportLeaveRequest(
-		query structAPI.RequestReport,
+	// DownloadReportCSV
+	DownloadReportCSV(
+		query *structAPI.RequestReport,
 		path string,
 	) (err error)
+	// WriteCsv
 	WriteCsv(
 		path string,
 		res []structLogic.ReportLeaveRequest,
 	) error
+	// ReportLeaveRequest
+	ReportLeaveRequest(query *structAPI.RequestReport) (
+		res []structLogic.ReportLeaveRequest,
+		err error,
+	)
 }

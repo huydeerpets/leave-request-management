@@ -151,11 +151,10 @@ class AdminReqAcceptPage extends Component {
     const employeeNumber = this.state.user && this.state.user.employee_number;
 
     this.setState({ loading: true });
+    this.cancelRequestLeave(this.props.users, id, employeeNumber);
     setTimeout(() => {
       this.setState({ loading: false, visible: false });
-      this.cancelRequestLeave(this.props.users, id, employeeNumber);
-      // window.location.reload();
-    }, 1000);
+    }, 2000);
   };
 
   cancelRequestLeave = (users, id, enumber) => {
@@ -216,14 +215,13 @@ class AdminReqAcceptPage extends Component {
 
   render() {
     const { visible, loading } = this.state;
-    console.log("from", this.state.from);
-    console.log("to", this.state.to);
+
     const columns = [
       {
         title: "ID",
         dataIndex: "id",
         key: "id",
-        width: 95,
+        width: 90,
         filterDropdown: (
           <div className="custom-filter-dropdown-id">
             <Input
@@ -259,7 +257,7 @@ class AdminReqAcceptPage extends Component {
         title: "Employee Number",
         dataIndex: "employee_number",
         key: "employee_number",
-        width: 95
+        width: 100
       },
       {
         title: "Name",
@@ -352,25 +350,32 @@ class AdminReqAcceptPage extends Component {
             style={{
               display: "flex",
               margin: "18px 10px 0",
-              justifyContent: "space-around",
+              justifyContent: "center",
               paddingBottom: "336px"
             }}
           >
             <div style={{ padding: 20, background: "#fff" }}>
-              <Form layout="inline" onSubmit={this.handleSubmit}>
-                <FormItem label="From">
+              <Form              
+                id="myForm"
+                layout="inline"
+                onSubmit={this.handleSubmit}
+                style={{ marginRight: 600 }}
+              >
+                <FormItem>
                   <DatePicker
                     id="date_from"
                     name="date_from"
                     placeholder="Start"
+                    defaultValue={this.state.from}
                     onChange={this.onStartChange}
                   />
                 </FormItem>
-                <FormItem label="From">
+                <FormItem>
                   <DatePicker
                     id="date_from"
                     name="date_from"
-                    placeholder="Start"
+                    placeholder="End"
+                    defaultValue={this.state.to}
                     onChange={this.onEndChange}
                   />
                 </FormItem>

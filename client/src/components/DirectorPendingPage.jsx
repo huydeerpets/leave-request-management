@@ -33,7 +33,9 @@ class DirectorPendingPage extends Component {
   }
 
   componentWillMount() {
-    console.log(" ----------------- Director-List-Pending-Request ----------------- ");
+    console.log(
+      " ----------------- Director-List-Pending-Request ----------------- "
+    );
   }
 
   componentWillReceiveProps(nextProps) {
@@ -152,11 +154,10 @@ class DirectorPendingPage extends Component {
     const employeeNumber = this.state.user && this.state.user.employee_number;
 
     this.setState({ loadingA: true });
+    this.updateStatusAccept(this.props.users, id, employeeNumber);
     setTimeout(() => {
       this.setState({ loadingA: false, visible: false });
-      this.updateStatusAccept(this.props.users, id, employeeNumber);
-      // window.location.reload();
-    }, 1000);
+    }, 3000);
   };
 
   handleReject = () => {
@@ -164,16 +165,15 @@ class DirectorPendingPage extends Component {
     const employeeNumber = this.state.user && this.state.user.employee_number;
 
     this.setState({ loadingR: true });
+    this.updateStatusReject(
+      this.props.users,
+      id,
+      employeeNumber,
+      this.state.reason
+    );
     setTimeout(() => {
       this.setState({ loadingR: false, visible: false, visibleReject: false });
-      this.updateStatusReject(
-        this.props.users,
-        id,
-        employeeNumber,
-        this.state.reason
-      );
-      // window.location.reload();
-    }, 1000);
+    }, 3000);
   };
 
   showReject = () => {
@@ -217,7 +217,7 @@ class DirectorPendingPage extends Component {
         title: "ID",
         dataIndex: "id",
         key: "id",
-        width: 95,
+        width: 90,
         filterDropdown: (
           <div className="custom-filter-dropdown-id">
             <Input
@@ -252,7 +252,7 @@ class DirectorPendingPage extends Component {
         title: "Employee Number",
         dataIndex: "employee_number",
         key: "employee_number",
-        width: 95
+        width: 100
       },
       {
         title: "Name",
@@ -345,10 +345,10 @@ class DirectorPendingPage extends Component {
             style={{
               display: "flex",
               margin: "18px 10px 0",
-              justifyContent: "space-around",
+              justifyContent: "center",
               paddingBottom: "336px"
             }}
-          >            
+          >
             <div style={{ padding: 20, background: "#fff" }}>
               <Table
                 columns={columns}
@@ -381,7 +381,7 @@ class DirectorPendingPage extends Component {
                     onClick={this.handleReject}
                   >
                     Reject
-                  </Button>             
+                  </Button>
                 ]}
               >
                 <Input
@@ -431,10 +431,13 @@ class DirectorPendingPage extends Component {
                 Reason : {this.state.user && this.state.user.reason} <br />
                 From : {this.state.user && this.state.user.date_from} <br />
                 To : {this.state.user && this.state.user.date_to} <br />
-                Half Day : {this.state.user && this.state.user.half_dates} <br />
+                Half Day : {this.state.user && this.state.user.half_dates}{" "}
+                <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
-                Total Leave : {this.state.user && this.state.user.total} day <br />
-                Leave Balance : {this.state.user && this.state.user.leave_remaining} day <br />
+                Total Leave : {this.state.user &&
+                  this.state.user.total} day <br />
+                Leave Balance :{" "}
+                {this.state.user && this.state.user.leave_remaining} day <br />
                 Contact Address :{" "}
                 {this.state.user && this.state.user.contact_address} <br />
                 Contact Number :{" "}

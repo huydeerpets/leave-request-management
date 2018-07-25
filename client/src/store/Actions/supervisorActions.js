@@ -1,6 +1,9 @@
 import {
 	ROOT_API
 } from "./types.js"
+import {
+	message
+} from "antd";
 
 function pendingFetch(payload) {
 	return {
@@ -29,7 +32,6 @@ function acceptRequest(payload) {
 		payload: payload
 	}
 }
-
 
 function rejectRequest(payload) {
 	return {
@@ -109,18 +111,26 @@ export function updateStatusAccept(users, id, enumber) {
 		fetch(`${ROOT_API}/api/supervisor/accept/${id}/${enumber}`, {
 				method: 'PUT',
 			})
-			.then(response => {
-				let newUserlist = users.filter(el => el.id !== id)
-				let payload = {
-					loading: false,
-					users: [
-						...newUserlist
-					]
+			.then((resp) => resp.json())
+			.then(({
+				body,
+				error
+			}) => {
+				if (body !== null) {
+					let newUserlist = users.filter(el => el.id !== id)
+					let payload = {
+						loading: false,
+						users: [
+							...newUserlist
+						]
+					}
+					dispatch(acceptRequest(payload))
+					message.success(body)
+				} else {
+					message.error(error)
 				}
-				dispatch(acceptRequest(payload))
-
 			}).catch(err => {
-				console.log(err)
+				message.error(err)
 			})
 	}
 }
@@ -133,19 +143,24 @@ export function updateStatusReject(users, id, enumber, payload) {
 			})
 			.then((resp) => resp.json())
 			.then(({
-				body
+				body,
+				error
 			}) => {
-				let newUserlist = users.filter(el => el.id !== id)
-				let payloads = {
-					loading: false,
-					users: [
-						...newUserlist
-					]
+				if (body !== null) {
+					let newUserlist = users.filter(el => el.id !== id)
+					let payloads = {
+						loading: false,
+						users: [
+							...newUserlist
+						]
+					}
+					dispatch(rejectRequest(payloads))
+					message.success(body)
+				} else {
+					message.error(error)
 				}
-				dispatch(rejectRequest(payloads))
-
 			}).catch(err => {
-				console.log(err)
+				message.error(err)
 			})
 	}
 }

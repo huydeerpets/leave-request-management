@@ -36,7 +36,9 @@ class SupervisorPendingPage extends Component {
   }
 
   componentWillMount() {
-    console.log(" ----------------- Supervisor-List-Pending-Request ----------------- ");
+    console.log(
+      " ----------------- Supervisor-List-Pending-Request ----------------- "
+    );
   }
 
   componentWillReceiveProps(nextProps) {
@@ -160,11 +162,10 @@ class SupervisorPendingPage extends Component {
     const employeeNumber = this.state.user && this.state.user.employee_number;
 
     this.setState({ loadingA: true });
+    this.updateStatusAccept(this.props.users, id, employeeNumber);
     setTimeout(() => {
       this.setState({ loadingA: false, visible: false });
-      this.updateStatusAccept(this.props.users, id, employeeNumber);
-      // window.location.reload();
-    }, 1000);
+    }, 3000);
   };
 
   handleReject = () => {
@@ -172,16 +173,15 @@ class SupervisorPendingPage extends Component {
     const employeeNumber = this.state.user && this.state.user.employee_number;
 
     this.setState({ loadingR: true });
+    this.updateStatusReject(
+      this.props.users,
+      id,
+      employeeNumber,
+      this.state.reason
+    );
     setTimeout(() => {
       this.setState({ loadingR: false, visible: false, visibleReject: false });
-      this.updateStatusReject(
-        this.props.users,
-        id,
-        employeeNumber,
-        this.state.reason
-      );
-      // window.location.reload();
-    }, 1000);
+    }, 3000);
   };
 
   handleCancel = () => {
@@ -219,7 +219,7 @@ class SupervisorPendingPage extends Component {
         title: "ID",
         dataIndex: "id",
         key: "id",
-        width: 95,
+        width: 90,
         filterDropdown: (
           <div className="custom-filter-dropdown-id">
             <Input
@@ -255,7 +255,7 @@ class SupervisorPendingPage extends Component {
         title: "Employee Number",
         dataIndex: "employee_number",
         key: "employee_number",
-        width: 95
+        width: 100
       },
       {
         title: "Name",

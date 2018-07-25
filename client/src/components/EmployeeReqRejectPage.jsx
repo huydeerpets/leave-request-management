@@ -113,7 +113,7 @@ class EmployeeReqAcceptPage extends Component {
         title: "ID",
         dataIndex: "id",
         key: "id",
-        width: 95,
+        width: 90,
         filterDropdown: (
           <div className="custom-filter-dropdown-id">
             <Input
@@ -149,7 +149,7 @@ class EmployeeReqAcceptPage extends Component {
         title: "Employee Number",
         dataIndex: "employee_number",
         key: "employee_number",
-        width: 95
+        width: 100
       },
       {
         title: "Name",
@@ -212,7 +212,7 @@ class EmployeeReqAcceptPage extends Component {
             style={{
               display: "flex",
               margin: "18px 10px 0",
-              justifyContent: "space-around",
+              justifyContent: "center",
               paddingBottom: "336px"
             }}
           >

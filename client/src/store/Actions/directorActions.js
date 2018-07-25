@@ -1,6 +1,9 @@
 import {
 	ROOT_API
 } from "./types.js"
+import {
+	message
+} from "antd";
 
 function pendingFetch(payload) {
 	return {
@@ -119,12 +122,12 @@ export function updateStatusAccept(users, id, enumber) {
 						]
 					}
 					dispatch(acceptRequest(payload))
-					alert(body)
+					message.success(body)
 				} else {
-					alert(error)
+					message.error(error)
 				}
 			}).catch(err => {
-				console.log(err)
+				message.error(err)
 			})
 	}
 }
@@ -135,18 +138,27 @@ export function updateStatusReject(users, id, enumber, payload) {
 				method: 'PUT',
 				body: JSON.stringify(payload)
 			})
-			.then(response => {
-				let newUserlist = users.filter(el => el.id !== id)
-				let payloads = {
-					loading: false,
-					leave: [
-						...newUserlist
-					]
+			.then((resp) => resp.json())
+			.then(({
+				body,
+				error
+			}) => {
+				if (body !== null) {
+					let newUserlist = users.filter(el => el.id !== id)
+					let payloads = {
+						loading: false,
+						leave: [
+							...newUserlist
+						]
+					}
+					dispatch(rejectRequest(payloads))
+					message.success(body)
+				} else {
+					message.error(error)
 				}
-				dispatch(rejectRequest(payloads))
 
 			}).catch(err => {
-				console.log(err)
+				message.error(err)
 			})
 	}
 }

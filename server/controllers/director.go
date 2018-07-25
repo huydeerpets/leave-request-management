@@ -46,7 +46,7 @@ func (c *DirectorController) AcceptStatusByDirector() {
 	if errUpStat != nil {
 		resp.Error = errUpStat.Error()
 	} else {
-		resp.Body = "status leave request has been approved"
+		resp.Body = "Leave request has been approved"
 	}
 
 	err := c.Ctx.Output.JSON(resp, false, false)
@@ -95,7 +95,7 @@ func (c *DirectorController) RejectStatusByDirector() {
 	if errUpStat != nil {
 		resp.Error = errUpStat.Error()
 	} else {
-		resp.Body = "status leave request has been rejected"
+		resp.Body = "Leave request has been rejected"
 	}
 
 	err := c.Ctx.Output.JSON(resp, false, false)
@@ -194,7 +194,7 @@ func (c *DirectorController) CancelRequestLeave() {
 	if errUpStat != nil {
 		resp.Error = errUpStat.Error()
 	} else {
-		resp.Body = "leave request has been canceled and deleted"
+		resp.Body = "Leave request has been canceled and deleted"
 	}
 
 	err := c.Ctx.Output.JSON(resp, false, false)

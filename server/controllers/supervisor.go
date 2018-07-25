@@ -126,7 +126,7 @@ func (c *SupervisorController) AcceptStatusBySupervisor() {
 	if errUpStat != nil {
 		resp.Error = errUpStat.Error()
 	} else {
-		resp.Body = "status leave request has been accepted"
+		resp.Body = "Leave request has been approved"
 	}
 
 	err := c.Ctx.Output.JSON(resp, false, false)
@@ -174,7 +174,7 @@ func (c *SupervisorController) RejectStatusBySv() {
 	if errUpStat != nil {
 		resp.Error = errUpStat.Error()
 	} else {
-		resp.Body = "status leave request has been rejected"
+		resp.Body = "Leave request has been rejected"
 	}
 
 	err := c.Ctx.Output.JSON(resp, false, false)

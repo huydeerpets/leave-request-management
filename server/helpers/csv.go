@@ -3,14 +3,13 @@ package helpers
 import (
 	"encoding/csv"
 	"os"
-	"sync"
 
 	"github.com/astaxie/beego"
 )
 
 // CsvWriter  ...
 type CsvWriter struct {
-	mutex     *sync.Mutex
+	// mutex     *sync.Mutex
 	csvWriter *csv.Writer
 }
 
@@ -23,7 +22,7 @@ func NewCsvWriter(fileName string) (*CsvWriter, error) {
 	w := csv.NewWriter(csvFile)
 	return &CsvWriter{
 		csvWriter: w,
-		mutex:     &sync.Mutex{},
+		// mutex: &sync.Mutex{}
 	}, nil
 }
 

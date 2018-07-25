@@ -321,7 +321,7 @@ func GoMailDirectorCancel(mailTo string, leaveID string, employeeName string, di
 	m := gomail.NewMessage()
 	m.SetHeader("From", authEmail)
 	m.SetHeader("To", mailTo)
-	m.SetHeader("Subject", "Cancle Leave Request")
+	m.SetHeader("Subject", "Cancel Leave Request")
 	m.Embed(filePrefix + "/tnis.png")
 	m.SetBody("text/html", mailHTML)
 
@@ -359,7 +359,7 @@ func GoMailEmployeeCancel(mailTo string, leaveID string, employeeName string) {
 	m := gomail.NewMessage()
 	m.SetHeader("From", authEmail)
 	m.SetHeader("To", mailTo)
-	m.SetHeader("Subject", "Cancle Leave Request")
+	m.SetHeader("Subject", "Cancel Leave Request")
 	m.Embed(filePrefix + "/tnis.png")
 	m.SetBody("text/html", mailHTML)
 
