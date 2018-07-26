@@ -1,36 +1,40 @@
 import {
-	ROOT_API
-} from "./types.js"
+	ROOT_API,
+	FETCH_REQUEST_PENDING,
+	DELETE_REQUEST_PENDING,
+	FETCH_REQUEST_APPROVE,
+	FETCH_REQUEST_REJECT,
+} from "./types"
 
-function pendingFetch(payload) {
+function fetchRequestPending(payload) {
 	return {
-		type: 'FETCH_REQUEST_PENDING',
+		type: FETCH_REQUEST_PENDING,
 		payload: payload
 	}
 }
 
-function acceptFetch(payload) {
+function deleteRequestPending(payload) {
 	return {
-		type: 'FETCH_REQUEST_ACCEPT',
+		type: DELETE_REQUEST_PENDING,
 		payload: payload
 	}
 }
 
-function rejectFetch(payload) {
+function fetchRequestApprove(payload) {
 	return {
-		type: 'FETCH_REQUEST_REJECT',
+		type: FETCH_REQUEST_APPROVE,
 		payload: payload
 	}
 }
 
-function requestDeleted(payload) {
+function fetchRequestReject(payload) {
 	return {
-		type: 'DELETE_REQUEST_PENDING',
+		type: FETCH_REQUEST_REJECT,
 		payload: payload
 	}
 }
 
-export function pendingFetchData() {
+export function employeeGetRequestPending() {
 	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/employee/pending/${employeeNumber}`, {
@@ -38,21 +42,55 @@ export function pendingFetchData() {
 			})
 			.then((resp) => resp.json())
 			.then(({
-				body
+				body,
+				error
 			}) => {
 				let payload = {
 					loading: false,
-					users: body
+					leaves: body
 				}
-				dispatch(pendingFetch(payload))
+				dispatch(fetchRequestPending(payload))
+
+				if (error !== null) {
+					console.error("err not null @employeeGetRequestPending: ", error)
+				}
 			})
 			.catch(err => {
-				console.log(err)
+				console.error("err @employeeGetRequestPending: ", err)
 			})
 	}
 }
 
-export function acceptFetchData() {
+export function employeeDeleteRequestPending(leaves, id) {
+	return (dispatch) => {
+		fetch(`${ROOT_API}/api/employee/leave/${id}`, {
+				method: 'DELETE',
+			})
+			.then((resp) => resp.json())
+			.then(({
+				body,
+				error
+			}) => {
+				let newUserlist = leaves.filter(el => el.id !== id)
+				let payload = {
+					loading: false,
+					leaves: [
+						...newUserlist
+					]
+				}
+				dispatch(deleteRequestPending(payload))
+
+				if (error !== null) {
+					console.error("err not null @employeeDeleteRequestPending: ", error)
+				}
+			})
+			.catch(err => {
+				console.error("err @employeeDeleteRequestPending: ", err)
+			})
+	}
+}
+
+export function employeeGetRequestApprove() {
 	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/employee/accept/${employeeNumber}`, {
@@ -60,21 +98,26 @@ export function acceptFetchData() {
 			})
 			.then((resp) => resp.json())
 			.then(({
-				body
+				body,
+				error
 			}) => {
 				let payload = {
 					loading: false,
-					users: body
+					leaves: body
 				}
-				dispatch(acceptFetch(payload))
+				dispatch(fetchRequestApprove(payload))
+
+				if (error !== null) {
+					console.error("err not null @employeeGetRequestApprove: ", error)
+				}
 			})
 			.catch(err => {
-				console.log(err)
+				console.error("err @employeeGetRequestApprove: ", err)
 			})
 	}
 }
 
-export function rejectFetchData() {
+export function employeeGetRequestReject() {
 	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/employee/reject/${employeeNumber}`, {
@@ -82,40 +125,21 @@ export function rejectFetchData() {
 			})
 			.then((resp) => resp.json())
 			.then(({
-				body
+				body,
+				error
 			}) => {
 				let payload = {
 					loading: false,
-					users: body
+					leaves: body
 				}
-				dispatch(rejectFetch(payload))
-			})
-			.catch(err => {
-				console.log(err)
-			})
-	}
-}
+				dispatch(fetchRequestReject(payload))
 
-export function deleteRequest(users, id) {
-	return (dispatch) => {
-		fetch(`${ROOT_API}/api/employee/leave/${id}`, {
-				method: 'DELETE',
-			})
-			.then((resp) => resp.json())
-			.then(({
-				body
-			}) => {
-				let newUserlist = users.filter(el => el.id !== id)
-				let payload = {
-					loading: false,
-					users: [
-						...newUserlist
-					]
+				if (error !== null) {
+					console.error("err not null @employeeGetRequestReject: ", error)
 				}
-				dispatch(requestDeleted(payload))
 			})
 			.catch(err => {
-				console.log(err)
+				console.error("err @employeeGetRequestReject: ", err)
 			})
 	}
 }

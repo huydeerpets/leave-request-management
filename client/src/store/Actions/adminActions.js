@@ -156,7 +156,7 @@ export function acceptFetchData() {
 				}
 			})
 			.catch(err => {
-				console.error("err @acceptFetchData:", err)
+				console.error("err @acceptFetchData: ", err)
 			})
 	}
 }
@@ -183,7 +183,7 @@ export function rejectFetchData() {
 				}
 			})
 			.catch(err => {
-				console.error("err @rejectFetchData:", err)
+				console.error("err @rejectFetchData: ", err)
 			})
 	}
 }

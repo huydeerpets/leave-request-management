@@ -26,7 +26,9 @@ class SupervisorAcceptPage extends Component {
   }
 
   componentWillMount() {
-    console.log(" ----------------- Supervisor-List-Approve-Request ----------------- ");
+    console.log(
+      " ----------------- Supervisor-List-Approve-Request ----------------- "
+    );
   }
 
   componentWillReceiveProps(nextProps) {
@@ -340,7 +342,8 @@ class SupervisorAcceptPage extends Component {
                 Contact Address :{" "}
                 {this.state.user && this.state.user.contact_address} <br />
                 Contact Number :{" "}
-                {this.state.user && this.state.user.contact_number}
+                {this.state.user && this.state.user.contact_number} <br />
+                Status : {this.state.user && this.state.user.status}
               </div>
             </Modal>
           </Content>

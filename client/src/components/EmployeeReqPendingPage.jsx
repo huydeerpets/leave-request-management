@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import {
-  pendingFetchData,
-  deleteRequest
+  employeeGetRequestPending,
+  employeeDeleteRequestPending
 } from "../store/Actions/employeeAction";
 import {
   Layout,
@@ -29,7 +29,7 @@ class EmployeeReqAcceptPage extends Component {
       loading: false,
       visible: false,
       user: null,
-      data: this.props.users,
+      data: this.props.leaves,
       filterDropdownVisible: false,
       filtered: false,
       searchID: ""
@@ -37,14 +37,16 @@ class EmployeeReqAcceptPage extends Component {
   }
 
   componentWillMount() {
-    console.log("------------ Employee-List-Pending-Request -------------------");
+    console.log(
+      "------------ Employee-List-Pending-Request -------------------"
+    );
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.users !== this.props.users) {
-      this.setState({ data: nextProps.users });
+    if (nextProps.leaves !== this.props.leaves) {
+      this.setState({ data: nextProps.leaves });
     }
-    data = nextProps.users;
+    data = nextProps.leaves;
   }
 
   componentDidMount() {
@@ -56,7 +58,7 @@ class EmployeeReqAcceptPage extends Component {
     ) {
       this.props.history.push("/");
     }
-    this.props.pendingFetchData();
+    this.props.employeeGetRequestPending();
   }
 
   onSearchID = () => {
@@ -107,8 +109,8 @@ class EmployeeReqAcceptPage extends Component {
     });
   };
 
-  deleteRequest = (users, id) => {
-    this.props.deleteRequest(users, id);
+  employeeDeleteRequestPending = (leaves, id) => {
+    this.props.employeeDeleteRequestPending(leaves, id);
   };
 
   showDetail = record => {
@@ -223,7 +225,7 @@ class EmployeeReqAcceptPage extends Component {
             <Divider type="vertical" />
             <Button
               onClick={() => {
-                this.editLeave(this.props.users, record.id);
+                this.editLeave(this.props.leaves, record.id);
               }}
               type="primary"
             >
@@ -234,7 +236,7 @@ class EmployeeReqAcceptPage extends Component {
               placement="top"
               title={"Are you sure delete this leave request?"}
               onConfirm={() => {
-                this.deleteRequest(this.props.users, record.id);
+                this.employeeDeleteRequestPending(this.props.leaves, record.id);
                 message.success("Leave request has been delete!");
               }}
               okText="Yes"
@@ -330,14 +332,14 @@ class EmployeeReqAcceptPage extends Component {
 
 const mapStateToProps = state => ({
   loading: state.fetchEmployeeReducer.loading,
-  users: state.fetchEmployeeReducer.users
+  leaves: state.fetchEmployeeReducer.leaves
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      pendingFetchData,
-      deleteRequest
+      employeeGetRequestPending,
+      employeeDeleteRequestPending
     },
     dispatch
   );

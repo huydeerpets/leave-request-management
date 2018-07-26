@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { rejectFetchData } from "../store/Actions/employeeAction";
+import { employeeGetRequestReject } from "../store/Actions/employeeAction";
 import { Layout, Table, Modal, Button, Input, Icon } from "antd";
 import HeaderNav from "./menu/HeaderNav";
 import Loading from "./menu/Loading";
@@ -9,14 +9,14 @@ import Footer from "./menu/Footer";
 const { Content } = Layout;
 let data;
 
-class EmployeeReqAcceptPage extends Component {
+class EmployeeReqRejectPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: false,
       visible: false,
       user: null,
-      data: this.props.users,
+      data: this.props.leaves,
       filterDropdownVisible: false,
       filtered: false,
       searchID: ""
@@ -24,14 +24,16 @@ class EmployeeReqAcceptPage extends Component {
   }
 
   componentWillMount() {
-    console.log("------------ Employee-List-Reject-Request -------------------");
+    console.log(
+      "------------ Employee-List-Reject-Request -------------------"
+    );
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.users !== this.props.users) {
-      this.setState({ data: nextProps.users });
+    if (nextProps.leaves !== this.props.leaves) {
+      this.setState({ data: nextProps.leaves });
     }
-    data = nextProps.users;
+    data = nextProps.leaves;
   }
 
   componentDidMount() {
@@ -43,7 +45,7 @@ class EmployeeReqAcceptPage extends Component {
     ) {
       this.props.history.push("/");
     }
-    this.props.rejectFetchData();
+    this.props.employeeGetRequestReject();
   }
 
   onSearchID = () => {
@@ -285,13 +287,13 @@ class EmployeeReqAcceptPage extends Component {
 
 const mapStateToProps = state => ({
   loading: state.fetchEmployeeReducer.loading,
-  users: state.fetchEmployeeReducer.users
+  leaves: state.fetchEmployeeReducer.leaves
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      rejectFetchData
+      employeeGetRequestReject
     },
     dispatch
   );
@@ -299,4 +301,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(EmployeeReqAcceptPage);
+)(EmployeeReqRejectPage);

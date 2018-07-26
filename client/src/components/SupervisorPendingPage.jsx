@@ -147,14 +147,14 @@ class SupervisorPendingPage extends Component {
     });
   };
 
+  onSelectChange = selectedRowKeys => {
+    console.log("selected row: ", selectedRowKeys);
+  };
+
   showReject = () => {
     this.setState({
       visibleReject: true
     });
-  };
-
-  onSelectChange = selectedRowKeys => {
-    console.log("selected row: ", selectedRowKeys);
   };
 
   handleOk = () => {
@@ -166,6 +166,10 @@ class SupervisorPendingPage extends Component {
     setTimeout(() => {
       this.setState({ loadingA: false, visible: false });
     }, 3000);
+  };
+
+  updateStatusAccept = (users, id, enumber) => {
+    this.props.updateStatusAccept(users, id, enumber);
   };
 
   handleReject = () => {
@@ -184,28 +188,24 @@ class SupervisorPendingPage extends Component {
     }, 3000);
   };
 
-  handleCancel = () => {
-    this.setState({ visible: false });
-  };
-
-  handleCancelReject = () => {
-    this.setState({ visibleReject: false });
-  };
-
-  updateStatusAccept = (users, id, enumber) => {
-    this.props.updateStatusAccept(users, id, enumber);
-  };
-
-  updateStatusReject = (users, id, enumber, reason) => {
-    this.props.updateStatusReject(users, id, enumber, reason);
-  };
-
   handleOnChange = e => {
     let newLeave = {
       ...this.props.leave,
       [e.target.name]: e.target.value
     };
     this.setState({ reason: newLeave });
+  };
+
+  updateStatusReject = (users, id, enumber, reason) => {
+    this.props.updateStatusReject(users, id, enumber, reason);
+  };
+
+  handleCancelReject = () => {
+    this.setState({ visibleReject: false });
+  };
+
+  handleCancel = () => {
+    this.setState({ visible: false });
   };
 
   onShowSizeChange(current, pageSize) {

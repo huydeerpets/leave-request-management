@@ -38,7 +38,7 @@ export class SupervisorLandingPage extends React.Component {
         );
       }
     } else {
-      <p />;
+      summary.push(<p>""</p>);
     }
 
     for (let j in dataType) {

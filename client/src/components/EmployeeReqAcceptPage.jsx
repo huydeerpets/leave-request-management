@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { acceptFetchData } from "../store/Actions/employeeAction";
+import { employeeGetRequestApprove } from "../store/Actions/employeeAction";
 import { Layout, Table, Modal, Button, Input, Icon } from "antd";
 import HeaderNav from "./menu/HeaderNav";
 import Loading from "./menu/Loading";
@@ -16,7 +16,7 @@ class EmployeeReqAcceptPage extends Component {
       loading: false,
       visible: false,
       user: null,
-      data: this.props.users,
+      data: this.props.leaves,
       filterDropdownVisible: false,
       filtered: false,
       searchID: ""
@@ -30,10 +30,10 @@ class EmployeeReqAcceptPage extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.users !== this.props.users) {
-      this.setState({ data: nextProps.users });
+    if (nextProps.leaves !== this.props.leaves) {
+      this.setState({ data: nextProps.leaves });
     }
-    data = nextProps.users;
+    data = nextProps.leaves;
   }
 
   componentDidMount() {
@@ -45,7 +45,7 @@ class EmployeeReqAcceptPage extends Component {
     ) {
       this.props.history.push("/");
     }
-    this.props.acceptFetchData();
+    this.props.employeeGetRequestApprove();
   }
 
   onSearchID = () => {
@@ -287,13 +287,13 @@ class EmployeeReqAcceptPage extends Component {
 
 const mapStateToProps = state => ({
   loading: state.fetchEmployeeReducer.loading,
-  users: state.fetchEmployeeReducer.users
+  leaves: state.fetchEmployeeReducer.leaves
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      acceptFetchData
+      employeeGetRequestApprove
     },
     dispatch
   );

@@ -90,6 +90,7 @@ func (u *Supervisor) GetUserAccept(supervisorID int64) ([]structLogic.LeaveAccep
 
 	statPendingInDirector := constant.StatusPendingInDirector
 	statSuccessInDirector := constant.StatusSuccessInDirector
+	statsRejectInDirector := constant.StatusRejectInDirector
 
 	o := orm.NewOrm()
 	qb, errQB := orm.NewQueryBuilder("mysql")
@@ -128,11 +129,11 @@ func (u *Supervisor) GetUserAccept(supervisorID int64) ([]structLogic.LeaveAccep
 		InnerJoin(userTypeLeave.TableName()).
 		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
 		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
-		Where(`(status = ? OR status = ? )`).And(user.TableName() + `.supervisor_id = ? `).
+		Where(`(status = ? OR status = ? OR status = ? )`).And(user.TableName() + `.supervisor_id = ? `).
 		OrderBy(leave.TableName() + ".created_at DESC")
 	sql := qb.String()
 
-	count, errRaw := o.Raw(sql, statPendingInDirector, statSuccessInDirector, supervisorID).QueryRows(&reqAccepts)
+	count, errRaw := o.Raw(sql, statPendingInDirector, statSuccessInDirector, statsRejectInDirector, supervisorID).QueryRows(&reqAccepts)
 	if errRaw != nil {
 		helpers.CheckErr("Failed Query Select @GetUserAccept", errRaw)
 		return reqAccepts, errors.New("error get leave request accept")
