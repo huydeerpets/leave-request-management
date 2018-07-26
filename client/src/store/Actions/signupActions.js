@@ -37,13 +37,12 @@ export function SumbitSignUp(payload, pusher) {
 					pusher('/admin')
 				} else if (error === "type request malform") {
 					let errMsg = 'Error empty field!'
-					message.error(errMsg)					
+					message.error(errMsg)
 				} else {
-					message.error(error)					
-				}				
+					message.error(error)
+				}
 			}).catch(err => {
-				let errMsg = 'Regiter failed, please check all field!'
-				message.error(errMsg)
+				console.log("err @SumbitSignUp: ", err)
 			})
 	}
 }

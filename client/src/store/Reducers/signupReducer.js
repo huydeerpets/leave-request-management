@@ -1,16 +1,15 @@
-function makeid() {
-	var x = 10;
-	var text = "";
-	var possible =
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*?";
+// function makeid() {
+// 	var x = 10;
+// 	var text = "";
+// 	var possible =
+// 		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*?";
 
-	for (var i = 0; i < 7; i++)
-		text += possible.charAt(Math.floor(Math.random() * possible.length));
+// 	for (var i = 0; i < 7; i++)
+// 		text += possible.charAt(Math.floor(Math.random() * possible.length));
 
-	return text;
-	// setTimeout(makeid, x * 1000);
-}
-
+// 	return text;
+// 	// setTimeout(makeid, x * 1000);
+// }
 
 const SignUp = {
 	employee_number: '',
@@ -20,7 +19,7 @@ const SignUp = {
 	start_working_date: '',
 	mobile_phone: '',
 	email: '',
-	password:'',
+	password: '',
 	role: '',
 	supervisor_id: null
 }
@@ -39,5 +38,4 @@ const SignupReducer = (state = SignUp, action) => {
 			return state
 	}
 }
-
 export default SignupReducer

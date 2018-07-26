@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { rejectFetchData } from "../store/Actions/adminActions";
 import { Layout, Table, Modal, Button, Input, Icon } from "antd";
 import HeaderNav from "./menu/HeaderAdmin";
-import Footer from "./menu/Footer";
 import Loading from "./menu/Loading";
+import Footer from "./menu/Footer";
 const { Content } = Layout;
 let data;
 
@@ -16,7 +16,7 @@ class AdminReqRejectPage extends Component {
       loading: false,
       visible: false,
       user: null,
-      data: this.props.users,
+      data: this.props.leave,
       filterDropdownVisible: false,
       filterDropdownNameVisible: false,
       filtered: false,
@@ -26,14 +26,16 @@ class AdminReqRejectPage extends Component {
   }
 
   componentWillMount() {
-    console.log(" ----------------- Admin-List-Reject-Request ----------------- ");
+    console.log(
+      " ----------------- Admin-List-Reject-Request ----------------- "
+    );
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.users !== this.props.users) {
-      this.setState({ data: nextProps.users });
+    if (nextProps.leave !== this.props.leave) {
+      this.setState({ data: nextProps.leave });
     }
-    data = nextProps.users;
+    data = nextProps.leave;
   }
 
   componentDidMount() {
@@ -355,7 +357,7 @@ class AdminReqRejectPage extends Component {
 
 const mapStateToProps = state => ({
   loading: state.adminReducer.loading,
-  users: state.adminReducer.leave
+  leave: state.adminReducer.leave
 });
 
 const mapDispatchToProps = dispatch =>

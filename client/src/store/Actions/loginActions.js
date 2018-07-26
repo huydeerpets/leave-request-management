@@ -20,13 +20,6 @@ function clearField() {
 	}
 }
 
-function errorHandle(payload) {
-	return {
-		type: "HANDLE_ERROR",
-		payload: payload
-	}
-}
-
 export function submitLogin(payload, pusher) {
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/login`, {
@@ -47,7 +40,7 @@ export function submitLogin(payload, pusher) {
 				// }
 				if (error !== null) {
 					message.error(error);
-				} else {					
+				} else {
 					const token = body['Token']
 					const id = body['ID']
 					const role = body['Role']

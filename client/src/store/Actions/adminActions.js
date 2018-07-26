@@ -55,16 +55,21 @@ export function adminFetchData() {
 			})
 			.then((resp) => resp.json())
 			.then(({
-				body
+				body,
+				error
 			}) => {
 				let payload = {
 					loading: false,
 					users: body
 				}
 				dispatch(adminloaded(payload))
+
+				if (error !== null) {
+					console.error("err not null @adminFetchData:", error)
+				}
 			})
 			.catch(err => {
-				console.log(err)
+				console.error("err @adminFetchData:", err)
 			})
 	}
 }
@@ -76,7 +81,8 @@ export function deleteUser(users, employeeNumber) {
 			})
 			.then((resp) => resp.json())
 			.then(({
-				body
+				body,
+				error
 			}) => {
 				let newUserlist = users.filter(el => el.employee_number !== employeeNumber)
 				let payload = {
@@ -86,9 +92,13 @@ export function deleteUser(users, employeeNumber) {
 					]
 				}
 				dispatch(userDeleted(payload))
+
+				if (error !== null) {
+					console.error("err not null @deleteUser:", error)
+				}
 			})
 			.catch(err => {
-				console.log(err)
+				console.error("err @deleteUser:", err)
 			})
 	}
 }
@@ -100,16 +110,21 @@ export function pendingFetchData() {
 			})
 			.then((resp) => resp.json())
 			.then(({
-				body
+				body,
+				error
 			}) => {
 				let payload = {
 					loading: false,
 					leave: body
 				}
 				dispatch(pendingFetch(payload))
+
+				if (error !== null) {
+					console.error("err not null @pendingFetchData:", error)
+				}
 			})
 			.catch(err => {
-				console.log(err)
+				console.error("err @pendingFetchData:", err)
 			})
 	}
 }
@@ -121,16 +136,21 @@ export function acceptFetchData() {
 			})
 			.then((resp) => resp.json())
 			.then(({
-				body
+				body,
+				error
 			}) => {
 				let payload = {
 					loading: false,
 					leave: body
 				}
 				dispatch(acceptFetch(payload))
+
+				if (error !== null) {
+					console.error("err not null @acceptFetchData:", error)
+				}
 			})
 			.catch(err => {
-				console.log(err)
+				console.error("err @acceptFetchData:", err)
 			})
 	}
 }
@@ -143,16 +163,21 @@ export function rejectFetchData() {
 			})
 			.then((resp) => resp.json())
 			.then(({
-				body
+				body,
+				error
 			}) => {
 				let payload = {
 					loading: false,
 					leave: body
 				}
 				dispatch(rejectFetch(payload))
+
+				if (error !== null) {
+					console.error("err not null @rejectFetchData:", error)
+				}
 			})
 			.catch(err => {
-				console.log(err)
+				console.error("err @rejectFetchData:", err)
 			})
 	}
 }
@@ -181,7 +206,7 @@ export function cancelRequestLeave(users, id, enumber) {
 					message.error(error)
 				}
 			}).catch(err => {
-				message.error(err)
+				console.error("err @cancelRequestLeave:", err)
 			})
 	}
 }
@@ -189,14 +214,13 @@ export function cancelRequestLeave(users, id, enumber) {
 export function downloadReport(from, to) {
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/leave/reports?fromDate=${from}&toDate=${to}`, {
-				method: 'GET',
-				// responseType: 'blob',
+				method: 'GET'
 			})
 			.then((resp) => resp.json())
 			.then(({
 				body,
 				error
-			}) => {				
+			}) => {
 				if (body !== null) {
 					const url = window.URL.createObjectURL(new Blob([arrayToCSV(body)]));
 					const link = document.createElement('a');
@@ -204,16 +228,15 @@ export function downloadReport(from, to) {
 					link.setAttribute('download', 'report_leave_request.xlsx');
 					document.body.appendChild(link);
 					link.click();
-					message.success('Download success')					
-				} else if (body === null) {					
+					message.success('Download success')
+				} else if (body === null) {
 					message.error('Data is not available')
 				} else {
 					message.error(error)
 				}
 			})
 			.catch(err => {
-				message.error(err)
-				console.log("err", err)
+				console.error("err @downloadReport:", err)
 			})
 	}
 }
@@ -221,14 +244,13 @@ export function downloadReport(from, to) {
 export function downloadReportTypeLeave(from, to, id) {
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/leave/report/type?fromDate=${from}&toDate=${to}&typeID=${id}`, {
-				method: 'GET',
-				// responseType: 'blob',
+				method: 'GET'
 			})
 			.then((resp) => resp.json())
 			.then(({
 				body,
 				error
-			}) => {				
+			}) => {
 				if (body !== null) {
 					const url = window.URL.createObjectURL(new Blob([arrayToCSV(body)]));
 					const link = document.createElement('a');
@@ -236,26 +258,25 @@ export function downloadReportTypeLeave(from, to, id) {
 					link.setAttribute('download', 'report_leave_request_by_type_leave.xlsx');
 					document.body.appendChild(link);
 					link.click();
-					message.success('Download success')					
-				} else if (body === null) {					
+					message.success('Download success')
+				} else if (body === null) {
 					message.error('Data is not available')
 				} else {
 					message.error(error)
 				}
 			})
 			.catch(err => {
-				message.error(err)
-				console.log("err", err)
+				console.error("err @downloadReportTypeLeave:", err)
 			})
 	}
 }
 
 function arrayToCSV(objArray) {
 	const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
-	let str = `${Object.keys(array[0]).map(value => `"${value}"`).join(",")}` + '\r\n';
+	let str = `${Object.keys(array[0]).map(value => `"${value}"`).join(",")}` + '\r\n'; // eslint-disable-line
 
 	return array.reduce((str, next) => {
-		str += `${Object.values(next).map(value => `"${value}"`).join(",")}` + '\r\n';
+		str += `${Object.values(next).map(value => `"${value}"`).join(",")}` + '\r\n'; // eslint-disable-line
 		return str;
 	}, str);
 }

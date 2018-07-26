@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { formOnchange, SumbitSignUp } from "../store/Actions/signupActions";
 import { SupervisorAdd } from "../store/Actions/AddSupervisorAction";
 
-import { Layout, Form, Input, Select, Button, DatePicker, message } from "antd";
+import { Layout, Form, Input, Select, Button, DatePicker } from "antd";
 import HeaderNav from "./menu/HeaderAdmin";
 import Footer from "./menu/Footer";
 const { Content } = Layout;
@@ -19,7 +19,9 @@ class RegisterPage extends Component {
     };
 
     this.handleOnChange = this.handleOnChange.bind(this);
-    this.handleOnChangeNumber = this.handleOnChangeNumber.bind(this);
+    this.handleOnChangeEmployeeNumber = this.handleOnChangeEmployeeNumber.bind(
+      this
+    );
     this.handleChangeGender = this.handleChangeGender.bind(this);
     this.handleChangeRole = this.handleChangeRole.bind(this);
     this.handleChangeSupervisor = this.handleChangeSupervisor.bind(this);
@@ -59,12 +61,28 @@ class RegisterPage extends Component {
       [e.target.name]: e.target.value
     };
     this.props.formOnchange(newUser);
-    console.log(newUser);
 
     this.props.form.setFieldsValue({
       [e.target.name]: e.target.value
     });
   };
+
+  handleOnChangeEmployeeNumber = e => {
+    let employee_num = {
+      ...this.props.signupForm,
+      employee_number: Number(e.target.value),
+      password: this.makeid()
+    };
+    this.props.formOnchange(employee_num);
+  };
+
+  handleChangeGender(value) {
+    let gender = {
+      ...this.props.signupForm,
+      gender: value
+    };
+    this.props.formOnchange(gender);
+  }
 
   onStartWorking = value => {
     if (value !== null) {
@@ -77,64 +95,12 @@ class RegisterPage extends Component {
         ...this.props.signupForm,
         start_working_date: newDate
       };
-
       this.props.formOnchange(startDate);
     }
   };
 
-  handleOnChangeNumber = e => {
-    let employee_num = {
-      ...this.props.signupForm,
-      employee_number: Number(e.target.value),
-      password: this.makeid()
-    };
-    this.props.formOnchange(employee_num);
-  };
-
-  handleChangeGender(value, event) {
-    let gender = {
-      ...this.props.signupForm,
-      gender: value
-    };
-
-    this.props.formOnchange(gender);
-  }
-
-  handleChangeRole(value, event) {
-    let role = {
-      ...this.props.signupForm,
-      role: value
-    };
-
-    this.props.formOnchange(role);
-  }
-
-  handleChangeSupervisor(value, event) {
-    let supervisor = {
-      ...this.props.signupForm,
-      supervisor_id: Number(value)
-    };
-
-    this.props.formOnchange(supervisor);
-  }
-
-  handleChangeSelectRole(value, event) {
-    let hiddenDiv = document.getElementById("roles");
-    if (value === "employee") {
-      hiddenDiv.style.display = "block";
-    } else {
-      hiddenDiv.style.display = "none";
-    }
-    console.log("selected=======>", value);
-  }
-
-  handleChangeSelect(value, event) {
-    console.log("selected=======>", value);
-  }
-
   handleOnChangeID = value => {
     this.setState({ contactID: value });
-    console.log("selected=======>", value);
   };
 
   handleOnChangePhone = e => {
@@ -143,8 +109,36 @@ class RegisterPage extends Component {
       mobile_phone: `${this.state.contactID}${e.target.value}`
     };
     this.props.formOnchange(newLeave);
-    console.log("==================>", newLeave);
   };
+
+  handleChangeRole(value) {
+    if (value === "employee") {
+      let role = {
+        ...this.props.signupForm,
+        role: value
+      };
+      this.props.formOnchange(role);
+    } else {
+      let role = {
+        ...this.props.signupForm,
+        role: value,
+        supervisor_id: Number()
+      };
+      this.props.formOnchange(role);
+    }
+  }
+
+  handleChangeSupervisor(value) {
+    let supervisor = {
+      ...this.props.signupForm,
+      supervisor_id: Number(value)
+    };
+    this.props.formOnchange(supervisor);
+  }
+
+  handleChangeSelect(value) {
+    console.log("selected=======>", value);
+  }
 
   handleBlur() {
     console.log("blur");
@@ -155,16 +149,14 @@ class RegisterPage extends Component {
   }
 
   makeid() {
-    var x = 10;
     var text = "";
     var possible =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*?";
-  
+
     for (var i = 0; i < 7; i++)
       text += possible.charAt(Math.floor(Math.random() * possible.length));
-  
+
     return text;
-    // setTimeout(makeid, x * 1000);
   }
 
   render() {
@@ -233,7 +225,7 @@ class RegisterPage extends Component {
                         id="employee_number"
                         name="employee_number"
                         placeholder="employee number"
-                        onChange={this.handleOnChangeNumber}
+                        onChange={this.handleOnChangeEmployeeNumber}
                       />
                     )}
                   </FormItem>
@@ -380,7 +372,7 @@ class RegisterPage extends Component {
                         optionFilterProp="children"
                         onChange={this.handleChangeRole}
                         onSelect={(value, event) =>
-                          this.handleChangeSelectRole(value, event)
+                          this.handleChangeSelect(value, event)
                         }
                         showSearch
                         onFocus={this.handleFocus}
@@ -398,7 +390,7 @@ class RegisterPage extends Component {
                     )}
                   </FormItem>
 
-                  <div id="roles">
+                  {this.props.signupForm.role === "employee" ? (
                     <FormItem {...formItemLayout} label="Supervisor">
                       <Select
                         id="supervisor_id"
@@ -425,13 +417,15 @@ class RegisterPage extends Component {
                             ))}
                       </Select>
                     </FormItem>
-                  </div>
+                  ) : (
+                    ""
+                  )}
 
                   <Input
                     type="password"
                     id="password"
                     name="password"
-                    placeholder="password"                    
+                    placeholder="password"
                     onChange={this.handleOnChange}
                     disabled
                     style={{ display: "none" }}

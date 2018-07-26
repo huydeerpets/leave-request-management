@@ -16,7 +16,7 @@ class AdminReqPendingPage extends Component {
       loading: false,
       visible: false,
       user: null,
-      data: this.props.users,
+      data: this.props.leave,
       filterDropdownVisible: false,
       filterDropdownNameVisible: false,
       filtered: false,
@@ -26,14 +26,16 @@ class AdminReqPendingPage extends Component {
   }
 
   componentWillMount() {
-    console.log(" ----------------- Admin-List-Pending-Request ----------------- ");
+    console.log(
+      " ----------------- Admin-List-Pending-Request ----------------- "
+    );
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.users !== this.props.users) {
-      this.setState({ data: nextProps.users });
+    if (nextProps.leave !== this.props.leave) {
+      this.setState({ data: nextProps.leave });
     }
-    data = nextProps.users;
+    data = nextProps.leave;
   }
 
   componentDidMount() {
@@ -354,7 +356,7 @@ class AdminReqPendingPage extends Component {
 
 const mapStateToProps = state => ({
   loading: state.adminReducer.loading,
-  users: state.adminReducer.leave
+  leave: state.adminReducer.leave
 });
 
 const mapDispatchToProps = dispatch =>

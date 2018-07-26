@@ -19,8 +19,7 @@ class AdminEditPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      date: "",
-      role: null
+      date: ""
     };
 
     this.saveEdit = this.saveEdit.bind(this);
@@ -30,27 +29,6 @@ class AdminEditPage extends Component {
     this.handleChangeSupervisor = this.handleChangeSupervisor.bind(this);
   }
 
-  componentDidMount() {
-    if (localStorage.getItem("role") !== "admin") {
-      this.props.history.push("/");
-    }
-    console.log(
-      this.props.history.location,
-      "ini didmount",
-      this.props.history.location.state === undefined
-    );
-
-    if (this.props.history.location.state === undefined) {
-      this.props.history.push("/");
-    } else {
-      let id = Number(this.props.history.location.pathname.split("/").pop());
-      let user = this.props.history.location.state.users.filter(
-        el => el.employee_number === id
-      );
-      this.props.fetchedEdit(user[0]);
-      this.props.SupervisorAdd();
-    }
-  }
   componentWillMount() {
     console.log(" ----------------- Admin-Edit-User ----------------- ");
     let id = Number(this.props.history.location.pathname.split("/").pop());
@@ -61,9 +39,25 @@ class AdminEditPage extends Component {
     this.props.SupervisorAdd();
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.user !== this.props.user) {
-      this.setState({ role: nextProps.user.role });
+  componentDidMount() {
+    if (localStorage.getItem("role") !== "admin") {
+      this.props.history.push("/");
+    }
+    // console.log(
+    //   this.props.history.location,
+    //   "ini didmount",
+    //   this.props.history.location.state === undefined
+    // );
+
+    if (this.props.history.location.state === undefined) {
+      this.props.history.push("/");
+    } else {
+      let id = Number(this.props.history.location.pathname.split("/").pop());
+      let user = this.props.history.location.state.users.filter(
+        el => el.employee_number === id
+      );
+      this.props.fetchedEdit(user[0]);
+      this.props.SupervisorAdd();
     }
   }
 
@@ -87,62 +81,50 @@ class AdminEditPage extends Component {
       ...this.props.user,
       gender: value
     };
-
     this.props.handleEdit(gender);
-    console.log("=======", gender);
   }
 
-  handleChangeRole(value, event) {
-    let role = {
-      ...this.props.user,
-      role: value
-    };
-
-    this.props.handleEdit(role);
-    console.log("==========", role);
-  }
-
-  handleChangeSupervisor(value, event) {
-    let supervisor = {
-      ...this.props.user,
-      supervisor_id: Number(value)
-    };
-
-    this.props.handleEdit(supervisor);
-  }
-
-  onBackOn = value => {
+  onStartWorking = value => {
     if (value !== null) {
       const date = new Date(value._d),
         mnth = ("0" + (date.getMonth() + 1)).slice(-2),
         day = ("0" + date.getDate()).slice(-2);
       let newDate = [day, mnth, date.getFullYear()].join("-");
-      let backOn = {
+
+      let startDate = {
         ...this.props.user,
         start_working_date: newDate
       };
-
-      this.props.handleEdit(backOn);
+      this.props.handleEdit(startDate);
     }
   };
 
-  handleChangeSelectRole(value, event) {
-    let hiddenDiv = document.getElementById("supervisor");
+  handleChangeRole(value) {
     if (value === "employee") {
-      hiddenDiv.style.display = "block";
-    } else if (value === "supervisor") {
-      hiddenDiv.style.display = "block";
+      let role = {
+        ...this.props.user,
+        role: value
+      };
+      this.props.handleEdit(role);
     } else {
-      hiddenDiv.style.display = "none";
+      let role = {
+        ...this.props.user,
+        role: value,
+        supervisor_id: Number()
+      };
+      this.props.handleEdit(role);
     }
-    this.setState({
-      role: value
-    });
-
-    console.log("selected=======>", value);
   }
 
-  handleChangeSelect(value, event) {
+  handleChangeSupervisor(value) {
+    let supervisor = {
+      ...this.props.user,
+      supervisor_id: Number(value)
+    };
+    this.props.handleEdit(supervisor);
+  }
+
+  handleChangeSelect(value) {
     console.log("selected=======>", value);
   }
 
@@ -171,23 +153,17 @@ class AdminEditPage extends Component {
     };
 
     const dateFormat = "DD-MM-YYYY";
-
-    const role = this.state.role;
-
     let supervisorName;
 
-    let hiddenDiv = document.getElementById("supervisor");
-    if (role === "supervisor") {
-      hiddenDiv.style.display = "none";
-    } else if (role === "director") {
-      hiddenDiv.style.display = "none";
-    } else if (role === "employee") {
-      hiddenDiv.style.display = "block";
-    }
-    
     if (this.props.supervisor) {
       this.props.supervisor.map(d => {
-        if (d.supervisor_id === this.props.user.supervisor_id) {
+        if (
+          d.supervisor_id === this.props.user.supervisor_id &&
+          d.name !== this.props.user.name
+        ) {
+          supervisorName = d.name;
+        } else if (d.supervisor_id === this.props.user.employee_number) {
+          d.name = "";
           supervisorName = d.name;
         }
         return d;
@@ -285,7 +261,7 @@ class AdminEditPage extends Component {
                         this.props.user.start_working_date,
                         dateFormat
                       )}
-                      onChange={this.onBackOn}
+                      onChange={this.onStartWorking}
                       style={formStyle}
                     />
                   </FormItem>
@@ -327,7 +303,7 @@ class AdminEditPage extends Component {
                     </Select>
                   </FormItem>
 
-                  <div id="supervisor">
+                  {this.props.user.role === "employee" ? (
                     <FormItem {...formItemLayout} label="Supervisor">
                       <Select
                         id="supervisor_id"
@@ -353,7 +329,9 @@ class AdminEditPage extends Component {
                         ))}
                       </Select>
                     </FormItem>
-                  </div>
+                  ) : (
+                    ""
+                  )}
 
                   <FormItem>
                     <Button
@@ -384,7 +362,7 @@ const mapStateToProps = state => ({
   supervisor: state.AddSupervisorReducer.supervisor
 });
 
-const WrappedRegisterForm = Form.create()(AdminEditPage);
+const WrappedEditUserForm = Form.create()(AdminEditPage);
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
@@ -399,4 +377,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(WrappedRegisterForm);
+)(WrappedEditUserForm);

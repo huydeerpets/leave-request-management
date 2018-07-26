@@ -19,11 +19,10 @@ import {
   Select
 } from "antd";
 import HeaderNav from "./menu/HeaderAdmin";
-import Footer from "./menu/Footer";
 import Loading from "./menu/Loading";
+import Footer from "./menu/Footer";
 const { Content } = Layout;
 const FormItem = Form.Item;
-const { TextArea } = Input;
 const Option = Select.Option;
 let data;
 
@@ -34,7 +33,7 @@ class AdminReqAcceptPage extends Component {
       loading: false,
       visible: false,
       user: null,
-      data: this.props.users,
+      data: this.props.leave,
       filterDropdownVisible: false,
       filterDropdownNameVisible: false,
       filtered: false,
@@ -55,10 +54,10 @@ class AdminReqAcceptPage extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.users !== this.props.users) {
-      this.setState({ data: nextProps.users });
+    if (nextProps.leave !== this.props.leave) {
+      this.setState({ data: nextProps.leave });
     }
-    data = nextProps.users;
+    data = nextProps.leave;
   }
 
   componentDidMount() {
@@ -158,14 +157,14 @@ class AdminReqAcceptPage extends Component {
     const employeeNumber = this.state.user && this.state.user.employee_number;
 
     this.setState({ loading: true });
-    this.cancelRequestLeave(this.props.users, id, employeeNumber);
+    this.cancelRequestLeave(this.props.leave, id, employeeNumber);
     setTimeout(() => {
       this.setState({ loading: false, visible: false });
     }, 2000);
   };
 
-  cancelRequestLeave = (users, id, enumber) => {
-    this.props.cancelRequestLeave(users, id, enumber);
+  cancelRequestLeave = (leave, id, enumber) => {
+    this.props.cancelRequestLeave(leave, id, enumber);
   };
 
   showDetail = record => {
@@ -431,7 +430,7 @@ class AdminReqAcceptPage extends Component {
                 </FormItem>
                 <FormItem>
                   <Button type="primary" htmlType="submit">
-                    GET
+                    Download
                   </Button>
                 </FormItem>
               </Form>
@@ -479,7 +478,7 @@ class AdminReqAcceptPage extends Component {
                 </FormItem>
                 <FormItem>
                   <Button type="primary" htmlType="submit">
-                    GET
+                    Download
                   </Button>
                 </FormItem>
               </Form>
@@ -551,7 +550,7 @@ class AdminReqAcceptPage extends Component {
 
 const mapStateToProps = state => ({
   loading: state.adminReducer.loading,
-  users: state.adminReducer.leave
+  leave: state.adminReducer.leave
 });
 
 const mapDispatchToProps = dispatch =>

@@ -8,10 +8,9 @@ import Loading from "./menu/Loading";
 import { Layout, Table, Button, Divider, Popconfirm, message } from "antd";
 const { Content } = Layout;
 
-class Adminpage extends Component {
+class AdminPage extends Component {
   constructor(props) {
     super(props);
-
     this.columns = [
       {
         title: "Employee Number",
@@ -108,7 +107,7 @@ class Adminpage extends Component {
     } else {
       return (
         <Layout>
-          <HeaderNav {...this.props.history} />
+          <HeaderNav />
 
           <Content
             className="container"
@@ -119,7 +118,7 @@ class Adminpage extends Component {
               paddingBottom: "336px"
             }}
           >
-            <div style={{ padding: 40, background: "#fff"}}>
+            <div style={{ padding: 40, background: "#fff" }}>
               <Table
                 columns={this.columns}
                 dataSource={this.props.users}
@@ -134,15 +133,7 @@ class Adminpage extends Component {
               />
             </div>
           </Content>
-          <Footer style={{ background: "grey" }}>
-            <p>
-              <a href="http://opensource.org/licenses/mit-license.php"> MIT</a>.
-              The website content is licensed{" "}
-              <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
-                CC BY NC SA 4.0
-              </a>.
-            </p>
-          </Footer>
+          <Footer />
         </Layout>
       );
     }
@@ -166,4 +157,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Adminpage);
+)(AdminPage);
