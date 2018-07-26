@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import {
-  pendingFetchData,
-  updateStatusAccept,
-  updateStatusReject
+  fetchSupervisorLeavePending,
+  supervisorApproveRequest,
+  supervisorRejectRequest
 } from "../store/Actions/supervisorActions";
 import { Layout, Table, Modal, Button, Input, Icon } from "antd";
 import HeaderNav from "./menu/HeaderNav";
@@ -23,7 +23,7 @@ class SupervisorPendingPage extends Component {
       visibleReject: false,
       user: null,
       reason: null,
-      data: this.props.users,
+      data: this.props.leaves,
       filterDropdownVisible: false,
       filterDropdownNameVisible: false,
       filtered: false,
@@ -42,10 +42,10 @@ class SupervisorPendingPage extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.users !== this.props.users) {
-      this.setState({ data: nextProps.users });
+    if (nextProps.leaves !== this.props.leaves) {
+      this.setState({ data: nextProps.leaves });
     }
-    data = nextProps.users;
+    data = nextProps.leaves;
   }
 
   componentDidMount() {
@@ -54,7 +54,7 @@ class SupervisorPendingPage extends Component {
     } else if (localStorage.getItem("role") !== "supervisor") {
       this.props.history.push("/");
     }
-    this.props.pendingFetchData();
+    this.props.fetchSupervisorLeavePending();
   }
 
   onSearch = () => {
@@ -162,14 +162,14 @@ class SupervisorPendingPage extends Component {
     const employeeNumber = this.state.user && this.state.user.employee_number;
 
     this.setState({ loadingA: true });
-    this.updateStatusAccept(this.props.users, id, employeeNumber);
+    this.supervisorApproveRequest(this.props.leaves, id, employeeNumber);
     setTimeout(() => {
       this.setState({ loadingA: false, visible: false });
     }, 3000);
   };
 
-  updateStatusAccept = (users, id, enumber) => {
-    this.props.updateStatusAccept(users, id, enumber);
+  supervisorApproveRequest = (leaves, id, enumber) => {
+    this.props.supervisorApproveRequest(leaves, id, enumber);
   };
 
   handleReject = () => {
@@ -177,8 +177,8 @@ class SupervisorPendingPage extends Component {
     const employeeNumber = this.state.user && this.state.user.employee_number;
 
     this.setState({ loadingR: true });
-    this.updateStatusReject(
-      this.props.users,
+    this.supervisorRejectRequest(
+      this.props.leaves,
       id,
       employeeNumber,
       this.state.reason
@@ -196,8 +196,8 @@ class SupervisorPendingPage extends Component {
     this.setState({ reason: newLeave });
   };
 
-  updateStatusReject = (users, id, enumber, reason) => {
-    this.props.updateStatusReject(users, id, enumber, reason);
+  supervisorRejectRequest = (leaves, id, enumber, reason) => {
+    this.props.supervisorRejectRequest(leaves, id, enumber, reason);
   };
 
   handleCancelReject = () => {
@@ -452,16 +452,16 @@ class SupervisorPendingPage extends Component {
 
 const mapStateToProps = state => ({
   loading: state.fetchSupervisorReducer.loading,
-  users: state.fetchSupervisorReducer.users,
+  leaves: state.fetchSupervisorReducer.leaves,
   leave: state.fetchSupervisorReducer.leave
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      pendingFetchData,
-      updateStatusAccept,
-      updateStatusReject
+      fetchSupervisorLeavePending,
+      supervisorApproveRequest,
+      supervisorRejectRequest
     },
     dispatch
   );

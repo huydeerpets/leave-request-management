@@ -1,28 +1,22 @@
-const loginForm = {
-	login: {
-		email: '',
-		password: ''
-	},	
-	message : "",
-	is_error : false
-		
+import {
+	LOGIN_FORM_ONCHANGE,
+	CLEAR_FIELD
+} from "../Actions/types"
+
+const loginState = {
+	email: '',
+	password: ''
 }
 
-export default function loginReducer(state = loginForm, action) {
+export default function loginReducer(state = loginState, action) {
 	switch (action.type) {
-		case 'LOGIN_FORM_ONCHANGE':
+		case LOGIN_FORM_ONCHANGE:
 			return {
-				...state,
-				login: action.payload
+				...action.payload
 			}
-		case 'FIELD_CLEAR':
+		case CLEAR_FIELD:
 			return {
-				...loginForm,
-			}
-		case 'HANDLE_ERROR':
-			return {				
-				...loginForm,
-				...action.payload				
+				...loginState,
 			}
 		default:
 			return state

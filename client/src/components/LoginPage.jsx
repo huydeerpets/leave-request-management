@@ -90,6 +90,7 @@ class LoginPage extends Component {
     const emailError = isFieldTouched("email") && getFieldError("email");
     const passwordError =
       isFieldTouched("password") && getFieldError("password");
+
     return (
       <div>
         <Layout className="App">
@@ -206,8 +207,7 @@ class LoginPage extends Component {
 }
 
 const mapStateToProps = state => ({
-  loginForm: state.loginReducer.login,
-  error: state.loginReducer
+  loginForm: state.loginReducer
 });
 
 const mapDispatchToProps = dispatch =>

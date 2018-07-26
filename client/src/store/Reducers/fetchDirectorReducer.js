@@ -8,7 +8,7 @@ import {
 
 let directorState = {
     loading: true,
-    leave: []
+    leaves: []
 }
 
 export default function fetchSupervisorReducer(state = directorState, action) {

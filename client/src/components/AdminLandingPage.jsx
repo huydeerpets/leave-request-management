@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { adminFetchData, deleteUser } from "../store/Actions/adminActions";
+import { adminGetUsers, adminDeleteUser } from "../store/Actions/adminActions";
 import HeaderNav from "./menu/HeaderAdmin";
-import Footer from "./menu/Footer";
 import Loading from "./menu/Loading";
+import Footer from "./menu/Footer";
 import { Layout, Table, Button, Divider, Popconfirm, message } from "antd";
 const { Content } = Layout;
 
-class AdminPage extends Component {
+class AdminLandingPage extends Component {
   constructor(props) {
     super(props);
     this.columns = [
@@ -61,7 +61,7 @@ class AdminPage extends Component {
               placement="top"
               title={"Are you sure delete this employee?"}
               onConfirm={() => {
-                this.deleteUser(this.props.users, record.employee_number);
+                this.adminDeleteUser(this.props.users, record.employee_number);
                 message.success("Employee has been delete!");
               }}
               okText="Yes"
@@ -83,7 +83,7 @@ class AdminPage extends Component {
     if (localStorage.getItem("role") !== "admin") {
       this.props.history.push("/");
     }
-    this.props.adminFetchData();
+    this.props.adminGetUsers();
   }
 
   editUser = (users, employeeNumber) => {
@@ -93,8 +93,8 @@ class AdminPage extends Component {
     });
   };
 
-  deleteUser = (users, employeeNumber) => {
-    this.props.deleteUser(users, employeeNumber);
+  adminDeleteUser = (users, employeeNumber) => {
+    this.props.adminDeleteUser(users, employeeNumber);
   };
 
   onShowSizeChange(current, pageSize) {
@@ -148,8 +148,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      adminFetchData,
-      deleteUser
+      adminGetUsers,
+      adminDeleteUser
     },
     dispatch
   );
@@ -157,4 +157,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(AdminPage);
+)(AdminLandingPage);

@@ -10,7 +10,7 @@ import {
 let adminState = {
 	loading: true,
 	users: [],
-	leave: [],
+	leaves: [],
 }
 
 export default function adminReducer(state = adminState, action) {

@@ -1,28 +1,15 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import {
-  employeeGetRequestPending,
-  employeeDeleteRequestPending
-} from "../store/Actions/employeeAction";
-import {
-  Layout,
-  Table,
-  Modal,
-  Button,
-  Divider,
-  Popconfirm,
-  message,
-  Input,
-  Icon
-} from "antd";
+import { employeeGetRequestReject } from "../store/Actions/employeeAction";
+import { Layout, Table, Modal, Button, Input, Icon } from "antd";
 import HeaderNav from "./menu/HeaderNav";
 import Loading from "./menu/Loading";
 import Footer from "./menu/Footer";
 const { Content } = Layout;
 let data;
 
-class EmployeeReqAcceptPage extends Component {
+class EmployeeRejectPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -38,7 +25,7 @@ class EmployeeReqAcceptPage extends Component {
 
   componentWillMount() {
     console.log(
-      "------------ Employee-List-Pending-Request -------------------"
+      "------------ Employee-List-Reject-Request -------------------"
     );
   }
 
@@ -58,7 +45,7 @@ class EmployeeReqAcceptPage extends Component {
     ) {
       this.props.history.push("/");
     }
-    this.props.employeeGetRequestPending();
+    this.props.employeeGetRequestReject();
   }
 
   onSearchID = () => {
@@ -100,17 +87,6 @@ class EmployeeReqAcceptPage extends Component {
     this.setState({
       searchID: e.target.value
     });
-  };
-
-  editLeave = (leave, id) => {
-    this.props.history.push({
-      pathname: "/editrequest/" + id,
-      state: { leave: leave }
-    });
-  };
-
-  employeeDeleteRequestPending = (leaves, id) => {
-    this.props.employeeDeleteRequestPending(leaves, id);
   };
 
   showDetail = record => {
@@ -216,34 +192,12 @@ class EmployeeReqAcceptPage extends Component {
       {
         title: "Action",
         key: "action",
-        width: 300,
+        width: 100,
         render: (value, record) => (
           <span>
             <Button type="primary" onClick={() => this.showDetail(record)}>
               Detail
             </Button>
-            <Divider type="vertical" />
-            <Button
-              onClick={() => {
-                this.editLeave(this.props.leaves, record.id);
-              }}
-              type="primary"
-            >
-              Edit
-            </Button>
-            <Divider type="vertical" />
-            <Popconfirm
-              placement="top"
-              title={"Are you sure delete this leave request?"}
-              onConfirm={() => {
-                this.employeeDeleteRequestPending(this.props.leaves, record.id);
-                message.success("Leave request has been delete!");
-              }}
-              okText="Yes"
-              cancelText="No"
-            >
-              <Button type="danger">Delete</Button>
-            </Popconfirm>
           </span>
         )
       }
@@ -282,7 +236,7 @@ class EmployeeReqAcceptPage extends Component {
 
             <Modal
               visible={visible}
-              title="Detail Leave Request Pending"
+              title="Detail Leave Request Rejected"
               onCancel={this.handleCancel}
               style={{ top: "20" }}
               bodyStyle={{ padding: "0" }}
@@ -318,8 +272,9 @@ class EmployeeReqAcceptPage extends Component {
                 {this.state.user && this.state.user.contact_address} <br />
                 Contact Number :{" "}
                 {this.state.user && this.state.user.contact_number} <br />
-                Status : {this.state.user && this.state.user.status}
-                <br />
+                Status : {this.state.user && this.state.user.status} <br />
+                Reject Reason :{" "}
+                {this.state.user && this.state.user.reject_reason}
               </div>
             </Modal>
           </Content>
@@ -338,8 +293,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      employeeGetRequestPending,
-      employeeDeleteRequestPending
+      employeeGetRequestReject
     },
     dispatch
   );
@@ -347,4 +301,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(EmployeeReqAcceptPage);
+)(EmployeeRejectPage);

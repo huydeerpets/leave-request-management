@@ -2,8 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { profileFetchData } from "../store/Actions/profileAction";
-import { SupervisorAdd } from "../store/Actions/AddSupervisorAction";
-
+import { getSupervisors } from "../store/Actions/AddSupervisorAction";
 import moment from "moment-timezone";
 import { Layout, Button, Form, Input, Select, DatePicker } from "antd";
 import HeaderNav from "./menu/HeaderNav";
@@ -12,7 +11,7 @@ const { Content } = Layout;
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-class ProfileEditPage extends Component {
+class ProfilePage extends Component {
   componentWillMount() {
     console.log(" ----------------- Profile-Page ----------------- ");
   }
@@ -30,7 +29,7 @@ class ProfileEditPage extends Component {
     }
 
     this.props.profileFetchData();
-    this.props.SupervisorAdd();
+    this.props.getSupervisors();
   }
 
   editPassword = (user, employeeNumber) => {
@@ -258,13 +257,13 @@ const mapStateToProps = state => ({
   supervisor: state.AddSupervisorReducer.supervisor
 });
 
-const WrappedPofileForm = Form.create()(ProfileEditPage);
+const WrappedPofileForm = Form.create()(ProfilePage);
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       profileFetchData,
-      SupervisorAdd
+      getSupervisors
     },
     dispatch
   );

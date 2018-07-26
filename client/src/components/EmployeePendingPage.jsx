@@ -1,87 +1,65 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { rejectFetchData } from "../store/Actions/adminActions";
-import { Layout, Table, Modal, Button, Input, Icon } from "antd";
-import HeaderNav from "./menu/HeaderAdmin";
+import {
+  employeeGetRequestPending,
+  employeeDeleteRequestPending
+} from "../store/Actions/employeeAction";
+import {
+  Layout,
+  Table,
+  Modal,
+  Button,
+  Divider,
+  Popconfirm,
+  message,
+  Input,
+  Icon
+} from "antd";
+import HeaderNav from "./menu/HeaderNav";
 import Loading from "./menu/Loading";
 import Footer from "./menu/Footer";
 const { Content } = Layout;
 let data;
 
-class AdminReqRejectPage extends Component {
+class EmployeePendingPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: false,
       visible: false,
       user: null,
-      data: this.props.leave,
+      data: this.props.leaves,
       filterDropdownVisible: false,
-      filterDropdownNameVisible: false,
       filtered: false,
-      searchText: "",
       searchID: ""
     };
   }
 
   componentWillMount() {
     console.log(
-      " ----------------- Admin-List-Reject-Request ----------------- "
+      "------------ Employee-List-Pending-Request -------------------"
     );
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.leave !== this.props.leave) {
-      this.setState({ data: nextProps.leave });
+    if (nextProps.leaves !== this.props.leaves) {
+      this.setState({ data: nextProps.leaves });
     }
-    data = nextProps.leave;
+    data = nextProps.leaves;
   }
 
   componentDidMount() {
     if (!localStorage.getItem("token")) {
       this.props.history.push("/");
-    } else if (localStorage.getItem("role") !== "admin") {
+    } else if (
+      localStorage.getItem("role") !== "employee" &&
+      localStorage.getItem("role") !== "supervisor"
+    ) {
       this.props.history.push("/");
     }
-    this.props.rejectFetchData();
+    this.props.employeeGetRequestPending();
   }
-
-  onSearch = () => {
-    const { searchText } = this.state;
-    const reg = new RegExp(searchText, "gi");
-    this.setState({
-      filterDropdownNameVisible: false,
-      filtered: !!searchText,
-      data: data
-        .map(record => {
-          const match = record.name.match(reg);
-          if (!match) {
-            return null;
-          }
-          return {
-            ...record,
-            name: (
-              <span>
-                {record.name
-                  .split(
-                    new RegExp(`(?<=${searchText})|(?=${searchText})`, "i")
-                  )
-                  .map(
-                    (text, i) =>
-                      text.toLowerCase() === searchText.toLowerCase() ? (
-                        <span key={i}>{text}</span>
-                      ) : (
-                        text
-                      ) // eslint-disable-line
-                  )}
-              </span>
-            )
-          };
-        })
-        .filter(record => !!record)
-    });
-  };
 
   onSearchID = () => {
     const { searchID } = this.state;
@@ -124,10 +102,15 @@ class AdminReqRejectPage extends Component {
     });
   };
 
-  onInputChangeName = e => {
-    this.setState({
-      searchText: e.target.value
+  editLeave = (leave, id) => {
+    this.props.history.push({
+      pathname: "/editrequest/" + id,
+      state: { leave: leave }
     });
+  };
+
+  employeeDeleteRequestPending = (leaves, id) => {
+    this.props.employeeDeleteRequestPending(leaves, id);
   };
 
   showDetail = record => {
@@ -198,38 +181,8 @@ class AdminReqRejectPage extends Component {
         title: "Name",
         dataIndex: "name",
         key: "name",
-        width: 150,
-        filterDropdown: (
-          <div className="custom-filter-dropdown-name">
-            <Input
-              ref={ele => (this.searchInput = ele)}
-              placeholder="Search name"
-              value={this.state.searchText}
-              onChange={this.onInputChangeName}
-              onPressEnter={this.onSearch}
-            />
-            <Button type="primary" onClick={this.onSearch}>
-              Search
-            </Button>
-          </div>
-        ),
-        filterIcon: (
-          <Icon
-            type="search"
-            style={{ color: this.state.filtered ? "#108ee9" : "#aaa" }}
-          />
-        ),
-        filterDropdownNameVisible: this.state.filterDropdownNameVisible,
-        onFilterDropdownVisibleChange: visible => {
-          this.setState(
-            {
-              filterDropdownNameVisible: visible
-            },
-            () => this.searchInput && this.searchInput.focus()
-          );
-        }
+        width: 150
       },
-
       {
         title: "Position",
         dataIndex: "position",
@@ -263,12 +216,34 @@ class AdminReqRejectPage extends Component {
       {
         title: "Action",
         key: "action",
-        width: 100,
+        width: 300,
         render: (value, record) => (
           <span>
             <Button type="primary" onClick={() => this.showDetail(record)}>
               Detail
             </Button>
+            <Divider type="vertical" />
+            <Button
+              onClick={() => {
+                this.editLeave(this.props.leaves, record.id);
+              }}
+              type="primary"
+            >
+              Edit
+            </Button>
+            <Divider type="vertical" />
+            <Popconfirm
+              placement="top"
+              title={"Are you sure delete this leave request?"}
+              onConfirm={() => {
+                this.employeeDeleteRequestPending(this.props.leaves, record.id);
+                message.success("Leave request has been delete!");
+              }}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button type="danger">Delete</Button>
+            </Popconfirm>
           </span>
         )
       }
@@ -307,7 +282,7 @@ class AdminReqRejectPage extends Component {
 
             <Modal
               visible={visible}
-              title="Detail Leave Request Rejected"
+              title="Detail Leave Request Pending"
               onCancel={this.handleCancel}
               style={{ top: "20" }}
               bodyStyle={{ padding: "0" }}
@@ -343,8 +318,8 @@ class AdminReqRejectPage extends Component {
                 {this.state.user && this.state.user.contact_address} <br />
                 Contact Number :{" "}
                 {this.state.user && this.state.user.contact_number} <br />
-                Reject Reason :{" "}
-                {this.state.user && this.state.user.reject_reason}
+                Status : {this.state.user && this.state.user.status}
+                <br />
               </div>
             </Modal>
           </Content>
@@ -356,14 +331,15 @@ class AdminReqRejectPage extends Component {
 }
 
 const mapStateToProps = state => ({
-  loading: state.adminReducer.loading,
-  leave: state.adminReducer.leave
+  loading: state.fetchEmployeeReducer.loading,
+  leaves: state.fetchEmployeeReducer.leaves
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      rejectFetchData
+      employeeGetRequestPending,
+      employeeDeleteRequestPending
     },
     dispatch
   );
@@ -371,4 +347,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(AdminReqRejectPage);
+)(EmployeePendingPage);

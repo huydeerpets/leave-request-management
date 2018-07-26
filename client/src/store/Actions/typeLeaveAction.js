@@ -1,10 +1,11 @@
 import {
-	ROOT_API
-} from "./types.js"
+	ROOT_API,
+	FETCH_TYPE_LEAVE
+} from "./types"
 
 function typeLeaveFetch(payload) {
 	return {
-		type: 'FETCH_TYPE_LEAVE',
+		type: FETCH_TYPE_LEAVE,
 		payload: payload
 	}
 }
@@ -16,15 +17,20 @@ export function typeLeaveFetchData() {
 			})
 			.then((resp) => resp.json())
 			.then(({
-				body
+				body,
+				error
 			}) => {
 				let payload = {
 					typeLeave: body
 				}
 				dispatch(typeLeaveFetch(payload))
+
+				if (error !== null) {
+					console.error("error not null @typeLeaveFetchData: ", error)
+				}
 			})
-			.catch(err => {
-				console.log(err)
+			.catch(error => {
+				console.error("error @typeLeaveFetchData: ", error)
 			})
 	}
 }

@@ -62,8 +62,8 @@ export function saveEditUser(savedUser, pusher) {
 				} else {
 					message.error(error)
 				}
-			}).catch(err => {
-				console.log("err @saveEditUser: ", err)
+			}).catch(error => {
+				console.error("err @saveEditUser: ", error)
 			})
 	}
 }

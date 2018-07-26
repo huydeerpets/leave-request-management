@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { rejectFetchData } from "../store/Actions/supervisorActions";
+import { fetchSupervisorLeaveReject } from "../store/Actions/supervisorActions";
 import { Layout, Table, Modal, Button, Input, Icon } from "antd";
 import HeaderNav from "./menu/HeaderNav";
 import Loading from "./menu/Loading";
@@ -16,7 +16,7 @@ class SupervisorRejectPage extends Component {
       loading: false,
       visible: false,
       user: null,
-      data: this.props.users,
+      data: this.props.leaves,
       filterDropdownVisible: false,
       filterDropdownNameVisible: false,
       filtered: false,
@@ -32,10 +32,10 @@ class SupervisorRejectPage extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.users !== this.props.users) {
-      this.setState({ data: nextProps.users });
+    if (nextProps.leaves !== this.props.leaves) {
+      this.setState({ data: nextProps.leaves });
     }
-    data = nextProps.users;
+    data = nextProps.leaves;
   }
 
   componentDidMount() {
@@ -44,7 +44,7 @@ class SupervisorRejectPage extends Component {
     } else if (localStorage.getItem("role") !== "supervisor") {
       this.props.history.push("/");
     }
-    this.props.rejectFetchData();
+    this.props.fetchSupervisorLeaveReject();
   }
 
   onSearch = () => {
@@ -342,8 +342,8 @@ class SupervisorRejectPage extends Component {
                 Contact Address:{" "}
                 {this.state.user && this.state.user.contact_address} <br />
                 Contact Number :{" "}
-                {this.state.user && this.state.user.contact_number}
-                Contact Number :{" "}
+                {this.state.user && this.state.user.contact_number} <br />
+                Reject Reason :{" "}
                 {this.state.user && this.state.user.reject_reason}
               </div>
             </Modal>
@@ -357,13 +357,13 @@ class SupervisorRejectPage extends Component {
 
 const mapStateToProps = state => ({
   loading: state.fetchSupervisorReducer.loading,
-  users: state.fetchSupervisorReducer.users
+  leaves: state.fetchSupervisorReducer.leaves
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      rejectFetchData
+      fetchSupervisorLeaveReject
     },
     dispatch
   );

@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { formOnchange, SumbitSignUp } from "../store/Actions/signupActions";
-import { SupervisorAdd } from "../store/Actions/AddSupervisorAction";
-
+import { formOnchange, registerUser } from "../store/Actions/registerAction";
+import { getSupervisors } from "../store/Actions/AddSupervisorAction";
 import { Layout, Form, Input, Select, Button, DatePicker } from "antd";
 import HeaderNav from "./menu/HeaderAdmin";
 import Footer from "./menu/Footer";
@@ -40,7 +39,7 @@ class RegisterPage extends Component {
   }
 
   componentDidMount() {
-    this.props.SupervisorAdd();
+    this.props.getSupervisors();
   }
 
   handleSubmit = e => {
@@ -50,7 +49,7 @@ class RegisterPage extends Component {
         console.log("Received values of form: ", values);
       }
     });
-    this.props.SumbitSignUp(this.props.signupForm, url => {
+    this.props.registerUser(this.props.signupForm, url => {
       this.props.history.push(url);
     });
   };
@@ -462,7 +461,7 @@ class RegisterPage extends Component {
 }
 
 const mapStateToProps = state => ({
-  signupForm: state.signupReducer,
+  signupForm: state.registerReducer,
   supervisor: state.AddSupervisorReducer.supervisor
 });
 
@@ -472,8 +471,8 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       formOnchange,
-      SumbitSignUp,
-      SupervisorAdd
+      registerUser,
+      getSupervisors
     },
     dispatch
   );

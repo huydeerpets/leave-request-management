@@ -45,7 +45,7 @@ function rejectRequest(payload) {
 	}
 }
 
-export function pendingFetchData() {
+export function fetchSupervisorLeavePending() {
 	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/supervisor/pending/${employeeNumber}`, {
@@ -58,21 +58,21 @@ export function pendingFetchData() {
 			}) => {
 				let payload = {
 					loading: false,
-					users: body
+					leaves: body
 				}
 				dispatch(pendingFetch(payload))
 
 				if (error !== null) {
-					console.error("err not null @pendingFetchData: ", error)
+					console.error("error not null @fetchSupervisorLeavePending: ", error)
 				}
 			})
-			.catch(err => {
-				console.error("err @pendingFetchData: ", err)
+			.catch(error => {
+				console.error("error @fetchSupervisorLeavePending: ", error)
 			})
 	}
 }
 
-export function acceptFetchData() {
+export function fetchSupervisorLeaveApprove() {
 	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/supervisor/accept/${employeeNumber}`, {
@@ -85,21 +85,21 @@ export function acceptFetchData() {
 			}) => {
 				let payload = {
 					loading: false,
-					users: body
+					leaves: body
 				}
 				dispatch(approveFetch(payload))
 
 				if (error !== null) {
-					console.error("err not null @acceptFetchData: ", error)
+					console.error("error not null @fetchSupervisorLeaveApprove: ", error)
 				}
 			})
-			.catch(err => {
-				console.error("err @acceptFetchData: ", err)
+			.catch(error => {
+				console.error("error @fetchSupervisorLeaveApprove: ", error)
 			})
 	}
 }
 
-export function rejectFetchData() {
+export function fetchSupervisorLeaveReject() {
 	const employeeNumber = localStorage.getItem('id')
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/supervisor/reject/${employeeNumber}`, {
@@ -112,21 +112,21 @@ export function rejectFetchData() {
 			}) => {
 				let payload = {
 					loading: false,
-					users: body
+					leaves: body
 				}
 				dispatch(rejectFetch(payload))
 
 				if (error !== null) {
-					console.error("err not null @rejectFetchData: ", error)
+					console.error("error not null @fetchSupervisorLeaveReject: ", error)
 				}
 			})
-			.catch(err => {
-				console.error("err @rejectFetchData: ", err)
+			.catch(error => {
+				console.error("error @fetchSupervisorLeaveReject: ", error)
 			})
 	}
 }
 
-export function updateStatusAccept(users, id, enumber) {
+export function supervisorApproveRequest(leaves, id, enumber) {
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/supervisor/accept/${id}/${enumber}`, {
 				method: 'PUT',
@@ -137,11 +137,11 @@ export function updateStatusAccept(users, id, enumber) {
 				error
 			}) => {
 				if (body !== null) {
-					let newUserlist = users.filter(el => el.id !== id)
+					let listNewLeave = leaves.filter(el => el.id !== id)
 					let payload = {
 						loading: false,
-						users: [
-							...newUserlist
+						leaves: [
+							...listNewLeave
 						]
 					}
 					dispatch(approveRequest(payload))
@@ -149,13 +149,13 @@ export function updateStatusAccept(users, id, enumber) {
 				} else {
 					message.error(error)
 				}
-			}).catch(err => {
-				console.error("err @updateStatusAccept: ", err)
+			}).catch(error => {
+				console.error("error @supervisorApproveRequest: ", error)
 			})
 	}
 }
 
-export function updateStatusReject(users, id, enumber, payload) {
+export function supervisorRejectRequest(leaves, id, enumber, payload) {
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/supervisor/reject/${id}/${enumber}`, {
 				method: 'PUT',
@@ -167,11 +167,11 @@ export function updateStatusReject(users, id, enumber, payload) {
 				error
 			}) => {
 				if (body !== null) {
-					let newUserlist = users.filter(el => el.id !== id)
+					let listNewLeave = leaves.filter(el => el.id !== id)
 					let payloads = {
 						loading: false,
-						users: [
-							...newUserlist
+						leaves: [
+							...listNewLeave
 						]
 					}
 					dispatch(rejectRequest(payloads))
@@ -179,8 +179,8 @@ export function updateStatusReject(users, id, enumber, payload) {
 				} else {
 					message.error(error)
 				}
-			}).catch(err => {
-				console.error("err @updateStatusReject: ", err)
+			}).catch(error => {
+				console.error("error @supervisorRejectRequest: ", error)
 			})
 	}
 }

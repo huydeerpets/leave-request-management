@@ -1,10 +1,11 @@
 import {
-	ROOT_API
-} from "./types.js"
+	ROOT_API,
+	GET_PROFILE
+} from "./types"
 
-function profileloaded(payload) {
+function getProfile(payload) {
 	return {
-		type: 'PROFILE_LOADED',
+		type: GET_PROFILE,
 		payload: payload
 	}
 }
@@ -17,16 +18,21 @@ export function profileFetchData() {
 			})
 			.then((resp) => resp.json())
 			.then(({
-				body
+				body,
+				error
 			}) => {
 				let payload = {
 					loading: false,
 					user: body
 				}
-				dispatch(profileloaded(payload))
+				dispatch(getProfile(payload))
+
+				if (error !== null) {
+					console.error("error not null @profileFetchData: ", error)
+				}
 			})
-			.catch(err => {
-				console.log(err)
+			.catch(error => {
+				console.error("error @profileFetchData: ", error)
 			})
 	}
 }

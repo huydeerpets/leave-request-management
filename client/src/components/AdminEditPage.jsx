@@ -6,7 +6,7 @@ import {
   handleEdit,
   saveEditUser
 } from "../store/Actions/editUserAction";
-import { SupervisorAdd } from "../store/Actions/AddSupervisorAction";
+import { getSupervisors } from "../store/Actions/AddSupervisorAction";
 import { Layout, Button, Form, Input, Select, DatePicker } from "antd";
 import moment from "moment-business-days";
 import HeaderNav from "./menu/HeaderAdmin";
@@ -36,7 +36,7 @@ class AdminEditPage extends Component {
       el => el.employee_number === id
     );
     this.props.fetchedEdit(user[0]);
-    this.props.SupervisorAdd();
+    this.props.getSupervisors();
   }
 
   componentDidMount() {
@@ -57,7 +57,7 @@ class AdminEditPage extends Component {
         el => el.employee_number === id
       );
       this.props.fetchedEdit(user[0]);
-      this.props.SupervisorAdd();
+      this.props.getSupervisors();
     }
   }
 
@@ -370,7 +370,7 @@ const mapDispatchToProps = dispatch =>
       fetchedEdit,
       handleEdit,
       saveEditUser,
-      SupervisorAdd
+      getSupervisors
     },
     dispatch
   );

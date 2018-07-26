@@ -1,6 +1,7 @@
 import {
-	ROOT_API
-} from "./types.js"
+	ROOT_API,
+	RESET_PASSWORD
+} from "./types"
 import {
 	message
 } from "antd";
@@ -9,7 +10,7 @@ import {
 export function handleEdit(payload) {
 	return (dispatch) => {
 		dispatch({
-			type: 'RESET_PASSWORD',
+			type: RESET_PASSWORD,
 			payload: payload
 		})
 	}
@@ -27,13 +28,13 @@ export function resetPassword(savePassword, pusher) {
 				error
 			}) => {
 				if (body !== null) {
-					message.success(body)					
+					message.success(body)
 					pusher('/')
 				} else {
 					message.error(error)
 				}
-			}).catch(err => {
-				message.error(err)
+			}).catch(error => {
+				console.error("error @resetPassword: ", error)
 			})
 	}
 }

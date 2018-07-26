@@ -1,52 +1,87 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { employeeGetRequestApprove } from "../store/Actions/employeeAction";
+import { fetchAdminLeavePending } from "../store/Actions/adminActions";
 import { Layout, Table, Modal, Button, Input, Icon } from "antd";
-import HeaderNav from "./menu/HeaderNav";
+import HeaderNav from "./menu/HeaderAdmin";
 import Loading from "./menu/Loading";
 import Footer from "./menu/Footer";
 const { Content } = Layout;
 let data;
 
-class EmployeeReqAcceptPage extends Component {
+class AdminPendingPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: false,
       visible: false,
       user: null,
-      data: this.props.leaves,
+      data: this.props.leave,
       filterDropdownVisible: false,
+      filterDropdownNameVisible: false,
       filtered: false,
+      searchText: "",
       searchID: ""
     };
   }
 
   componentWillMount() {
     console.log(
-      "------------ Employee-List-Approve-Request -------------------"
+      " ----------------- Admin-List-Pending-Request ----------------- "
     );
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.leaves !== this.props.leaves) {
-      this.setState({ data: nextProps.leaves });
+    if (nextProps.leave !== this.props.leave) {
+      this.setState({ data: nextProps.leave });
     }
-    data = nextProps.leaves;
+    data = nextProps.leave;
   }
 
   componentDidMount() {
     if (!localStorage.getItem("token")) {
       this.props.history.push("/");
-    } else if (
-      localStorage.getItem("role") !== "employee" &&
-      localStorage.getItem("role") !== "supervisor"
-    ) {
+    } else if (localStorage.getItem("role") !== "admin") {
       this.props.history.push("/");
     }
-    this.props.employeeGetRequestApprove();
+    this.props.fetchAdminLeavePending();
   }
+
+  onSearch = () => {
+    const { searchText } = this.state;
+    const reg = new RegExp(searchText, "gi");
+    this.setState({
+      filterDropdownNameVisible: false,
+      filtered: !!searchText,
+      data: data
+        .map(record => {
+          const match = record.name.match(reg);
+          if (!match) {
+            return null;
+          }
+          return {
+            ...record,
+            name: (
+              <span>
+                {record.name
+                  .split(
+                    new RegExp(`(?<=${searchText})|(?=${searchText})`, "i")
+                  )
+                  .map(
+                    (text, i) =>
+                      text.toLowerCase() === searchText.toLowerCase() ? (
+                        <span key={i}>{text}</span>
+                      ) : (
+                        text
+                      ) // eslint-disable-line
+                  )}
+              </span>
+            )
+          };
+        })
+        .filter(record => !!record)
+    });
+  };
 
   onSearchID = () => {
     const { searchID } = this.state;
@@ -89,6 +124,12 @@ class EmployeeReqAcceptPage extends Component {
     });
   };
 
+  onInputChangeName = e => {
+    this.setState({
+      searchText: e.target.value
+    });
+  };
+
   showDetail = record => {
     this.setState({
       visible: true,
@@ -110,7 +151,6 @@ class EmployeeReqAcceptPage extends Component {
 
   render() {
     const { visible, loading } = this.state;
-
     const columns = [
       {
         title: "ID",
@@ -158,8 +198,38 @@ class EmployeeReqAcceptPage extends Component {
         title: "Name",
         dataIndex: "name",
         key: "name",
-        width: 150
+        width: 150,
+        filterDropdown: (
+          <div className="custom-filter-dropdown-name">
+            <Input
+              ref={ele => (this.searchInput = ele)}
+              placeholder="Search name"
+              value={this.state.searchText}
+              onChange={this.onInputChangeName}
+              onPressEnter={this.onSearch}
+            />
+            <Button type="primary" onClick={this.onSearch}>
+              Search
+            </Button>
+          </div>
+        ),
+        filterIcon: (
+          <Icon
+            type="search"
+            style={{ color: this.state.filtered ? "#108ee9" : "#aaa" }}
+          />
+        ),
+        filterDropdownNameVisible: this.state.filterDropdownNameVisible,
+        onFilterDropdownVisibleChange: visible => {
+          this.setState(
+            {
+              filterDropdownNameVisible: visible
+            },
+            () => this.searchInput && this.searchInput.focus()
+          );
+        }
       },
+
       {
         title: "Position",
         dataIndex: "position",
@@ -237,7 +307,7 @@ class EmployeeReqAcceptPage extends Component {
 
             <Modal
               visible={visible}
-              title="Detail Leave Request Approved"
+              title="Detail Leave Request Pending"
               onCancel={this.handleCancel}
               style={{ top: "20" }}
               bodyStyle={{ padding: "0" }}
@@ -252,7 +322,6 @@ class EmployeeReqAcceptPage extends Component {
               ]}
             >
               <div style={{ padding: 10, background: "#fff" }}>
-                {console.log(this.state.user && this.state.user.half_dates)}
                 ID : {this.state.user && this.state.user.id} <br />
                 Name : {this.state.user && this.state.user.name} <br />
                 Gender : {this.state.user && this.state.user.gender} <br />
@@ -263,7 +332,7 @@ class EmployeeReqAcceptPage extends Component {
                 Reason : {this.state.user && this.state.user.reason} <br />
                 From : {this.state.user && this.state.user.date_from} <br />
                 To : {this.state.user && this.state.user.date_to} <br />
-                Half Day : {this.state.user && this.state.user.half_dates}
+                Half Day : {this.state.user && this.state.user.half_dates}{" "}
                 <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
                 Total Leave : {this.state.user &&
@@ -286,14 +355,14 @@ class EmployeeReqAcceptPage extends Component {
 }
 
 const mapStateToProps = state => ({
-  loading: state.fetchEmployeeReducer.loading,
-  leaves: state.fetchEmployeeReducer.leaves
+  loading: state.adminReducer.loading,
+  leave: state.adminReducer.leaves
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      employeeGetRequestApprove
+      fetchAdminLeavePending
     },
     dispatch
   );
@@ -301,4 +370,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(EmployeeReqAcceptPage);
+)(AdminPendingPage);

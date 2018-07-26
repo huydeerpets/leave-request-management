@@ -1,72 +1,50 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import {
-  acceptFetchData,
-  cancelRequestLeave,
-  downloadReport,
-  downloadReportTypeLeave
-} from "../store/Actions/adminActions";
-import {
-  Layout,
-  Table,
-  Modal,
-  Button,
-  Input,
-  Icon,
-  Form,
-  DatePicker,
-  Select
-} from "antd";
-import HeaderNav from "./menu/HeaderAdmin";
+import { fetchSupervisorLeaveApprove } from "../store/Actions/supervisorActions";
+import { Layout, Table, Modal, Button, Input, Icon } from "antd";
+import HeaderNav from "./menu/HeaderNav";
 import Loading from "./menu/Loading";
 import Footer from "./menu/Footer";
 const { Content } = Layout;
-const FormItem = Form.Item;
-const Option = Select.Option;
 let data;
 
-class AdminReqAcceptPage extends Component {
+class SupervisorApprovePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: false,
       visible: false,
       user: null,
-      data: this.props.leave,
+      data: this.props.leaves,
       filterDropdownVisible: false,
       filterDropdownNameVisible: false,
       filtered: false,
       searchText: "",
-      searchID: "",
-      from: null,
-      to: null,
-      start: null,
-      end: null,
-      id: null
+      searchID: ""
     };
   }
 
   componentWillMount() {
     console.log(
-      " ----------------- Admin-List-Approve-Request ----------------- "
+      " ----------------- Supervisor-List-Approve-Request ----------------- "
     );
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.leave !== this.props.leave) {
-      this.setState({ data: nextProps.leave });
+    if (nextProps.leaves !== this.props.leaves) {
+      this.setState({ data: nextProps.leaves });
     }
-    data = nextProps.leave;
+    data = nextProps.leaves;
   }
 
   componentDidMount() {
     if (!localStorage.getItem("token")) {
       this.props.history.push("/");
-    } else if (localStorage.getItem("role") !== "admin") {
+    } else if (localStorage.getItem("role") !== "supervisor") {
       this.props.history.push("/");
     }
-    this.props.acceptFetchData();
+    this.props.fetchSupervisorLeaveApprove();
   }
 
   onSearch = () => {
@@ -152,21 +130,6 @@ class AdminReqAcceptPage extends Component {
     });
   };
 
-  handleOk = () => {
-    const id = this.state.user && this.state.user.id;
-    const employeeNumber = this.state.user && this.state.user.employee_number;
-
-    this.setState({ loading: true });
-    this.cancelRequestLeave(this.props.leave, id, employeeNumber);
-    setTimeout(() => {
-      this.setState({ loading: false, visible: false });
-    }, 2000);
-  };
-
-  cancelRequestLeave = (leave, id, enumber) => {
-    this.props.cancelRequestLeave(leave, id, enumber);
-  };
-
   showDetail = record => {
     this.setState({
       visible: true,
@@ -185,83 +148,6 @@ class AdminReqAcceptPage extends Component {
   onShowSizeChange(current, pageSize) {
     console.log(current, pageSize);
   }
-
-  handleSubmit = e => {
-    e.preventDefault();
-    this.downloadReport(this.state.from, this.state.to);
-  };
-
-  downloadReport = (from, to) => {
-    this.props.downloadReport(from, to);
-  };
-
-  onStartChange = value => {
-    if (value !== null) {
-      const date = new Date(value._d),
-        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
-        day = ("0" + date.getDate()).slice(-2);
-      let dateFrom = [date.getFullYear(), mnth, day].join("-");
-      this.setState({
-        from: dateFrom
-      });
-    }
-  };
-
-  onEndChange = value => {
-    if (value !== null) {
-      const date = new Date(value._d),
-        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
-        day = ("0" + date.getDate()).slice(-2);
-      let dateTo = [date.getFullYear(), mnth, day].join("-");
-      this.setState({
-        to: dateTo
-      });
-    }
-  };
-
-  handleSubmitReportType = e => {
-    e.preventDefault();
-    this.downloadReportTypeLeave(
-      this.state.start,
-      this.state.end,
-      this.state.id
-    );
-  };
-
-  downloadReportTypeLeave = (from, to, id) => {
-    this.props.downloadReportTypeLeave(from, to, id);
-  };
-
-  onStartChangeDate = value => {
-    if (value !== null) {
-      const date = new Date(value._d),
-        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
-        day = ("0" + date.getDate()).slice(-2);
-      let dateFrom = [date.getFullYear(), mnth, day].join("-");
-      this.setState({
-        start: dateFrom
-      });
-    }
-  };
-
-  onEndChangeDate = value => {
-    if (value !== null) {
-      const date = new Date(value._d),
-        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
-        day = ("0" + date.getDate()).slice(-2);
-      let dateTo = [date.getFullYear(), mnth, day].join("-");
-      this.setState({
-        end: dateTo
-      });
-    }
-  };
-
-  handleChangeSelect = value => {
-    console.log(value);
-    this.setState({
-      id: value
-    });
-  };
 
   render() {
     const { visible, loading } = this.state;
@@ -399,90 +285,11 @@ class AdminReqAcceptPage extends Component {
             style={{
               display: "flex",
               margin: "18px 10px 0",
-              justifyContent: "center",
+              justifyContent: "space-around",
               paddingBottom: "336px"
             }}
           >
             <div style={{ padding: 20, background: "#fff" }}>
-              <Form
-                id="myForm"
-                layout="inline"
-                onSubmit={this.handleSubmit}
-                style={{ marginRight: 600 }}
-              >
-                <FormItem>
-                  <DatePicker
-                    id="date_from"
-                    name="date_from"
-                    placeholder="Start"
-                    defaultValue={this.state.from}
-                    onChange={this.onStartChange}
-                  />
-                </FormItem>
-                <FormItem>
-                  <DatePicker
-                    id="date_from"
-                    name="date_from"
-                    placeholder="End"
-                    defaultValue={this.state.to}
-                    onChange={this.onEndChange}
-                  />
-                </FormItem>
-                <FormItem>
-                  <Button type="primary" htmlType="submit">
-                    Download
-                  </Button>
-                </FormItem>
-              </Form>
-
-              <Form
-                id="myForm"
-                layout="inline"
-                onSubmit={this.handleSubmitReportType}
-                style={{ marginRight: 405 }}
-              >
-                <FormItem>
-                  <DatePicker
-                    id="date_from"
-                    name="date_from"
-                    placeholder="Start"
-                    defaultValue={this.state.start}
-                    onChange={this.onStartChangeDate}
-                  />
-                </FormItem>
-                <FormItem>
-                  <DatePicker
-                    id="date_from"
-                    name="date_from"
-                    placeholder="End"
-                    defaultValue={this.state.end}
-                    onChange={this.onEndChangeDate}
-                  />
-                </FormItem>
-                <FormItem>
-                  <Select
-                    style={{ width: 180 }}
-                    id="type_of_leave"
-                    name="type_of_leave"
-                    placeholder="Type of Leave"
-                    optionFilterProp="children"
-                    onChange={this.handleChangeSelect}
-                  >
-                    <Option value="11">Annual Leave</Option>
-                    <Option value="22">Errand Leave</Option>
-                    <Option value="33">Sick Leave</Option>
-                    <Option value="44">Marriage Leave</Option>
-                    <Option value="55">Maternity Leave</Option>
-                    <Option value="66">Other Leave</Option>
-                  </Select>
-                </FormItem>
-                <FormItem>
-                  <Button type="primary" htmlType="submit">
-                    Download
-                  </Button>
-                </FormItem>
-              </Form>
-
               <Table
                 columns={columns}
                 dataSource={this.state.data}
@@ -501,18 +308,16 @@ class AdminReqAcceptPage extends Component {
             <Modal
               visible={visible}
               title="Detail Leave Request Approved"
-              onOk={this.handleOk}
               onCancel={this.handleCancel}
               style={{ top: "20" }}
               bodyStyle={{ padding: "0" }}
               footer={[
                 <Button
-                  key="accept"
-                  type="danger"
+                  key="cancel"
                   loading={loading}
-                  onClick={this.handleOk}
+                  onClick={this.handleCancel}
                 >
-                  Cancel Request
+                  Return
                 </Button>
               ]}
             >
@@ -537,7 +342,8 @@ class AdminReqAcceptPage extends Component {
                 Contact Address :{" "}
                 {this.state.user && this.state.user.contact_address} <br />
                 Contact Number :{" "}
-                {this.state.user && this.state.user.contact_number}
+                {this.state.user && this.state.user.contact_number} <br />
+                Status : {this.state.user && this.state.user.status}
               </div>
             </Modal>
           </Content>
@@ -549,17 +355,14 @@ class AdminReqAcceptPage extends Component {
 }
 
 const mapStateToProps = state => ({
-  loading: state.adminReducer.loading,
-  leave: state.adminReducer.leave
+  loading: state.fetchSupervisorReducer.loading,
+  leaves: state.fetchSupervisorReducer.leaves
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      acceptFetchData,
-      cancelRequestLeave,
-      downloadReport,
-      downloadReportTypeLeave
+      fetchSupervisorLeaveApprove
     },
     dispatch
   );
@@ -567,4 +370,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(AdminReqAcceptPage);
+)(SupervisorApprovePage);

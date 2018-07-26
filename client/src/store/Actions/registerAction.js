@@ -22,7 +22,7 @@ function clearField(msg) {
 	}
 }
 
-export function SumbitSignUp(payload, pusher) {
+export function registerUser(payload, pusher) {
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/admin/user/register`, {
 				method: 'POST',
@@ -43,8 +43,8 @@ export function SumbitSignUp(payload, pusher) {
 				} else {
 					message.error(error)
 				}
-			}).catch(err => {
-				console.log("err @SumbitSignUp: ", err)
+			}).catch(error => {
+				console.error("error @SumbitSignUp: ", error)
 			})
 	}
 }

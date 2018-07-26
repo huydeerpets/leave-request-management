@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import {
-  pendingFetchData,
-  updateStatusAccept,
-  updateStatusReject
+  fetchDirectorLeavePending,
+  directorApproveRequest,
+  directorRejectRequest
 } from "../store/Actions/directorActions";
 import { Layout, Table, Modal, Button, Input, Icon } from "antd";
 import HeaderNav from "./menu/HeaderNav";
@@ -19,7 +19,7 @@ class DirectorPendingPage extends Component {
     this.state = {
       user: null,
       reason: null,
-      data: this.props.users,
+      data: this.props.leaves,
       loadingA: false,
       loadingR: false,
       visible: false,
@@ -39,10 +39,10 @@ class DirectorPendingPage extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.users !== this.props.users) {
-      this.setState({ data: nextProps.users });
+    if (nextProps.leaves !== this.props.leaves) {
+      this.setState({ data: nextProps.leaves });
     }
-    data = nextProps.users;
+    data = nextProps.leaves;
   }
 
   componentDidMount() {
@@ -51,7 +51,7 @@ class DirectorPendingPage extends Component {
     } else if (localStorage.getItem("role") !== "director") {
       this.props.history.push("/");
     }
-    this.props.pendingFetchData();
+    this.props.fetchDirectorLeavePending();
   }
 
   onSearch = () => {
@@ -154,7 +154,7 @@ class DirectorPendingPage extends Component {
     const employeeNumber = this.state.user && this.state.user.employee_number;
 
     this.setState({ loadingA: true });
-    this.updateStatusAccept(this.props.users, id, employeeNumber);
+    this.directorApproveRequest(this.props.leaves, id, employeeNumber);
     setTimeout(() => {
       this.setState({ loadingA: false, visible: false });
     }, 3000);
@@ -165,8 +165,8 @@ class DirectorPendingPage extends Component {
     const employeeNumber = this.state.user && this.state.user.employee_number;
 
     this.setState({ loadingR: true });
-    this.updateStatusReject(
-      this.props.users,
+    this.directorRejectRequest(
+      this.props.leaves,
       id,
       employeeNumber,
       this.state.reason
@@ -190,12 +190,12 @@ class DirectorPendingPage extends Component {
     this.setState({ visible: false });
   };
 
-  updateStatusAccept = (users, id, enumber) => {
-    this.props.updateStatusAccept(users, id, enumber);
+  directorApproveRequest = (leaves, id, enumber) => {
+    this.props.directorApproveRequest(leaves, id, enumber);
   };
 
-  updateStatusReject = (users, id, enumber, reason) => {
-    this.props.updateStatusReject(users, id, enumber, reason);
+  directorRejectRequest = (leaves, id, enumber, reason) => {
+    this.props.directorRejectRequest(leaves, id, enumber, reason);
   };
 
   handleOnChange = e => {
@@ -454,15 +454,15 @@ class DirectorPendingPage extends Component {
 
 const mapStateToProps = state => ({
   loading: state.fetchDirectorReducer.loading,
-  users: state.fetchDirectorReducer.leave
+  leaves: state.fetchDirectorReducer.leaves
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      pendingFetchData,
-      updateStatusAccept,
-      updateStatusReject
+      fetchDirectorLeavePending,
+      directorApproveRequest,
+      directorRejectRequest
     },
     dispatch
   );

@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { pendingFetchData } from "../store/Actions/adminActions";
+import { fetchAdminLeaveReject } from "../store/Actions/adminActions";
 import { Layout, Table, Modal, Button, Input, Icon } from "antd";
 import HeaderNav from "./menu/HeaderAdmin";
-import Footer from "./menu/Footer";
 import Loading from "./menu/Loading";
+import Footer from "./menu/Footer";
 const { Content } = Layout;
 let data;
 
-class AdminReqPendingPage extends Component {
+class AdminRejectPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -27,7 +27,7 @@ class AdminReqPendingPage extends Component {
 
   componentWillMount() {
     console.log(
-      " ----------------- Admin-List-Pending-Request ----------------- "
+      " ----------------- Admin-List-Reject-Request ----------------- "
     );
   }
 
@@ -44,7 +44,7 @@ class AdminReqPendingPage extends Component {
     } else if (localStorage.getItem("role") !== "admin") {
       this.props.history.push("/");
     }
-    this.props.pendingFetchData();
+    this.props.fetchAdminLeaveReject();
   }
 
   onSearch = () => {
@@ -307,7 +307,7 @@ class AdminReqPendingPage extends Component {
 
             <Modal
               visible={visible}
-              title="Detail Leave Request Pending"
+              title="Detail Leave Request Rejected"
               onCancel={this.handleCancel}
               style={{ top: "20" }}
               bodyStyle={{ padding: "0" }}
@@ -343,7 +343,8 @@ class AdminReqPendingPage extends Component {
                 {this.state.user && this.state.user.contact_address} <br />
                 Contact Number :{" "}
                 {this.state.user && this.state.user.contact_number} <br />
-                Status : {this.state.user && this.state.user.status}
+                Reject Reason :{" "}
+                {this.state.user && this.state.user.reject_reason}
               </div>
             </Modal>
           </Content>
@@ -356,13 +357,13 @@ class AdminReqPendingPage extends Component {
 
 const mapStateToProps = state => ({
   loading: state.adminReducer.loading,
-  leave: state.adminReducer.leave
+  leave: state.adminReducer.leaves
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      pendingFetchData
+      fetchAdminLeaveReject
     },
     dispatch
   );
@@ -370,4 +371,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(AdminReqPendingPage);
+)(AdminRejectPage);

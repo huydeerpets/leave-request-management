@@ -9,19 +9,17 @@ import loginReducer from './Reducers/loginReducer'
 import resetPasswordReducer from './Reducers/resetPasswordReducer'
 
 import adminReducer from './Reducers/adminReducer'
-import signupReducer from './Reducers/signupReducer'
+import registerReducer from './Reducers/registerReducer'
 import editUserReducer from './Reducers/editUserReducer'
 
 import leaveRequestReducer from './Reducers/leaveRequestReducer'
 import editRequestReducer from './Reducers/editRequestReducer'
 
-
 import fetchDirectorReducer from './Reducers/fetchDirectorReducer'
 import fetchSupervisorReducer from './Reducers/fetchSupervisorReducer'
 import fetchEmployeeReducer from './Reducers/fetchEmployeeReducer'
+
 import fetchUserSummaryReducer from './Reducers/fetchUserSummaryReducer'
-
-
 import profileReducer from './Reducers/profileReducer'
 import passwordReducer from './Reducers/passwordReducer'
 
@@ -34,24 +32,22 @@ const appStore = combineReducers({
 	resetPasswordReducer,
 
 	adminReducer,
-	signupReducer,	
-	editUserReducer,	
-	
-	profileReducer,	
-	AddSupervisorReducer,	
+	registerReducer,
+	editUserReducer,
 
 	leaveRequestReducer,
-	editRequestReducer,	
+	editRequestReducer,
 
 	fetchDirectorReducer,
-	fetchSupervisorReducer,	
+	fetchSupervisorReducer,
 	fetchEmployeeReducer,
 
-	fetchUserSummaryReducer,	
-	
+	fetchUserSummaryReducer,
+	profileReducer,
 	passwordReducer,
+
 	fetchTypeLeaveReducer,
-	
+	AddSupervisorReducer,
 })
 
 const store = createStore(

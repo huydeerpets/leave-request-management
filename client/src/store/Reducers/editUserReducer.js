@@ -18,7 +18,7 @@ const userState = {
 	}
 }
 
-const editUserReducer = (state = userState, action) => {
+export default function editUserReducer(state = userState, action) {
 	switch (action.type) {
 		case FETCH_EDIT_USER:
 			return {
@@ -32,5 +32,3 @@ const editUserReducer = (state = userState, action) => {
 			return state
 	}
 }
-
-export default editUserReducer

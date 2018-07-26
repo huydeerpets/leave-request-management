@@ -1,10 +1,11 @@
 import {
-	ROOT_API
-} from "./types.js"
+	ROOT_API,
+	FETCH_USER_SUMMARY
+} from "./types"
 
 function userSummary(payload) {
 	return {
-		type: 'FETCH_USER_SUMMARY',
+		type: FETCH_USER_SUMMARY,
 		payload: payload
 	}
 }
@@ -31,16 +32,16 @@ export function userSummaryFetchData() {
 								}
 								dispatch(userSummary(payload))
 							})
-							.catch(err => {
-								console.log(err)
+							.catch(error => {
+								console.error("error @userSummaryFetchData: ", error)
 							})
 					})
-					.catch(err => {
-						console.log(err)
+					.catch(error => {
+						console.error("error @userSummaryFetchData: ", error)
 					})
 			})
-			.catch(err => {
-				console.log(err)
+			.catch(error => {
+				console.error("error @userSummaryFetchData: ", error)
 			})
 	}
 }

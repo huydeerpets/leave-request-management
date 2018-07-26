@@ -52,11 +52,11 @@ export function employeeGetRequestPending() {
 				dispatch(fetchRequestPending(payload))
 
 				if (error !== null) {
-					console.error("err not null @employeeGetRequestPending: ", error)
+					console.error("error not null @employeeGetRequestPending: ", error)
 				}
 			})
-			.catch(err => {
-				console.error("err @employeeGetRequestPending: ", err)
+			.catch(error => {
+				console.error("error @employeeGetRequestPending: ", error)
 			})
 	}
 }
@@ -81,11 +81,11 @@ export function employeeDeleteRequestPending(leaves, id) {
 				dispatch(deleteRequestPending(payload))
 
 				if (error !== null) {
-					console.error("err not null @employeeDeleteRequestPending: ", error)
+					console.error("error not null @employeeDeleteRequestPending: ", error)
 				}
 			})
-			.catch(err => {
-				console.error("err @employeeDeleteRequestPending: ", err)
+			.catch(error => {
+				console.error("error @employeeDeleteRequestPending: ", error)
 			})
 	}
 }
@@ -108,11 +108,11 @@ export function employeeGetRequestApprove() {
 				dispatch(fetchRequestApprove(payload))
 
 				if (error !== null) {
-					console.error("err not null @employeeGetRequestApprove: ", error)
+					console.error("error not null @employeeGetRequestApprove: ", error)
 				}
 			})
-			.catch(err => {
-				console.error("err @employeeGetRequestApprove: ", err)
+			.catch(error => {
+				console.error("error @employeeGetRequestApprove: ", error)
 			})
 	}
 }
@@ -135,11 +135,11 @@ export function employeeGetRequestReject() {
 				dispatch(fetchRequestReject(payload))
 
 				if (error !== null) {
-					console.error("err not null @employeeGetRequestReject: ", error)
+					console.error("error not null @employeeGetRequestReject: ", error)
 				}
 			})
-			.catch(err => {
-				console.error("err @employeeGetRequestReject: ", err)
+			.catch(error => {
+				console.error("error @employeeGetRequestReject: ", error)
 			})
 	}
 }

@@ -54,7 +54,7 @@ function cancelRequest(payload) {
 }
 
 
-export function adminFetchData() {
+export function adminGetUsers() {
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/admin/user/`, {
 				method: 'GET',
@@ -71,16 +71,16 @@ export function adminFetchData() {
 				dispatch(userFetch(payload))
 
 				if (error !== null) {
-					console.error("err not null @adminFetchData: ", error)
+					console.error("error not null @adminGetUsers: ", error)
 				}
 			})
-			.catch(err => {
-				console.error("err @adminFetchData: ", err)
+			.catch(error => {
+				console.error("error @adminGetUsers: ", error)
 			})
 	}
 }
 
-export function deleteUser(users, employeeNumber) {
+export function adminDeleteUser(users, employeeNumber) {
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/admin/user/${employeeNumber}`, {
 				method: 'DELETE',
@@ -100,16 +100,16 @@ export function deleteUser(users, employeeNumber) {
 				dispatch(userDeleted(payload))
 
 				if (error !== null) {
-					console.error("err not null @deleteUser: ", error)
+					console.error("error not null @adminDeleteUser: ", error)
 				}
 			})
-			.catch(err => {
-				console.error("err @deleteUser: ", err)
+			.catch(error => {
+				console.error("error @adminDeleteUser: ", error)
 			})
 	}
 }
 
-export function pendingFetchData() {
+export function fetchAdminLeavePending() {
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/admin/leave/pending/`, {
 				method: 'GET',
@@ -121,21 +121,21 @@ export function pendingFetchData() {
 			}) => {
 				let payload = {
 					loading: false,
-					leave: body
+					leaves: body
 				}
 				dispatch(pendingFetch(payload))
 
 				if (error !== null) {
-					console.error("err not null @pendingFetchData: ", error)
+					console.error("error not null @fetchAdminLeavePending: ", error)
 				}
 			})
-			.catch(err => {
-				console.error("err @pendingFetchData: ", err)
+			.catch(error => {
+				console.error("error @fetchAdminLeavePending: ", error)
 			})
 	}
 }
 
-export function acceptFetchData() {
+export function fetchAdminLeaveApprove() {
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/admin/leave/accept/`, {
 				method: 'GET',
@@ -147,22 +147,22 @@ export function acceptFetchData() {
 			}) => {
 				let payload = {
 					loading: false,
-					leave: body
+					leaves: body
 				}
 				dispatch(approveFetch(payload))
 
 				if (error !== null) {
-					console.error("err not null @acceptFetchData: ", error)
+					console.error("error not null @fetchAdminLeaveApprove: ", error)
 				}
 			})
-			.catch(err => {
-				console.error("err @acceptFetchData: ", err)
+			.catch(error => {
+				console.error("error @fetchAdminLeaveApprove: ", error)
 			})
 	}
 }
 
 
-export function rejectFetchData() {
+export function fetchAdminLeaveReject() {
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/admin/leave/reject/`, {
 				method: 'GET',
@@ -174,16 +174,16 @@ export function rejectFetchData() {
 			}) => {
 				let payload = {
 					loading: false,
-					leave: body
+					leaves: body
 				}
 				dispatch(rejectFetch(payload))
 
 				if (error !== null) {
-					console.error("err not null @rejectFetchData: ", error)
+					console.error("error not null @fetchAdminLeaveReject: ", error)
 				}
 			})
-			.catch(err => {
-				console.error("err @rejectFetchData: ", err)
+			.catch(error => {
+				console.error("error @fetchAdminLeaveReject: ", error)
 			})
 	}
 }
@@ -202,7 +202,7 @@ export function cancelRequestLeave(users, id, enumber) {
 					let newUserlist = users.filter(el => el.id !== id)
 					let payload = {
 						loading: false,
-						leave: [
+						leaves: [
 							...newUserlist
 						]
 					}
@@ -211,8 +211,8 @@ export function cancelRequestLeave(users, id, enumber) {
 				} else {
 					message.error(error)
 				}
-			}).catch(err => {
-				console.error("err @cancelRequestLeave: ", err)
+			}).catch(error => {
+				console.error("error @cancelRequestLeave: ", error)
 			})
 	}
 }
@@ -241,8 +241,8 @@ export function downloadReport(from, to) {
 					message.error(error)
 				}
 			})
-			.catch(err => {
-				console.error("err @downloadReport: ", err)
+			.catch(error => {
+				console.error("error @downloadReport: ", error)
 			})
 	}
 }
@@ -271,8 +271,8 @@ export function downloadReportTypeLeave(from, to, id) {
 					message.error(error)
 				}
 			})
-			.catch(err => {
-				console.error("err @downloadReportTypeLeave: ", err)
+			.catch(error => {
+				console.error("error @downloadReportTypeLeave: ", error)
 			})
 	}
 }

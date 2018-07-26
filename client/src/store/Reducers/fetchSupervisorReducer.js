@@ -8,7 +8,7 @@ import {
 
 let supervisorState = {
     loading: true,
-    users: [],
+    leaves: [],
     leave: {
         reject_reason: ''
     }

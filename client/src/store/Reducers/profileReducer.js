@@ -1,11 +1,15 @@
-let profileState = {
+import {
+	GET_PROFILE
+} from "../Actions/types"
+
+const profileState = {
 	loading: true,
 	user: []
 }
 
 export default function profileReducer(state = profileState, action) {
 	switch (action.type) {
-		case 'PROFILE_LOADED':
+		case GET_PROFILE:
 			return {
 				...action.payload
 			}

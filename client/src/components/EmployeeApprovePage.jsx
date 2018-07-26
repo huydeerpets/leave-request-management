@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { acceptFetchData } from "../store/Actions/supervisorActions";
+import { employeeGetRequestApprove } from "../store/Actions/employeeAction";
 import { Layout, Table, Modal, Button, Input, Icon } from "antd";
 import HeaderNav from "./menu/HeaderNav";
 import Loading from "./menu/Loading";
@@ -9,79 +9,44 @@ import Footer from "./menu/Footer";
 const { Content } = Layout;
 let data;
 
-class SupervisorAcceptPage extends Component {
+class EmployeeApprovePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: false,
       visible: false,
       user: null,
-      data: this.props.users,
+      data: this.props.leaves,
       filterDropdownVisible: false,
-      filterDropdownNameVisible: false,
       filtered: false,
-      searchText: "",
       searchID: ""
     };
   }
 
   componentWillMount() {
     console.log(
-      " ----------------- Supervisor-List-Approve-Request ----------------- "
+      "------------ Employee-List-Approve-Request -------------------"
     );
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.users !== this.props.users) {
-      this.setState({ data: nextProps.users });
+    if (nextProps.leaves !== this.props.leaves) {
+      this.setState({ data: nextProps.leaves });
     }
-    data = nextProps.users;
+    data = nextProps.leaves;
   }
 
   componentDidMount() {
     if (!localStorage.getItem("token")) {
       this.props.history.push("/");
-    } else if (localStorage.getItem("role") !== "supervisor") {
+    } else if (
+      localStorage.getItem("role") !== "employee" &&
+      localStorage.getItem("role") !== "supervisor"
+    ) {
       this.props.history.push("/");
     }
-    this.props.acceptFetchData();
+    this.props.employeeGetRequestApprove();
   }
-
-  onSearch = () => {
-    const { searchText } = this.state;
-    const reg = new RegExp(searchText, "gi");
-    this.setState({
-      filterDropdownNameVisible: false,
-      filtered: !!searchText,
-      data: data
-        .map(record => {
-          const match = record.name.match(reg);
-          if (!match) {
-            return null;
-          }
-          return {
-            ...record,
-            name: (
-              <span>
-                {record.name
-                  .split(
-                    new RegExp(`(?<=${searchText})|(?=${searchText})`, "i")
-                  )
-                  .map(
-                    (text, i) =>
-                      text.toLowerCase() === searchText.toLowerCase() ? (
-                        <span key={i}>{text}</span>
-                      ) : (
-                        text
-                      ) // eslint-disable-line
-                  )}
-              </span>
-            )
-          };
-        })
-        .filter(record => !!record)
-    });
-  };
 
   onSearchID = () => {
     const { searchID } = this.state;
@@ -124,12 +89,6 @@ class SupervisorAcceptPage extends Component {
     });
   };
 
-  onInputChangeName = e => {
-    this.setState({
-      searchText: e.target.value
-    });
-  };
-
   showDetail = record => {
     this.setState({
       visible: true,
@@ -151,6 +110,7 @@ class SupervisorAcceptPage extends Component {
 
   render() {
     const { visible, loading } = this.state;
+
     const columns = [
       {
         title: "ID",
@@ -198,38 +158,8 @@ class SupervisorAcceptPage extends Component {
         title: "Name",
         dataIndex: "name",
         key: "name",
-        width: 150,
-        filterDropdown: (
-          <div className="custom-filter-dropdown-name">
-            <Input
-              ref={ele => (this.searchInput = ele)}
-              placeholder="Search name"
-              value={this.state.searchText}
-              onChange={this.onInputChangeName}
-              onPressEnter={this.onSearch}
-            />
-            <Button type="primary" onClick={this.onSearch}>
-              Search
-            </Button>
-          </div>
-        ),
-        filterIcon: (
-          <Icon
-            type="search"
-            style={{ color: this.state.filtered ? "#108ee9" : "#aaa" }}
-          />
-        ),
-        filterDropdownNameVisible: this.state.filterDropdownNameVisible,
-        onFilterDropdownVisibleChange: visible => {
-          this.setState(
-            {
-              filterDropdownNameVisible: visible
-            },
-            () => this.searchInput && this.searchInput.focus()
-          );
-        }
+        width: 150
       },
-
       {
         title: "Position",
         dataIndex: "position",
@@ -285,7 +215,7 @@ class SupervisorAcceptPage extends Component {
             style={{
               display: "flex",
               margin: "18px 10px 0",
-              justifyContent: "space-around",
+              justifyContent: "center",
               paddingBottom: "336px"
             }}
           >
@@ -322,6 +252,7 @@ class SupervisorAcceptPage extends Component {
               ]}
             >
               <div style={{ padding: 10, background: "#fff" }}>
+                {console.log(this.state.user && this.state.user.half_dates)}
                 ID : {this.state.user && this.state.user.id} <br />
                 Name : {this.state.user && this.state.user.name} <br />
                 Gender : {this.state.user && this.state.user.gender} <br />
@@ -332,7 +263,7 @@ class SupervisorAcceptPage extends Component {
                 Reason : {this.state.user && this.state.user.reason} <br />
                 From : {this.state.user && this.state.user.date_from} <br />
                 To : {this.state.user && this.state.user.date_to} <br />
-                Half Day : {this.state.user && this.state.user.half_dates}{" "}
+                Half Day : {this.state.user && this.state.user.half_dates}
                 <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
                 Total Leave : {this.state.user &&
@@ -355,14 +286,14 @@ class SupervisorAcceptPage extends Component {
 }
 
 const mapStateToProps = state => ({
-  loading: state.fetchSupervisorReducer.loading,
-  users: state.fetchSupervisorReducer.users
+  loading: state.fetchEmployeeReducer.loading,
+  leaves: state.fetchEmployeeReducer.leaves
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      acceptFetchData
+      employeeGetRequestApprove
     },
     dispatch
   );
@@ -370,4 +301,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SupervisorAcceptPage);
+)(EmployeeApprovePage);

@@ -183,6 +183,7 @@ func (u *Supervisor) GetUserReject(supervisorID int64) ([]structLogic.LeaveRejec
 		leave.TableName()+".contact_address",
 		leave.TableName()+".contact_number",
 		leave.TableName()+".status",
+		leave.TableName()+".reject_reason",
 		leave.TableName()+".action_by").
 		From(user.TableName()).
 		InnerJoin(leave.TableName()).

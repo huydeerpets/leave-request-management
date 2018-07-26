@@ -27,6 +27,7 @@ export class EmployeeLandingPage extends React.Component {
     const typeLeave = [];
     const dataSummary = this.props.userSummary;
     const dataType = this.props.userType;
+
     if (dataSummary) {
       for (let i = 0; i < dataSummary.length; i++) {
         summary.push(
@@ -36,13 +37,13 @@ export class EmployeeLandingPage extends React.Component {
         );
       }
     } else {
-      <p> </p>;
+      summary.push(<p />);
     }
 
     for (let j in dataType) {
       if (dataType[j].type_name === "Annual Leave") {
         typeLeave.push(
-          <p>            
+          <p>
             {`${dataType[j].type_name} : ${
               dataType[j].leave_remaining
             } days of 12 days`}

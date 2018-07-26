@@ -1,30 +1,36 @@
 import {
-	ROOT_API
-} from "./types.js"
+	ROOT_API,
+	GET_SUPERVISORS
+} from "./types"
 
-function addSupervisor(payload) {
+function fetchSupervisors(payload) {
 	return {
-		type: 'ADD_SUPERVISOR',
+		type: GET_SUPERVISORS,
 		payload: payload
 	}
 }
 
-export function SupervisorAdd() {
+export function getSupervisors() {
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/user/supervisor`, {
 				method: 'GET',
 			})
 			.then((resp) => resp.json())
 			.then(({
-				body
+				body,
+				error
 			}) => {
 				let payload = {
 					supervisor: body
 				}
-				dispatch(addSupervisor(payload))
+				dispatch(fetchSupervisors(payload))
+
+				if (error !== null) {
+					console.error("error not null @getSupervisors: ", error)
+				}
 			})
-			.catch(err => {
-				console.log(err)
+			.catch(error => {
+				console.error("error @getSupervisors: ", error)
 			})
 	}
 }

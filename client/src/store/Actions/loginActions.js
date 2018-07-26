@@ -1,22 +1,26 @@
+import setAuthorizationToken from '../../utils/setAuthorizationToken';
 // import jwtDecode from 'jwt-decode';
+import {
+	ROOT_API,
+	LOGIN_FORM_ONCHANGE,
+	CLEAR_FIELD
+} from "./types"
+
 import {
 	message
 } from "antd";
-import setAuthorizationToken from '../../utils/setAuthorizationToken';
-import {
-	ROOT_API
-} from "./types.js"
+
 
 export function handleFormInput(payload) {
 	return {
-		type: 'LOGIN_FORM_ONCHANGE',
+		type: LOGIN_FORM_ONCHANGE,
 		payload: payload
 	}
 }
 
 function clearField() {
 	return {
-		type: 'FIELD_CLEAR'
+		type: CLEAR_FIELD
 	}
 }
 
@@ -31,13 +35,6 @@ export function submitLogin(payload, pusher) {
 				body,
 				error
 			}) => {
-				// if (error !== null) {
-				// 	payloadError = {
-				// 		message: error,
-				// 		is_error: true,
-				// 	}
-				// 	dispatch(errorHandle(payloadError))
-				// }
 				if (error !== null) {
 					message.error(error);
 				} else {
@@ -80,8 +77,8 @@ export function submitLogin(payload, pusher) {
 					}
 				}
 			})
-			.catch(err => {
-				message.error('Please check your email and password');
+			.catch(error => {
+				console.error("error @submitLogin: ", error)
 			})
 	}
 }

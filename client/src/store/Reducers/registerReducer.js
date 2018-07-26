@@ -17,7 +17,7 @@ import {
 // 	// setTimeout(makeid, x * 1000);
 // }
 
-const SignUp = {
+const registerState = {
 	employee_number: '',
 	name: '',
 	gender: '',
@@ -30,7 +30,7 @@ const SignUp = {
 	supervisor_id: null
 }
 
-export default function SignupReducer(state = SignUp, action) {
+export default function registerReducer(state = registerState, action) {
 	switch (action.type) {
 		case REGISTER_USER:
 			return {
@@ -38,7 +38,7 @@ export default function SignupReducer(state = SignUp, action) {
 			}
 		case CLEAR_FIELD:
 			return {
-				...SignUp
+				...registerState
 			}
 		default:
 			return state

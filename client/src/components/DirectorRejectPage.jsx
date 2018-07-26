@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { rejectFetchData } from "../store/Actions/directorActions";
+import { fetchDirectorLeaveReject } from "../store/Actions/directorActions";
 import { Layout, Table, Modal, Button, Input, Icon } from "antd";
 import HeaderNav from "./menu/HeaderNav";
 import Loading from "./menu/Loading";
 import Footer from "./menu/Footer";
-
 const { Content } = Layout;
 let data;
 
@@ -17,7 +16,7 @@ class DirectorRejectPage extends Component {
       loading: false,
       visible: false,
       user: null,
-      data: this.props.users,
+      data: this.props.leaves,
       filterDropdownVisible: false,
       filterDropdownNameVisible: false,
       filtered: false,
@@ -33,10 +32,10 @@ class DirectorRejectPage extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.users !== this.props.users) {
-      this.setState({ data: nextProps.users });
+    if (nextProps.leaves !== this.props.leaves) {
+      this.setState({ data: nextProps.leaves });
     }
-    data = nextProps.users;
+    data = nextProps.leaves;
   }
 
   componentDidMount() {
@@ -45,7 +44,7 @@ class DirectorRejectPage extends Component {
     } else if (localStorage.getItem("role") !== "director") {
       this.props.history.push("/");
     }
-    this.props.rejectFetchData();
+    this.props.fetchDirectorLeaveReject();
   }
 
   onSearch = () => {
@@ -359,13 +358,13 @@ class DirectorRejectPage extends Component {
 
 const mapStateToProps = state => ({
   loading: state.fetchDirectorReducer.loading,
-  users: state.fetchDirectorReducer.leave
+  leaves: state.fetchDirectorReducer.leaves
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      rejectFetchData
+      fetchDirectorLeaveReject
     },
     dispatch
   );

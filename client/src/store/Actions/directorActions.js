@@ -45,7 +45,7 @@ function rejectRequest(payload) {
 	}
 }
 
-export function pendingFetchData() {
+export function fetchDirectorLeavePending() {
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/director/pending`, {
 				method: 'GET',
@@ -57,21 +57,21 @@ export function pendingFetchData() {
 			}) => {
 				let payload = {
 					loading: false,
-					leave: body
+					leaves: body
 				}
 				dispatch(pendingFetch(payload))
 
 				if (error !== null) {
-					console.error("err not null @pendingFetchData: ", error)
+					console.error("error not null @fetchDirectorLeavePending: ", error)
 				}
 			})
-			.catch(err => {
-				console.error("err @pendingFetchData: ", err)
+			.catch(error => {
+				console.error("error @fetchDirectorLeavePending: ", error)
 			})
 	}
 }
 
-export function acceptFetchData() {
+export function fetchDirectorLeaveApprove() {
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/director/accept`, {
 				method: 'GET',
@@ -83,21 +83,21 @@ export function acceptFetchData() {
 			}) => {
 				let payload = {
 					loading: false,
-					leave: body
+					leaves: body
 				}
 				dispatch(approveFetch(payload))
 
 				if (error !== null) {
-					console.error("err not null @acceptFetchData: ", error)
+					console.error("error not null @fetchDirectorLeaveApprove: ", error)
 				}
 			})
-			.catch(err => {
-				console.error("err @acceptFetchData: ", err)
+			.catch(error => {
+				console.error("error @fetchDirectorLeaveApprove: ", error)
 			})
 	}
 }
 
-export function rejectFetchData() {
+export function fetchDirectorLeaveReject() {
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/director/reject/`, {
 				method: 'GET',
@@ -109,21 +109,21 @@ export function rejectFetchData() {
 			}) => {
 				let payload = {
 					loading: false,
-					leave: body
+					leaves: body
 				}
 				dispatch(rejectFetch(payload))
 
 				if (error !== null) {
-					console.error("err not null @rejectFetchData: ", error)
+					console.error("error not null @fetchDirectorLeaveReject: ", error)
 				}
 			})
-			.catch(err => {
-				console.error("err @rejectFetchData: ", err)
+			.catch(error => {
+				console.error("error @fetchDirectorLeaveReject: ", error)
 			})
 	}
 }
 
-export function updateStatusAccept(users, id, enumber) {
+export function directorApproveRequest(leave, id, enumber) {
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/director/accept/${id}/${enumber}/`, {
 				method: 'PUT',
@@ -134,11 +134,11 @@ export function updateStatusAccept(users, id, enumber) {
 				error,
 			}) => {
 				if (body !== null) {
-					let newUserlist = users.filter(el => el.id !== id)
+					let newLeavelist = leave.filter(el => el.id !== id)
 					let payload = {
 						loading: false,
-						leave: [
-							...newUserlist
+						leaves: [
+							...newLeavelist
 						]
 					}
 					dispatch(approveRequest(payload))
@@ -146,13 +146,13 @@ export function updateStatusAccept(users, id, enumber) {
 				} else {
 					message.error(error)
 				}
-			}).catch(err => {
-				console.error("err @updateStatusAccept: ", err)
+			}).catch(error => {
+				console.error("error @directorApproveRequest: ", error)
 			})
 	}
 }
 
-export function updateStatusReject(users, id, enumber, payload) {
+export function directorRejectRequest(leave, id, enumber, payload) {
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/director/reject/${id}/${enumber}/`, {
 				method: 'PUT',
@@ -164,11 +164,11 @@ export function updateStatusReject(users, id, enumber, payload) {
 				error
 			}) => {
 				if (body !== null) {
-					let newUserlist = users.filter(el => el.id !== id)
+					let newLeavelist = leave.filter(el => el.id !== id)
 					let payloads = {
 						loading: false,
-						leave: [
-							...newUserlist
+						leaves: [
+							...newLeavelist
 						]
 					}
 					dispatch(rejectRequest(payloads))
@@ -176,8 +176,8 @@ export function updateStatusReject(users, id, enumber, payload) {
 				} else {
 					message.error(error)
 				}
-			}).catch(err => {
-				console.error("err @updateStatusReject: ", err)
+			}).catch(error => {
+				console.error("error @directorRejectRequest: ", error)
 			})
 	}
 }

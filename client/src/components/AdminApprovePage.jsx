@@ -1,48 +1,72 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { acceptFetchData } from "../store/Actions/directorActions";
-import HeaderNav from "./menu/HeaderNav";
+import {
+  fetchAdminLeaveApprove,
+  cancelRequestLeave,
+  downloadReport,
+  downloadReportTypeLeave
+} from "../store/Actions/adminActions";
+import {
+  Layout,
+  Table,
+  Modal,
+  Button,
+  Input,
+  Icon,
+  Form,
+  DatePicker,
+  Select
+} from "antd";
+import HeaderNav from "./menu/HeaderAdmin";
 import Loading from "./menu/Loading";
 import Footer from "./menu/Footer";
-import { Layout, Table, Modal, Button, Icon, Input } from "antd";
 const { Content } = Layout;
+const FormItem = Form.Item;
+const Option = Select.Option;
 let data;
 
-class DirectorAcceptPage extends Component {
+class AdminApprovePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: false,
       visible: false,
       user: null,
-      data: this.props.users,
+      data: this.props.leave,
       filterDropdownVisible: false,
       filterDropdownNameVisible: false,
       filtered: false,
       searchText: "",
-      searchID: ""
+      searchID: "",
+      from: null,
+      to: null,
+      start: null,
+      end: null,
+      id: null
     };
   }
 
   componentWillMount() {
-    console.log(" ----------------- Director-List-Approve-Request ----------------- ");
+    console.log(
+      " ----------------- Admin-List-Approve-Request ----------------- "
+    );
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.users !== this.props.users) {
-      this.setState({ data: nextProps.users });
+    if (nextProps.leave !== this.props.leave) {
+      this.setState({ data: nextProps.leave });
     }
-    data = nextProps.users;
+    data = nextProps.leave;
   }
 
   componentDidMount() {
     if (!localStorage.getItem("token")) {
       this.props.history.push("/");
-    } else if (localStorage.getItem("role") !== "director") {
+    } else if (localStorage.getItem("role") !== "admin") {
       this.props.history.push("/");
     }
-    this.props.acceptFetchData();    
+    this.props.fetchAdminLeaveApprove();
   }
 
   onSearch = () => {
@@ -88,7 +112,7 @@ class DirectorAcceptPage extends Component {
       filterDropdownIDVisible: false,
       filtered: !!searchID,
       data: data
-        .map(record => {          
+        .map(record => {
           const match = String(record.id).match(reg);
           if (!match) {
             return null;
@@ -139,8 +163,99 @@ class DirectorAcceptPage extends Component {
     console.log("selected row: ", selectedRowKeys);
   };
 
+  handleOk = () => {
+    const id = this.state.user && this.state.user.id;
+    const employeeNumber = this.state.user && this.state.user.employee_number;
+
+    this.setState({ loading: true });
+    this.cancelRequestLeave(this.props.leave, id, employeeNumber);
+    setTimeout(() => {
+      this.setState({ loading: false, visible: false });
+    }, 2000);
+  };
+
+  cancelRequestLeave = (leave, id, enumber) => {
+    this.props.cancelRequestLeave(leave, id, enumber);
+  };
+
   handleCancel = () => {
     this.setState({ visible: false });
+  };
+
+  handleSubmit = e => {
+    e.preventDefault();
+    this.downloadReport(this.state.from, this.state.to);
+  };
+
+  downloadReport = (from, to) => {
+    this.props.downloadReport(from, to);
+  };
+
+  onStartChange = value => {
+    if (value !== null) {
+      const date = new Date(value._d),
+        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+        day = ("0" + date.getDate()).slice(-2);
+      let dateFrom = [date.getFullYear(), mnth, day].join("-");
+      this.setState({
+        from: dateFrom
+      });
+    }
+  };
+
+  onEndChange = value => {
+    if (value !== null) {
+      const date = new Date(value._d),
+        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+        day = ("0" + date.getDate()).slice(-2);
+      let dateTo = [date.getFullYear(), mnth, day].join("-");
+      this.setState({
+        to: dateTo
+      });
+    }
+  };
+
+  handleSubmitReportType = e => {
+    e.preventDefault();
+    this.downloadReportTypeLeave(
+      this.state.start,
+      this.state.end,
+      this.state.id
+    );
+  };
+
+  downloadReportTypeLeave = (from, to, id) => {
+    this.props.downloadReportTypeLeave(from, to, id);
+  };
+
+  onStartChangeDate = value => {
+    if (value !== null) {
+      const date = new Date(value._d),
+        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+        day = ("0" + date.getDate()).slice(-2);
+      let dateFrom = [date.getFullYear(), mnth, day].join("-");
+      this.setState({
+        start: dateFrom
+      });
+    }
+  };
+
+  onEndChangeDate = value => {
+    if (value !== null) {
+      const date = new Date(value._d),
+        mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+        day = ("0" + date.getDate()).slice(-2);
+      let dateTo = [date.getFullYear(), mnth, day].join("-");
+      this.setState({
+        end: dateTo
+      });
+    }
+  };
+
+  handleChangeSelect = value => {
+    this.setState({
+      id: value
+    });
   };
 
   onShowSizeChange(current, pageSize) {
@@ -148,7 +263,7 @@ class DirectorAcceptPage extends Component {
   }
 
   render() {
-    const { visible, loading, searchID } = this.state;
+    const { visible, loading } = this.state;
     const columns = [
       {
         title: "ID",
@@ -158,12 +273,12 @@ class DirectorAcceptPage extends Component {
         filterDropdown: (
           <div className="custom-filter-dropdown-id">
             <Input
-              type="number"              
+              type="number"
               ref={ele => (this.searchInput = ele)}
               placeholder="Search request id"
-              value={searchID}
+              value={this.state.searchID}
               onChange={this.onInputChangeID}
-              onPressEnter={this.onSearchID}                           
+              onPressEnter={this.onSearchID}
             />
             <Button type="primary" onClick={this.onSearchID}>
               Search
@@ -205,7 +320,6 @@ class DirectorAcceptPage extends Component {
               value={this.state.searchText}
               onChange={this.onInputChangeName}
               onPressEnter={this.onSearch}
-              
             />
             <Button type="primary" onClick={this.onSearch}>
               Search
@@ -289,6 +403,85 @@ class DirectorAcceptPage extends Component {
             }}
           >
             <div style={{ padding: 20, background: "#fff" }}>
+              <Form
+                id="myForm"
+                layout="inline"
+                onSubmit={this.handleSubmit}
+                style={{ marginRight: 600 }}
+              >
+                <FormItem>
+                  <DatePicker
+                    id="date_from"
+                    name="date_from"
+                    placeholder="Start"
+                    defaultValue={this.state.from}
+                    onChange={this.onStartChange}
+                  />
+                </FormItem>
+                <FormItem>
+                  <DatePicker
+                    id="date_from"
+                    name="date_from"
+                    placeholder="End"
+                    defaultValue={this.state.to}
+                    onChange={this.onEndChange}
+                  />
+                </FormItem>
+                <FormItem>
+                  <Button type="primary" htmlType="submit">
+                    Download
+                  </Button>
+                </FormItem>
+              </Form>
+
+              <Form
+                id="myForm"
+                layout="inline"
+                onSubmit={this.handleSubmitReportType}
+                style={{ marginRight: 405 }}
+              >
+                <FormItem>
+                  <DatePicker
+                    id="date_from"
+                    name="date_from"
+                    placeholder="Start"
+                    defaultValue={this.state.start}
+                    onChange={this.onStartChangeDate}
+                  />
+                </FormItem>
+                <FormItem>
+                  <DatePicker
+                    id="date_from"
+                    name="date_from"
+                    placeholder="End"
+                    defaultValue={this.state.end}
+                    onChange={this.onEndChangeDate}
+                  />
+                </FormItem>
+                <FormItem>
+                  <Select
+                    style={{ width: 180 }}
+                    id="type_of_leave"
+                    name="type_of_leave"
+                    placeholder="Type of Leave"
+                    optionFilterProp="children"
+                    onChange={this.handleChangeSelect}
+                  >
+                    <Option value="11">Annual Leave</Option>
+                    <Option value="22">Errand Leave</Option>
+                    <Option value="33">Sick Leave</Option>
+                    <Option value="44">Marriage Leave</Option>
+                    <Option value="55">Maternity Leave</Option>
+                    <Option value="66">Other Leave</Option>
+                  </Select>
+                </FormItem>
+                <FormItem>
+                  <Button type="primary" htmlType="submit">
+                    Download
+                  </Button>
+                </FormItem>
+              </Form>
+
               <Table
                 columns={columns}
                 dataSource={this.state.data}
@@ -307,16 +500,18 @@ class DirectorAcceptPage extends Component {
             <Modal
               visible={visible}
               title="Detail Leave Request Approved"
+              onOk={this.handleOk}
               onCancel={this.handleCancel}
               style={{ top: "20" }}
               bodyStyle={{ padding: "0" }}
               footer={[
                 <Button
-                  key="cancel"
+                  key="accept"
+                  type="danger"
                   loading={loading}
-                  onClick={this.handleCancel}
+                  onClick={this.handleOk}
                 >
-                  Return
+                  Cancel Request
                 </Button>
               ]}
             >
@@ -353,14 +548,17 @@ class DirectorAcceptPage extends Component {
 }
 
 const mapStateToProps = state => ({
-  loading: state.fetchDirectorReducer.loading,
-  users: state.fetchDirectorReducer.leave
+  loading: state.adminReducer.loading,
+  leave: state.adminReducer.leaves
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      acceptFetchData
+      fetchAdminLeaveApprove,
+      cancelRequestLeave,
+      downloadReport,
+      downloadReportTypeLeave
     },
     dispatch
   );
@@ -368,4 +566,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DirectorAcceptPage);
+)(AdminApprovePage);

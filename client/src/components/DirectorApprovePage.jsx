@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { employeeGetRequestReject } from "../store/Actions/employeeAction";
-import { Layout, Table, Modal, Button, Input, Icon } from "antd";
+import { fetchDirectorLeaveApprove } from "../store/Actions/directorActions";
 import HeaderNav from "./menu/HeaderNav";
 import Loading from "./menu/Loading";
 import Footer from "./menu/Footer";
+import { Layout, Table, Modal, Button, Icon, Input } from "antd";
 const { Content } = Layout;
 let data;
 
-class EmployeeReqRejectPage extends Component {
+class DirectorApprovePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -18,14 +18,16 @@ class EmployeeReqRejectPage extends Component {
       user: null,
       data: this.props.leaves,
       filterDropdownVisible: false,
+      filterDropdownNameVisible: false,
       filtered: false,
+      searchText: "",
       searchID: ""
     };
   }
 
   componentWillMount() {
     console.log(
-      "------------ Employee-List-Reject-Request -------------------"
+      " ----------------- Director-List-Approve-Request ----------------- "
     );
   }
 
@@ -39,14 +41,47 @@ class EmployeeReqRejectPage extends Component {
   componentDidMount() {
     if (!localStorage.getItem("token")) {
       this.props.history.push("/");
-    } else if (
-      localStorage.getItem("role") !== "employee" &&
-      localStorage.getItem("role") !== "supervisor"
-    ) {
+    } else if (localStorage.getItem("role") !== "director") {
       this.props.history.push("/");
     }
-    this.props.employeeGetRequestReject();
+    this.props.fetchDirectorLeaveApprove();
   }
+
+  onSearch = () => {
+    const { searchText } = this.state;
+    const reg = new RegExp(searchText, "gi");
+    this.setState({
+      filterDropdownNameVisible: false,
+      filtered: !!searchText,
+      data: data
+        .map(record => {
+          const match = record.name.match(reg);
+          if (!match) {
+            return null;
+          }
+          return {
+            ...record,
+            name: (
+              <span>
+                {record.name
+                  .split(
+                    new RegExp(`(?<=${searchText})|(?=${searchText})`, "i")
+                  )
+                  .map(
+                    (text, i) =>
+                      text.toLowerCase() === searchText.toLowerCase() ? (
+                        <span key={i}>{text}</span>
+                      ) : (
+                        text
+                      ) // eslint-disable-line
+                  )}
+              </span>
+            )
+          };
+        })
+        .filter(record => !!record)
+    });
+  };
 
   onSearchID = () => {
     const { searchID } = this.state;
@@ -89,6 +124,12 @@ class EmployeeReqRejectPage extends Component {
     });
   };
 
+  onInputChangeName = e => {
+    this.setState({
+      searchText: e.target.value
+    });
+  };
+
   showDetail = record => {
     this.setState({
       visible: true,
@@ -109,7 +150,7 @@ class EmployeeReqRejectPage extends Component {
   }
 
   render() {
-    const { visible, loading } = this.state;
+    const { visible, loading, searchID } = this.state;
     const columns = [
       {
         title: "ID",
@@ -122,7 +163,7 @@ class EmployeeReqRejectPage extends Component {
               type="number"
               ref={ele => (this.searchInput = ele)}
               placeholder="Search request id"
-              value={this.state.searchID}
+              value={searchID}
               onChange={this.onInputChangeID}
               onPressEnter={this.onSearchID}
             />
@@ -157,8 +198,38 @@ class EmployeeReqRejectPage extends Component {
         title: "Name",
         dataIndex: "name",
         key: "name",
-        width: 150
+        width: 150,
+        filterDropdown: (
+          <div className="custom-filter-dropdown-name">
+            <Input
+              ref={ele => (this.searchInput = ele)}
+              placeholder="Search name"
+              value={this.state.searchText}
+              onChange={this.onInputChangeName}
+              onPressEnter={this.onSearch}
+            />
+            <Button type="primary" onClick={this.onSearch}>
+              Search
+            </Button>
+          </div>
+        ),
+        filterIcon: (
+          <Icon
+            type="search"
+            style={{ color: this.state.filtered ? "#108ee9" : "#aaa" }}
+          />
+        ),
+        filterDropdownNameVisible: this.state.filterDropdownNameVisible,
+        onFilterDropdownVisibleChange: visible => {
+          this.setState(
+            {
+              filterDropdownNameVisible: visible
+            },
+            () => this.searchInput && this.searchInput.focus()
+          );
+        }
       },
+
       {
         title: "Position",
         dataIndex: "position",
@@ -236,7 +307,7 @@ class EmployeeReqRejectPage extends Component {
 
             <Modal
               visible={visible}
-              title="Detail Leave Request Rejected"
+              title="Detail Leave Request Approved"
               onCancel={this.handleCancel}
               style={{ top: "20" }}
               bodyStyle={{ padding: "0" }}
@@ -271,10 +342,7 @@ class EmployeeReqRejectPage extends Component {
                 Contact Address :{" "}
                 {this.state.user && this.state.user.contact_address} <br />
                 Contact Number :{" "}
-                {this.state.user && this.state.user.contact_number} <br />
-                Status : {this.state.user && this.state.user.status} <br />
-                Reject Reason :{" "}
-                {this.state.user && this.state.user.reject_reason}
+                {this.state.user && this.state.user.contact_number}
               </div>
             </Modal>
           </Content>
@@ -286,14 +354,14 @@ class EmployeeReqRejectPage extends Component {
 }
 
 const mapStateToProps = state => ({
-  loading: state.fetchEmployeeReducer.loading,
-  leaves: state.fetchEmployeeReducer.leaves
+  loading: state.fetchDirectorReducer.loading,
+  leaves: state.fetchDirectorReducer.leaves
 });
 
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      employeeGetRequestReject
+      fetchDirectorLeaveApprove
     },
     dispatch
   );
@@ -301,4 +369,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(EmployeeReqRejectPage);
+)(DirectorApprovePage);
