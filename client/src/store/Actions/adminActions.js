@@ -1,48 +1,54 @@
 import {
-	ROOT_API
-} from "./types.js"
+	ROOT_API,
+	FETCH_USER,
+	DELETE_USER,
+	FETCH_LEAVE_PENDING,
+	FETCH_LEAVE_APPROVE,
+	FETCH_LEAVE_REJECT,
+	CANCEL_LEAVE_REQUEST
+} from "./types"
 import {
 	message
 } from "antd"
 
-function pendingFetch(payload) {
+function userFetch(payload) {
 	return {
-		type: 'FETCH_LEAVE_PENDING',
-		payload: payload
-	}
-}
-
-function acceptFetch(payload) {
-	return {
-		type: 'FETCH_LEAVE_ACCEPT',
-		payload: payload
-	}
-}
-
-function rejectFetch(payload) {
-	return {
-		type: 'FETCH_LEAVE_REJECT',
-		payload: payload
-	}
-}
-
-function adminloaded(payload) {
-	return {
-		type: 'ADMIN_LOADED',
+		type: FETCH_USER,
 		payload: payload
 	}
 }
 
 function userDeleted(payload) {
 	return {
-		type: 'DELETED_USER',
+		type: DELETE_USER,
+		payload: payload
+	}
+}
+
+function pendingFetch(payload) {
+	return {
+		type: FETCH_LEAVE_PENDING,
+		payload: payload
+	}
+}
+
+function approveFetch(payload) {
+	return {
+		type: FETCH_LEAVE_APPROVE,
+		payload: payload
+	}
+}
+
+function rejectFetch(payload) {
+	return {
+		type: FETCH_LEAVE_REJECT,
 		payload: payload
 	}
 }
 
 function cancelRequest(payload) {
 	return {
-		type: 'CANCEL_LEAVE_REQUEST',
+		type: CANCEL_LEAVE_REQUEST,
 		payload: payload
 	}
 }
@@ -62,14 +68,14 @@ export function adminFetchData() {
 					loading: false,
 					users: body
 				}
-				dispatch(adminloaded(payload))
+				dispatch(userFetch(payload))
 
 				if (error !== null) {
-					console.error("err not null @adminFetchData:", error)
+					console.error("err not null @adminFetchData: ", error)
 				}
 			})
 			.catch(err => {
-				console.error("err @adminFetchData:", err)
+				console.error("err @adminFetchData: ", err)
 			})
 	}
 }
@@ -94,11 +100,11 @@ export function deleteUser(users, employeeNumber) {
 				dispatch(userDeleted(payload))
 
 				if (error !== null) {
-					console.error("err not null @deleteUser:", error)
+					console.error("err not null @deleteUser: ", error)
 				}
 			})
 			.catch(err => {
-				console.error("err @deleteUser:", err)
+				console.error("err @deleteUser: ", err)
 			})
 	}
 }
@@ -120,11 +126,11 @@ export function pendingFetchData() {
 				dispatch(pendingFetch(payload))
 
 				if (error !== null) {
-					console.error("err not null @pendingFetchData:", error)
+					console.error("err not null @pendingFetchData: ", error)
 				}
 			})
 			.catch(err => {
-				console.error("err @pendingFetchData:", err)
+				console.error("err @pendingFetchData: ", err)
 			})
 	}
 }
@@ -143,10 +149,10 @@ export function acceptFetchData() {
 					loading: false,
 					leave: body
 				}
-				dispatch(acceptFetch(payload))
+				dispatch(approveFetch(payload))
 
 				if (error !== null) {
-					console.error("err not null @acceptFetchData:", error)
+					console.error("err not null @acceptFetchData: ", error)
 				}
 			})
 			.catch(err => {
@@ -173,7 +179,7 @@ export function rejectFetchData() {
 				dispatch(rejectFetch(payload))
 
 				if (error !== null) {
-					console.error("err not null @rejectFetchData:", error)
+					console.error("err not null @rejectFetchData: ", error)
 				}
 			})
 			.catch(err => {
@@ -206,7 +212,7 @@ export function cancelRequestLeave(users, id, enumber) {
 					message.error(error)
 				}
 			}).catch(err => {
-				console.error("err @cancelRequestLeave:", err)
+				console.error("err @cancelRequestLeave: ", err)
 			})
 	}
 }
@@ -236,7 +242,7 @@ export function downloadReport(from, to) {
 				}
 			})
 			.catch(err => {
-				console.error("err @downloadReport:", err)
+				console.error("err @downloadReport: ", err)
 			})
 	}
 }
@@ -266,7 +272,7 @@ export function downloadReportTypeLeave(from, to, id) {
 				}
 			})
 			.catch(err => {
-				console.error("err @downloadReportTypeLeave:", err)
+				console.error("err @downloadReportTypeLeave: ", err)
 			})
 	}
 }

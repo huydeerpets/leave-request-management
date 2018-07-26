@@ -1,3 +1,8 @@
+import {
+	FETCH_EDIT_USER,
+	EDIT_USER
+} from "../Actions/types"
+
 const userState = {
 	loading: true,
 	user: {
@@ -15,14 +20,14 @@ const userState = {
 
 const editUserReducer = (state = userState, action) => {
 	switch (action.type) {
-		case 'FETCH_EDIT':
+		case FETCH_EDIT_USER:
 			return {
 				...action.payload
 			}
-		case 'EDITING_USER':
+		case EDIT_USER:
 			return {
 				...action.payload
-			}	
+			}
 		default:
 			return state
 	}

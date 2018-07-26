@@ -1,3 +1,9 @@
+import {
+	REGISTER_USER,
+	CLEAR_FIELD
+} from "../Actions/types"
+
+
 // function makeid() {
 // 	var x = 10;
 // 	var text = "";
@@ -24,13 +30,13 @@ const SignUp = {
 	supervisor_id: null
 }
 
-const SignupReducer = (state = SignUp, action) => {
+export default function SignupReducer(state = SignUp, action) {
 	switch (action.type) {
-		case 'SIGNUP_USER':
+		case REGISTER_USER:
 			return {
 				...action.payload
 			}
-		case 'CLEAR_FIELD':
+		case CLEAR_FIELD:
 			return {
 				...SignUp
 			}
@@ -38,4 +44,3 @@ const SignupReducer = (state = SignUp, action) => {
 			return state
 	}
 }
-export default SignupReducer

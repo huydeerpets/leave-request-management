@@ -6,6 +6,7 @@ import { Layout, Table, Modal, Button, Input, Icon } from "antd";
 import HeaderNav from "./menu/HeaderNav";
 import Loading from "./menu/Loading";
 import Footer from "./menu/Footer";
+
 const { Content } = Layout;
 let data;
 
@@ -26,7 +27,9 @@ class DirectorRejectPage extends Component {
   }
 
   componentWillMount() {
-    console.log("------------ Director-List-Reject-Request -------------------");
+    console.log(
+      "------------ Director-List-Reject-Request -------------------"
+    );
   }
 
   componentWillReceiveProps(nextProps) {
@@ -148,7 +151,7 @@ class DirectorRejectPage extends Component {
   }
 
   render() {
-    const { visible, loading, searchID } = this.state;        
+    const { visible, loading, searchID } = this.state;
     const columns = [
       {
         title: "ID",
@@ -340,7 +343,8 @@ class DirectorRejectPage extends Component {
                 Contact Address :{" "}
                 {this.state.user && this.state.user.contact_address} <br />
                 Contact Number :{" "}
-                {this.state.user && this.state.user.contact_number}<br />
+                {this.state.user && this.state.user.contact_number}
+                <br />
                 Reject Reason :{" "}
                 {this.state.user && this.state.user.reject_reason}
               </div>

@@ -1,6 +1,8 @@
 import {
-	ROOT_API
-} from "./types.js"
+	ROOT_API,
+	REGISTER_USER,
+	CLEAR_FIELD
+} from "./types"
 import {
 	message
 } from "antd";
@@ -8,7 +10,7 @@ import {
 export function formOnchange(payload) {
 	return (dispatch) => {
 		dispatch({
-			type: 'SIGNUP_USER',
+			type: REGISTER_USER,
 			payload: payload
 		})
 	}
@@ -16,7 +18,7 @@ export function formOnchange(payload) {
 
 function clearField(msg) {
 	return {
-		type: 'CLEAR_FIELD'
+		type: CLEAR_FIELD
 	}
 }
 

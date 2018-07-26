@@ -8,8 +8,8 @@ import {
 } from "../store/Actions/directorActions";
 import { Layout, Table, Modal, Button, Input, Icon } from "antd";
 import HeaderNav from "./menu/HeaderNav";
-import Footer from "./menu/Footer";
 import Loading from "./menu/Loading";
+import Footer from "./menu/Footer";
 const { Content } = Layout;
 let data;
 

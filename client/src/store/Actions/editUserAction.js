@@ -1,20 +1,22 @@
 import {
-	ROOT_API
-} from "./types.js"
+	ROOT_API,
+	FETCH_EDIT_USER,
+	EDIT_USER
+} from "./types"
 import {
 	message
 } from "antd";
 
 function fetchUser(payload) {
 	return {
-		type: 'FETCH_EDIT',
+		type: FETCH_EDIT_USER,
 		payload: payload
 	}
 }
 
 function userEditing(payload) {
 	return {
-		type: 'EDITING_USER',
+		type: EDIT_USER,
 		payload: payload
 	}
 }

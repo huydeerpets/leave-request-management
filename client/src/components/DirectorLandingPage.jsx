@@ -6,7 +6,6 @@ import { Layout } from "antd";
 const { Content } = Layout;
 
 export class DirectorLandingPage extends Component {
-
   componentWillMount() {
     console.log(" ----------------- Director-Landing-Page ----------------- ");
   }
@@ -24,7 +23,6 @@ export class DirectorLandingPage extends Component {
       <div>
         <Layout>
           <HeaderNav />
-
           <Content
             className="container"
             style={{

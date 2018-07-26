@@ -1,41 +1,46 @@
 import {
-	ROOT_API
-} from "./types.js"
+	ROOT_API,
+	FETCH_LEAVE_PENDING,
+	FETCH_LEAVE_APPROVE,
+	FETCH_LEAVE_REJECT,
+	APPROVE_LEAVE_PENDING,
+	REJECT_LEAVE_PENDING
+} from "./types"
 import {
 	message
 } from "antd";
 
 function pendingFetch(payload) {
 	return {
-		type: 'FETCH_LEAVE_PENDING',
+		type: FETCH_LEAVE_PENDING,
 		payload: payload
 	}
 }
 
-function acceptFetch(payload) {
+function approveFetch(payload) {
 	return {
-		type: 'FETCH_LEAVE_ACCEPT',
+		type: FETCH_LEAVE_APPROVE,
 		payload: payload
 	}
 }
 
 function rejectFetch(payload) {
 	return {
-		type: 'FETCH_LEAVE_REJECT',
+		type: FETCH_LEAVE_REJECT,
 		payload: payload
 	}
 }
 
-function acceptRequest(payload) {
+function approveRequest(payload) {
 	return {
-		type: 'ACCEPT_LEAVE_PENDING',
+		type: APPROVE_LEAVE_PENDING,
 		payload: payload
 	}
 }
 
 function rejectRequest(payload) {
 	return {
-		type: 'REJECT_LEAVE_PENDING',
+		type: REJECT_LEAVE_PENDING,
 		payload: payload
 	}
 }
@@ -47,16 +52,21 @@ export function pendingFetchData() {
 			})
 			.then((resp) => resp.json())
 			.then(({
-				body
+				body,
+				error
 			}) => {
 				let payload = {
 					loading: false,
 					leave: body
 				}
 				dispatch(pendingFetch(payload))
+
+				if (error !== null) {
+					console.error("err not null @pendingFetchData: ", error)
+				}
 			})
 			.catch(err => {
-				console.log(err)
+				console.error("err @pendingFetchData: ", err)
 			})
 	}
 }
@@ -68,16 +78,21 @@ export function acceptFetchData() {
 			})
 			.then((resp) => resp.json())
 			.then(({
-				body
+				body,
+				error
 			}) => {
 				let payload = {
 					loading: false,
 					leave: body
 				}
-				dispatch(acceptFetch(payload))
+				dispatch(approveFetch(payload))
+
+				if (error !== null) {
+					console.error("err not null @acceptFetchData: ", error)
+				}
 			})
 			.catch(err => {
-				console.log(err)
+				console.error("err @acceptFetchData: ", err)
 			})
 	}
 }
@@ -89,16 +104,21 @@ export function rejectFetchData() {
 			})
 			.then((resp) => resp.json())
 			.then(({
-				body
+				body,
+				error
 			}) => {
 				let payload = {
 					loading: false,
 					leave: body
 				}
 				dispatch(rejectFetch(payload))
+
+				if (error !== null) {
+					console.error("err not null @rejectFetchData: ", error)
+				}
 			})
 			.catch(err => {
-				console.log(err)
+				console.error("err @rejectFetchData: ", err)
 			})
 	}
 }
@@ -111,7 +131,7 @@ export function updateStatusAccept(users, id, enumber) {
 			.then((resp) => resp.json())
 			.then(({
 				body,
-				error
+				error,
 			}) => {
 				if (body !== null) {
 					let newUserlist = users.filter(el => el.id !== id)
@@ -121,13 +141,13 @@ export function updateStatusAccept(users, id, enumber) {
 							...newUserlist
 						]
 					}
-					dispatch(acceptRequest(payload))
+					dispatch(approveRequest(payload))
 					message.success(body)
 				} else {
 					message.error(error)
 				}
 			}).catch(err => {
-				message.error(err)
+				console.error("err @updateStatusAccept: ", err)
 			})
 	}
 }
@@ -156,9 +176,8 @@ export function updateStatusReject(users, id, enumber, payload) {
 				} else {
 					message.error(error)
 				}
-
 			}).catch(err => {
-				message.error(err)
+				console.error("err @updateStatusReject: ", err)
 			})
 	}
 }
