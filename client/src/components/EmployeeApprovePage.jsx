@@ -251,8 +251,7 @@ class EmployeeApprovePage extends Component {
                 </Button>
               ]}
             >
-              <div style={{ padding: 10, background: "#fff" }}>
-                {console.log(this.state.user && this.state.user.half_dates)}
+              <div style={{ padding: 10, background: "#fff" }}>               
                 ID : {this.state.user && this.state.user.id} <br />
                 Name : {this.state.user && this.state.user.name} <br />
                 Gender : {this.state.user && this.state.user.gender} <br />

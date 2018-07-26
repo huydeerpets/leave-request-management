@@ -43,7 +43,6 @@ class LeaveRequestPage extends Component {
     this.disabledDateBack = this.disabledDateBack.bind(this);
     this.handleOnChangeNumber = this.handleOnChangeNumber.bind(this);
     this.handleOnChangeID = this.handleOnChangeID.bind(this);
-    this.handleBlur = this.handleBlur.bind(this);
     this.onChangeIsHalfDay = this.onChangeIsHalfDay.bind(this);
     this.onChangeAddHalfDay = this.onChangeAddHalfDay.bind(this);
   }
@@ -91,27 +90,31 @@ class LeaveRequestPage extends Component {
       [e.target.name]: e.target.value
     };
     this.props.formOnChange(newLeave);
+
+    this.props.form.setFieldsValue({
+      [e.target.name]: e.target.value
+    });
   };
 
   handleChangeTypeOfLeave(value) {
-    let typeLeave = {
-      ...this.props.leaveForm,
-      type_leave_id: Number(value)
-    };
-    this.props.formOnChange(typeLeave);
+    console.log("val", value);
+    if (value === "11" || value === "44" || value === "55") {
+      let typeLeave = {
+        ...this.props.leaveForm,
+        type_leave_id: Number(value),
+        reason: ""
+      };
+      this.props.formOnChange(typeLeave);
+    } else {
+      let typeLeave = {
+        ...this.props.leaveForm,
+        type_leave_id: Number(value)
+      };
+      this.props.formOnChange(typeLeave);
+    }
   }
 
   handleChangeSelect(value) {
-    let hiddenDiv = document.getElementById("showMe");
-    if (value === "22") {
-      hiddenDiv.style.display = "block";
-    } else if (value === "33") {
-      hiddenDiv.style.display = "block";
-    } else if (value === "66") {
-      hiddenDiv.style.display = "block";
-    } else {
-      hiddenDiv.style.display = "none";
-    }
     console.log("selected=======>", value);
   }
 
@@ -401,19 +404,22 @@ class LeaveRequestPage extends Component {
                 )}
               </FormItem>
 
-              <div id="showMe">
+              {this.props.leaveForm.type_leave_id === 22 ||
+              this.props.leaveForm.type_leave_id === 33 ||
+              this.props.leaveForm.type_leave_id === 66 ? (
                 <FormItem {...formItemLayout} label="Reason">
                   <Input
                     type="text"
                     id="reason"
                     name="reason"
                     placeholder="reason"
-                    value={this.props.leaveForm.reason}
                     onChange={this.handleOnChange}
                     style={formStyle}
                   />
                 </FormItem>
-              </div>
+              ) : (
+                ""
+              )}
 
               {this.props.leaveForm.type_leave_id === 22 ||
               this.props.leaveForm.type_leave_id === 33 ? (

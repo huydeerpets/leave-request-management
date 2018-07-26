@@ -1,4 +1,9 @@
-const leave = {
+import {
+	CREATE_LEAVE_REQUEST,
+	CLEAR_FIELD
+} from "../Actions/types"
+
+const leaveState = {
 	type_leave_id: null,
 	reason: '',
 	date_from: '',
@@ -9,15 +14,15 @@ const leave = {
 	contact_number: ''
 }
 
-export default function leaveRequestReducer(state = leave, action) {
+export default function leaveRequestReducer(state = leaveState, action) {
 	switch (action.type) {
-		case 'CREATE_LEAVE':
+		case CREATE_LEAVE_REQUEST:
 			return {
 				...action.payload,
 			}
-		case 'CLEAR_FIELD':
+		case CLEAR_FIELD:
 			return {
-				...leave
+				...leaveState
 			}
 		default:
 			return state

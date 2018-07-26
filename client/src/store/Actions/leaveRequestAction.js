@@ -1,6 +1,8 @@
 import {
-	ROOT_API
-} from "./types.js"
+	ROOT_API,
+	CREATE_LEAVE_REQUEST,
+	CLEAR_FIELD
+} from "./types"
 import {
 	message
 } from "antd";
@@ -8,7 +10,7 @@ import {
 export function formOnChange(payload) {
 	return (dispach) => {
 		dispach({
-			type: 'CREATE_LEAVE',
+			type: CREATE_LEAVE_REQUEST,
 			payload: payload
 		})
 	}
@@ -16,7 +18,7 @@ export function formOnChange(payload) {
 
 function clearField() {
 	return {
-		type: 'CLEAR_FIELD'
+		type: CLEAR_FIELD
 	}
 }
 
@@ -42,8 +44,8 @@ export function SumbitLeave(payload, pusher) {
 				} else {
 					message.error(error)
 				}
-			}).catch(err => {
-				message.error('Create failed, please check all field!')
+			}).catch(error => {
+				console.error("error @SumbitLeave: ", error)
 			})
 	}
 }
@@ -69,8 +71,8 @@ export function SumbitLeaveSupervisor(payload, pusher) {
 				} else {
 					message.error(error)
 				}
-			}).catch(err => {
-				message.error('Create failed, please check all field!')
+			}).catch(error => {
+				console.error("error @SumbitLeaveSupervisor: ", error)
 			})
 	}
 }

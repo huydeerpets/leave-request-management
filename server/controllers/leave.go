@@ -123,6 +123,7 @@ func (c *LeaveController) PostLeaveRequestSupervisor() {
 		resp    structAPI.RespData
 		req     structAPI.ReqLeave
 		dbLeave db.LeaveRequest
+		dbUser  userLogic.User
 	)
 
 	idStr := c.Ctx.Input.Param(":id")
@@ -150,6 +151,9 @@ func (c *LeaveController) PostLeaveRequestSupervisor() {
 	valueHalfDay := float64(0.5)
 	result := helpers.Multiply(totalDay, reqHalfDay, valueHalfDay)
 
+	resGet, errGet := dbUser.GetUserLeaveRemaining(req.TypeLeaveID, employeeNumber)
+	helpers.CheckErr("err get", errGet)
+
 	leave := structAPI.CreateLeaveRequest{
 		EmployeeNumber: employeeNumber,
 		TypeLeaveID:    req.TypeLeaveID,
@@ -164,25 +168,42 @@ func (c *LeaveController) PostLeaveRequestSupervisor() {
 		Status:         constant.StatusPendingInDirector,
 	}
 
-	errAddLeave := dbLeave.CreateLeaveRequestSupervisor(
-		leave.EmployeeNumber,
-		leave.TypeLeaveID,
-		leave.Reason,
-		leave.DateFrom,
-		leave.DateTo,
-		leave.HalfDates,
-		leave.BackOn,
-		leave.Total,
-		leave.ContactAddress,
-		leave.ContactNumber,
-		leave.Status,
-	)
+	strBalance := strconv.FormatFloat(resGet.LeaveRemaining, 'f', 1, 64)
+	strTotal := strconv.FormatFloat(result, 'f', 1, 64)
 
-	if errAddLeave != nil {
-		resp.Error = errAddLeave.Error()
+	if req.TypeLeaveID != 11 && req.TypeLeaveID != 22 && req.TypeLeaveID != 33 && req.TypeLeaveID != 44 && req.TypeLeaveID != 55 && req.TypeLeaveID != 66 {
+		beego.Warning("error empty field type leave @PostLeaveRequestSupervisor")
 		c.Ctx.Output.SetStatus(400)
+		resp.Error = errors.New("error empty field").Error()
+	} else if req.DateFrom == "" || req.DateTo == "" || req.BackOn == "" || req.ContactAddress == "" || req.ContactNumber == "" {
+		beego.Warning("error empty field @PostLeaveRequestSupervisor")
+		c.Ctx.Output.SetStatus(400)
+		resp.Error = errors.New("error empty field").Error()
+	} else if result > float64(resGet.LeaveRemaining) {
+		beego.Warning("error leave balance @PostLeaveRequestSupervisor")
+		c.Ctx.Output.SetStatus(400)
+		resp.Error = errors.New("your total leave is " + strTotal + " day and your " + resGet.TypeName + " balance is " + strBalance + " day left").Error()
 	} else {
-		resp.Body = leave
+		errAddLeave := dbLeave.CreateLeaveRequest(
+			leave.EmployeeNumber,
+			leave.TypeLeaveID,
+			leave.Reason,
+			leave.DateFrom,
+			leave.DateTo,
+			leave.HalfDates,
+			leave.BackOn,
+			leave.Total,
+			leave.ContactAddress,
+			leave.ContactNumber,
+			leave.Status,
+		)
+
+		if errAddLeave != nil {
+			resp.Error = errAddLeave.Error()
+			c.Ctx.Output.SetStatus(400)
+		} else {
+			resp.Body = leave
+		}
 	}
 
 	err := c.Ctx.Output.JSON(resp, false, false)
