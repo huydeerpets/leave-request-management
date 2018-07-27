@@ -51,35 +51,33 @@ class App extends Component {
               <Route exact path="/reset-password" component={ResetPasswordPage} />
 
 
-              <Route path="/admin" component={AdminLandingPage} />
+              <Route exact path="/admin" component={AdminLandingPage} />
               <Route path="/register-user" component={RegisterPage} />            
               <Route path={`/edit-user/:id`} component={AdminEditPage}/>
-              <Route path="/list-pending-request" component={AdminPendingPage} />
-              <Route path="/list-approve-request" component={AdminApprovePage} />              
-              <Route path="/list-reject-request" component={AdminRejectPage} />              
+              <Route exact path="/admin/list-pending-request" component={AdminPendingPage} />
+              <Route exact path="/admin/list-approve-request" component={AdminApprovePage} />              
+              <Route exact path="/admin/list-reject-request" component={AdminRejectPage} />              
                            
+              <Route exact path="/employee" component={EmployeeLandingPage} />
 
-              <Route path="/employee" component={EmployeeLandingPage} />
               <Route exact path="/profile" component={ProfilePage} />
-              <Route exact path={`/profile/:id`} component={PasswordPage}/>
+              <Route path={`/profile/:id`} component={PasswordPage}/>
 
-              <Route path="/employee-leave-request" component={LeaveRequestPage} />                          
+              <Route exact path="/employee/leave-request" component={LeaveRequestPage} />                          
               <Route exact path={`/editrequest/:id`} component={LeaveEditPage}/>
-              <Route path="/employee-request-pending" component={EmployeePendingPage} />
-              <Route path="/employee-request-approve" component={EmployeeApprovePage} />
-              <Route path="/employee-request-reject" component={EmployeeRejectPage} />
+              <Route exact path="/employee/list-pending-request" component={EmployeePendingPage} />
+              <Route exact path="/employee/list-approve-request" component={EmployeeApprovePage} />
+              <Route exact path="/employee/list-reject-request" component={EmployeeRejectPage} />
 
+              <Route exact path="/supervisor" component={SupervisorLandingPage} />
+              <Route exact path="/supervisor/list-pending-request" component={SupervisorPendingPage} />
+              <Route exact path="/supervisor/list-approve-request" component={SupervisorApprovePage} />
+              <Route exact path="/supervisor/list-reject-request" component={SupervisorRejectPage} />
 
-              <Route path="/supervisor" component={SupervisorLandingPage} />
-              <Route path="/supervisor-pending-request" component={SupervisorPendingPage} />
-              <Route path="/supervisor-approve-request" component={SupervisorApprovePage} />
-              <Route path="/supervisor-reject-request" component={SupervisorRejectPage} />
-
-
-              <Route path="/director" component={DirectorLandingPage} />
-              <Route path="/director-pending-request" component={DirectorPendingPage} />
-              <Route path="/director-approve-request" component={DirectorApprovePage} />
-              <Route path="/director-reject-request" component={DirectorRejectPage} />
+              <Route exact path="/director" component={DirectorLandingPage} />
+              <Route exact path="/director/list-pending-request" component={DirectorPendingPage} />
+              <Route exact path="/director/list-approve-request" component={DirectorApprovePage} />
+              <Route exact path="/director/list-reject-request" component={DirectorRejectPage} />
               
               <Route component={Notfound} />
             </Switch>

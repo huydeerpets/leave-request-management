@@ -55,21 +55,21 @@ export default class HeaderAdmin extends React.Component {
             }
           >
             <Menu.Item key="schedule:1">
-              <NavLink to="/list-pending-request">
+              <NavLink to="/admin/list-pending-request">
                 <span>
                   <Icon type="schedule" />
                 </span>List Pending Request
               </NavLink>
             </Menu.Item>
             <Menu.Item key="schedule:2">
-              <NavLink to="/list-approve-request">
+              <NavLink to="/admin/list-approve-request">
                 <span>
                   <Icon type="schedule" />
                 </span>List Approve Request
               </NavLink>
             </Menu.Item>
             <Menu.Item key="schedule:3">
-              <NavLink to="/list-reject-request">
+              <NavLink to="/admin/list-reject-request">
                 <span>
                   <Icon type="schedule" />
                 </span>List Reject Request

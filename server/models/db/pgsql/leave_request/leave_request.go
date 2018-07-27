@@ -475,7 +475,8 @@ func (l *LeaveRequest) ReportLeaveRequest(query *structAPI.RequestReport) (res [
 		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
 		Where("to_date(" + leave.TableName() + ".date_from, 'DD MM YYYY') >= ? ").
 		And("to_date(" + leave.TableName() + ".date_from, 'DD MM YYYY') <= ? ").
-		And(leave.TableName() + `.status = ? `)
+		And(leave.TableName() + `.status = ? `).
+		OrderBy("to_date(" + leave.TableName() + ".date_from, 'DD MM YYYY') ASC ")
 	sql := qb.String()
 
 	count, errRaw := o.Raw(sql, query.FromDate, query.ToDate, statAcceptDirector).QueryRows(&report)
@@ -535,7 +536,8 @@ func (l *LeaveRequest) ReportLeaveRequestTypeLeave(query *structAPI.RequestRepor
 		Where("to_date(" + leave.TableName() + ".date_from, 'DD MM YYYY') >= ? ").
 		And("to_date(" + leave.TableName() + ".date_from, 'DD MM YYYY') <= ? ").
 		And(leave.TableName() + `.status = ?`).
-		And(leave.TableName() + `.type_leave_id = ?`)
+		And(leave.TableName() + `.type_leave_id = ?`).
+		OrderBy("to_date(" + leave.TableName() + ".date_from, 'DD MM YYYY') ASC ")
 	sql := qb.String()
 
 	// id, errCon := strconv.ParseInt(query.TypeLeaveID, 0, 64)
