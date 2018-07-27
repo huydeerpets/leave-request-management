@@ -98,6 +98,7 @@ func (l *LeaveRequest) CreateLeaveRequestSupervisor(employeeNumber int64,
 
 	var leave structDB.LeaveRequest
 	var user logicUser.User
+
 	isHalfDay := helpers.ArrayToString(halfDates, ",")
 
 	o := orm.NewOrm()
@@ -143,7 +144,7 @@ func (l *LeaveRequest) CreateLeaveRequestSupervisor(employeeNumber int64,
 	getEmployee, _ := user.GetEmployee(employeeNumber)
 	getDirector, _ := user.GetDirector()
 
-	helpers.GoMailSupervisor(getDirector.Email, getEmployee.Name, getDirector.Name)
+	helpers.GoMailDirectorFromSupervisor(getDirector.Email, getEmployee.Name, getDirector.Name)
 
 	return err
 }

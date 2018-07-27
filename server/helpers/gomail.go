@@ -444,3 +444,40 @@ func GoMailRegisterPassword(mailTo string, password string) {
 		CheckErr("error email", err)
 	}
 }
+
+// GoMailDirectorFromSupervisor ...
+func GoMailDirectorFromSupervisor(mailTo string, employeeName string, directorName string) {
+	var errParse error
+
+	filePrefix, _ := filepath.Abs("./views")
+	t := template.New("supervisor_leave.html")
+	infoHTML := supervisorMail{employeeName, directorName}
+	t, errParse = t.ParseFiles(filePrefix + "/supervisor_leave.html")
+	if errParse != nil {
+		CheckErr("errParse ", errParse)
+	}
+
+	var tpl bytes.Buffer
+	if err := t.Execute(&tpl, infoHTML); err != nil {
+		CheckErr("err ", err)
+	}
+	mailHTML := tpl.String()
+
+	authEmail := "tnis.noreply@gmail.com"
+	authPassword := constant.GOPWD
+	authHost := "smtp.gmail.com"
+	port := 587
+
+	m := gomail.NewMessage()
+	m.SetHeader("From", authEmail)
+	m.SetHeader("To", mailTo)
+	m.SetHeader("Subject", "Request Leave")
+	m.Embed(filePrefix + "/tnis.png")
+	m.SetBody("text/html", mailHTML)
+
+	d := gomail.NewDialer(authHost, port, authEmail, authPassword)
+
+	if err := d.DialAndSend(m); err != nil {
+		CheckErr("error email", err)
+	}
+}

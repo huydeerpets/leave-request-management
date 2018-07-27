@@ -59,16 +59,22 @@ func (c *AdminController) CreateUser() {
 		resp.Body = "create user success"
 	}
 
-	startDate := helpers.GetDay(user.StartWorkingDate)
-	annualLeave := 12 + (12 - startDate)
-	beego.Debug("==>", annualLeave)
+	// startDate := helpers.GetDay(user.StartWorkingDate)
+	// annualLeave := 12 + (12 - startDate)
+	// beego.Debug("==>", annualLeave)
 
-	if reqUser.Role == "employee" || reqUser.Role == "supervisor" {
+	if reqUser.Role == "employee" || reqUser.Role == "supervisor" && reqUser.Gender == "Female" {
 		logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 11, 12)
 		logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 22, 3)
 		logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 33, 30)
 		logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 44, 2)
 		logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 55, 90)
+		logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 66, 2)
+	} else if reqUser.Role == "employee" || reqUser.Role == "supervisor" && reqUser.Gender == "Male" {
+		logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 11, 12)
+		logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 22, 3)
+		logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 33, 30)
+		logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 44, 2)
 		logic.DBPostAdmin.CreateUserTypeLeave(user.EmployeeNumber, 66, 2)
 	}
 

@@ -33,8 +33,7 @@ export function SumbitLeave(payload, pusher) {
 			.then(({
 				body,
 				error
-			}) => {
-				let respErr = error
+			}) => {				
 				if (body !== null) {
 					dispatch(clearField())
 					pusher('/employee-request-pending')

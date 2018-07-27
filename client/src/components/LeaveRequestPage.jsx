@@ -207,8 +207,7 @@ class LeaveRequestPage extends Component {
   getDates(start, end) {
     var startDate = new Date(start);
     var endDate = new Date(end);
-    let dates = [];
-    let Weekday = new Array("Sun", "Mon", "Tue", "Wed", "Thuy", "Fri", "Sat");
+    let dates = [];    
     while (startDate <= endDate) {
       var weekDay = startDate.getDay();
       if (weekDay < 6 && weekDay > 0) {

@@ -50,7 +50,7 @@ export default class HeaderAdmin extends React.Component {
           <SubMenu
             title={
               <span>
-                <Icon type="user-add" />Employee
+                <Icon type="user" />Employee
               </span>
             }
           >
