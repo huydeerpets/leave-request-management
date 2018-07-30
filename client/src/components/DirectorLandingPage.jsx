@@ -92,7 +92,7 @@ export class DirectorLandingPage extends Component {
                 paddingBottom: "336px"
               }}
             >
-              <div style={{ padding: 150, background: "#fff", minHeight: 360 }}>
+              <div style={{ padding: 20, background: "#fff"}}>
                 <FullCalendar
                   id="your-custom-ID"
                   header={{
@@ -100,9 +100,9 @@ export class DirectorLandingPage extends Component {
                     center: "title",
                     right: "month,basicWeek,basicDay"
                   }}
-                  navLinks={true} // can click day/week names to navigate views
+                  navLinks={true} 
                   editable={true}
-                  eventLimit={true} // allow "more" link when too many events
+                  eventLimit={true}
                   events={events}
                   eventColor={"#378006"}
                   eventClick={function(calEvent, jsEvent, view, resourceObj) {

@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS leave_request
 (
   "id" int PRIMARY KEY NOT NULL,
-  "employee_number" int NOT NULL REFERENCES users(employee_number),
+  "employee_number" int NOT NULL REFERENCES users(employee_number) ON DELETE CASCADE,
   "type_leave_id" int NOT NULL,
   "reason" text NOT NULL,
   "date_from" text NOT NULL,

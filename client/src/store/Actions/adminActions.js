@@ -235,6 +235,7 @@ export function downloadReport(from, to) {
 					document.body.appendChild(link);
 					link.click();
 					message.success('Download success')
+					window.location.reload();
 				} else if (body === null) {
 					message.error('Data is not available')
 				} else {
@@ -265,6 +266,7 @@ export function downloadReportTypeLeave(from, to, id) {
 					document.body.appendChild(link);
 					link.click();
 					message.success('Download success')
+					window.location.reload();
 				} else if (body === null) {
 					message.error('Data is not available')
 				} else {

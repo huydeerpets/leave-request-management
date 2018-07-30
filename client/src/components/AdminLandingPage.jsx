@@ -88,7 +88,7 @@ class AdminLandingPage extends Component {
 
   editUser = (users, employeeNumber) => {
     this.props.history.push({
-      pathname: "/edit-user/" + employeeNumber,
+      pathname: "/admin/edit-user/" + employeeNumber,
       state: { users: users }
     });
   };

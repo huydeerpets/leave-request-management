@@ -20,7 +20,10 @@ const ButtonLogout = withRouter(({ history }) => (
 export default class HeaderAdmin extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { role: localStorage.getItem("role") };
+    this.state = { 
+      role: localStorage.getItem("role"),
+      id: localStorage.getItem("id")
+    };
   }
   render() {
     return (
@@ -40,8 +43,9 @@ export default class HeaderAdmin extends React.Component {
               </span>Home
             </NavLink>
           </Menu.Item>
-          <Menu.Item key="2">
-            <NavLink to="/register-user">
+
+          <Menu.Item key="3">
+            <NavLink to="/admin/register-user">
               <span>
                 <Icon type="form" />
               </span>Add User
@@ -73,6 +77,29 @@ export default class HeaderAdmin extends React.Component {
                 <span>
                   <Icon type="schedule" />
                 </span>List Reject Request
+              </NavLink>
+            </Menu.Item>
+          </SubMenu>
+
+          <SubMenu
+            title={
+              <span>
+                <Icon type="setting" />Settings
+              </span>
+            }
+          >
+            {/* <Menu.Item key="setting:1">
+              <NavLink to="/admin/profile">
+                <span>
+                  <Icon type="profile" />
+                </span>Profile
+              </NavLink>
+            </Menu.Item> */}
+            <Menu.Item key="setting:2">
+              <NavLink to="/admin/edit-password">
+                <span>
+                  <Icon type="form" />
+                </span>Change Password
               </NavLink>
             </Menu.Item>
           </SubMenu>

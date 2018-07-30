@@ -28,7 +28,8 @@ class PasswordPage extends Component {
     } else if (
       localStorage.getItem("role") !== "employee" &&
       localStorage.getItem("role") !== "supervisor" &&
-      localStorage.getItem("role") !== "director"
+      localStorage.getItem("role") !== "director" &&
+      localStorage.getItem("role") !== "admin"
     ) {
       this.props.history.push("/");
     }
@@ -111,7 +112,7 @@ class PasswordPage extends Component {
               padding: 50,
               paddingBottom: 50,
               paddingTop: 50,
-              background: "#fff",
+              background: "#fff"
               // minHeight: 360
             }}
           >
@@ -127,7 +128,7 @@ class PasswordPage extends Component {
                     { min: 7, message: "password length minimum is 7" }
                   ]
                 })(
-                  <Input                  
+                  <Input
                     type="password"
                     id="old_password"
                     name="old_password"

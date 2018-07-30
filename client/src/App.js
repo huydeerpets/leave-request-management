@@ -52,8 +52,9 @@ class App extends Component {
 
 
               <Route exact path="/admin" component={AdminLandingPage} />
-              <Route path="/register-user" component={RegisterPage} />            
-              <Route path={`/edit-user/:id`} component={AdminEditPage}/>
+              <Route exact path="/admin/register-user" component={RegisterPage} />            
+              <Route exact path={`/admin/edit-user/:id`} component={AdminEditPage}/>
+              <Route path={`/admin/edit-password`} component={PasswordPage}/>
               <Route exact path="/admin/list-pending-request" component={AdminPendingPage} />
               <Route exact path="/admin/list-approve-request" component={AdminApprovePage} />              
               <Route exact path="/admin/list-reject-request" component={AdminRejectPage} />              
