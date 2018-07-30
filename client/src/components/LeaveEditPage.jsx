@@ -25,7 +25,6 @@ const { Content } = Layout;
 const { TextArea } = Input;
 const FormItem = Form.Item;
 const Option = Select.Option;
-let typeName;
 
 class LeaveEditPage extends Component {
   constructor(props) {
@@ -36,9 +35,8 @@ class LeaveEditPage extends Component {
       start: null,
       end: null,
       endOpen: false,
-      typeName: null,
       halfDate: [],
-      type: null
+      datesHalf: null
     };
 
     this.saveEdit = this.saveEdit.bind(this);
@@ -68,22 +66,21 @@ class LeaveEditPage extends Component {
       );
       this.props.fetchedEdit(leave[0]);
       this.props.typeLeaveFetchData();
-      this.setState({ typeName: this.props.leave.type_id });
     }
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   if (nextProps.leave !== this.props.leave) {
-  //     var momentObjFrom = moment( nextProps.leave.date_from);
-  //     var momentObjTo = moment( nextProps.leave.to);
-  //     this.setState({
-  //       from: momentObjFrom,
-  //       to: momentObjTo
-  //     });
-  //   }
-  // }
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.leave !== this.props.leave) {
+      this.setState({
+        start: this.formatDate(moment(nextProps.leave.date_from, "DD-MM-YYYY")),
+        end: this.formatDate(moment(nextProps.leave.date_to, "DD-MM-YYYY")),
+        datesHalf: nextProps.leave.half_dates.toString().split(",")
+      });
+    }
+  }
 
-  saveEdit = () => {
+  saveEdit = e => {
+    e.preventDefault();
     this.props.saveEditLeave(this.props.leave, url => {
       this.props.history.push(url);
     });
@@ -97,12 +94,21 @@ class LeaveEditPage extends Component {
     this.props.handleEdit(newLeave);
   };
 
-  handleChangeTypeOfLeave(value) {    
-    let typeLeave = {
-      ...this.props.leave,
-      type_leave_id: Number(value)
-    };
-    this.props.handleEdit(typeLeave);
+  handleChangeTypeOfLeave(value) {
+    if (value === "11" || value === "44" || value === "55") {
+      let typeLeave = {
+        ...this.props.leave,
+        type_leave_id: Number(value),
+        reason: ""
+      };
+      this.props.handleEdit(typeLeave);
+    } else {
+      let typeLeave = {
+        ...this.props.leave,
+        type_leave_id: Number(value)
+      };
+      this.props.handleEdit(typeLeave);
+    }
   }
 
   handleChangeSelect(value) {
@@ -143,8 +149,8 @@ class LeaveEditPage extends Component {
         ...this.props.leave,
         date_from: newDate
       };
-
       this.props.handleEdit(dateFrom);
+
       this.onChange("start", newStart);
     }
     this.onChange("from", value);
@@ -157,11 +163,13 @@ class LeaveEditPage extends Component {
         day = ("0" + date.getDate()).slice(-2);
       let newDate = [day, mnth, date.getFullYear()].join("-");
       let newEnd = [mnth, day, date.getFullYear()].join("-");
+
       let dateTo = {
         ...this.props.leave,
         date_to: newDate
       };
       this.props.handleEdit(dateTo);
+
       this.onChange("end", newEnd);
     }
     this.onChange("to", value);
@@ -183,6 +191,13 @@ class LeaveEditPage extends Component {
 
   disabledDateBack(current) {
     return this.state.to && this.state.to > current;
+  }
+
+  formatDate(value) {
+    const date = new Date(value._d),
+      mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+      day = ("0" + date.getDate()).slice(-2);
+    return [mnth, day, date.getFullYear()].join("-");
   }
 
   handleStartOpenChange = open => {
@@ -255,6 +270,7 @@ class LeaveEditPage extends Component {
         mnth = ("0" + (date.getMonth() + 1)).slice(-2),
         day = ("0" + date.getDate()).slice(-2);
       let newDate = [day, mnth, date.getFullYear()].join("-");
+
       let backOn = {
         ...this.props.leave,
         back_on: newDate,
@@ -273,35 +289,7 @@ class LeaveEditPage extends Component {
   }
 
   render() {
-    const { getFieldDecorator } = this.props.form;
-    const { from, to, start, end, endOpen } = this.state;
-    const elements = [];
-    const dates = this.getDates(start, end);
-    const dateFormat = "DD-MM-YYYY";
-    const role = localStorage.getItem("role");
-
-    for (let i = 0; i < dates.length; i++) {
-      elements.push(
-        <Checkbox
-          key={i}
-          id="is_half_day"
-          name="is_half_day"
-          onChange={e => this.onChangeIsHalfDay(e, dates[i])}
-          value={dates[i]}
-        >
-          {dates[i]}
-        </Checkbox>,
-        <br />
-      );
-    }
-    // let typeID;
-    // this.props.typeLeave.map(d => {
-    //   if (d.id === 22) {
-    //     typeID = d.type_name;
-    //   }
-    //   return d;
-    // });
-
+    const { start, end, endOpen, datesHalf } = this.state;
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -317,6 +305,53 @@ class LeaveEditPage extends Component {
     const formStyle = {
       width: "100%"
     };
+
+    const elements = [];
+    const dates = this.getDates(start, end);
+    const dateFormat = "DD-MM-YYYY";
+    let typeID;
+
+    if (datesHalf !== null) {
+      for (let i in dates) {
+        for (let j in datesHalf) {
+          if (datesHalf[j].trim() === dates[i]) {
+            elements.push(
+              <Checkbox
+                key={j}
+                id="is_half_day"
+                name="is_half_day"
+                value={datesHalf[j]}
+                defaultChecked={true}
+                onChange={e => this.onChangeIsHalfDay(e, datesHalf[j])}
+              >
+                {datesHalf[j]}
+              </Checkbox>,
+              <br />
+            );
+          } else {
+            elements.push(
+              <Checkbox
+                key={i}
+                id="is_half_day"
+                name="is_half_day"
+                onChange={e => this.onChangeIsHalfDay(e, dates[i])}
+                value={dates[i]}
+              >
+                {dates[i]}
+              </Checkbox>,
+              <br />
+            );
+          }
+        }
+      }
+    }
+
+    this.props.typeLeave.map(d => {
+      if (d.type_name === this.props.leave.type_name) {
+        typeID = d.id;
+      }
+      return d;
+    });
 
     if (this.props.loading) {
       return <Loading />;
@@ -343,20 +378,18 @@ class LeaveEditPage extends Component {
             }}
           >
             <h1> Form Edit Leave Request </h1>
-
             <Form onSubmit={this.handleSubmit} className="login-form">
               <FormItem {...formItemLayout} label="Type Of Leave">
                 <Select
                   id="type_leave_id"
                   name="type_leave_id"
-                  placeholder="Select type of leave"
                   optionFilterProp="children"
                   onChange={this.handleChangeTypeOfLeave}
                   onSelect={(value, event) =>
                     this.handleChangeSelect(value, event)
                   }
                   defaultValue={this.props.leave.type_name}
-                  // value={typeID}
+                  // value={this.props.leave.type_id}
                   style={formStyle}
                   onFocus={this.handleFocus}
                   onBlur={this.handleBlur}
@@ -369,47 +402,72 @@ class LeaveEditPage extends Component {
                 </Select>
               </FormItem>
 
-              <FormItem {...formItemLayout} label="Reason">
-                <Input
-                  type="text"
-                  id="reason"
-                  name="reason"
-                  placeholder="reason"
-                  value={this.props.leave.reason}
-                  onChange={this.handleOnChange}
-                  style={formStyle}
-                />
-              </FormItem>
+              {this.props.leave.type_leave_id === 22 ||
+              this.props.leave.type_leave_id === 33 ||
+              this.props.leave.type_leave_id === 66 ? (
+                <FormItem {...formItemLayout} label="Reason">
+                  <Input
+                    type="text"
+                    id="reason"
+                    name="reason"
+                    placeholder="reason"
+                    onChange={this.handleOnChange}
+                    style={formStyle}
+                  />
+                </FormItem>
+              ) : (
+                ""
+              )}
 
-              <FormItem {...formItemLayout} label="From">
-                <DatePicker
-                  id="date_from"
-                  name="date_from"
-                  format={dateFormat}
-                  // value={from}
-                  defaultValue={moment(
-                    this.props.leave.date_from,
-                    "DD-MM-YYYY"
-                  )}
-                  onChange={this.onStartChange}
-                  onOpenChange={this.handleStartOpenChange}
-                  style={formStyle}
-                />
-              </FormItem>
-              {this.props.leave.type_id}
+              {this.props.leave.type_leave_id === 22 ||
+              this.props.leave.type_leave_id === 33 ? (
+                <FormItem {...formItemLayout} label="From">
+                  <DatePicker
+                    id="date_from"
+                    name="date_from"
+                    format={dateFormat}
+                    defaultValue={moment(
+                      this.props.leave.date_from,
+                      "DD-MM-YYYY"
+                    )}
+                    onChange={this.onStartChange}
+                    onOpenChange={this.handleStartOpenChange}
+                    disabledDate={this.disabledDateSick}
+                    style={formStyle}
+                  />
+                </FormItem>
+              ) : (
+                <FormItem {...formItemLayout} label="From">
+                  <DatePicker
+                    id="date_from"
+                    name="date_from"
+                    format={dateFormat}
+                    defaultValue={moment(
+                      this.props.leave.date_from,
+                      "DD-MM-YYYY"
+                    )}
+                    onChange={this.onStartChange}
+                    onOpenChange={this.handleStartOpenChange}
+                    disabledDate={this.disabledDate}
+                    style={formStyle}
+                  />
+                </FormItem>
+              )}
+
               <FormItem {...formItemLayout} label="To">
                 <DatePicker
                   id="date_to"
                   name="date_to"
                   format={dateFormat}
                   defaultValue={moment(this.props.leave.date_to, "DD-MM-YYYY")}
-                  // value={to}
                   onChange={this.onEndChange}
                   open={endOpen}
                   onOpenChange={this.handleEndOpenChange}
+                  disabledDate={this.disabledEndDate}
                   style={formStyle}
                 />
               </FormItem>
+
               <FormItem>
                 <Checkbox
                   id="add_half_day"
@@ -464,6 +522,7 @@ class LeaveEditPage extends Component {
                   style={formStyle}
                 />
               </FormItem>
+
               <FormItem>
                 <Button
                   onClick={this.saveEdit}
@@ -479,7 +538,6 @@ class LeaveEditPage extends Component {
             </Form>
           </div>
         </Content>
-
         <Footer />
       </Layout>
     );

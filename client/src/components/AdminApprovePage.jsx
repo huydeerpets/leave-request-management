@@ -189,6 +189,7 @@ class AdminApprovePage extends Component {
 
   downloadReport = (from, to) => {
     this.props.downloadReport(from, to);
+    window.location.reload();
   };
 
   onStartChange = value => {
@@ -226,6 +227,7 @@ class AdminApprovePage extends Component {
 
   downloadReportTypeLeave = (from, to, id) => {
     this.props.downloadReportTypeLeave(from, to, id);
+    window.location.reload();
   };
 
   onStartChangeDate = value => {
@@ -263,7 +265,7 @@ class AdminApprovePage extends Component {
   }
 
   render() {
-    const { visible, loading } = this.state;
+    const { visible, loading } = this.state;    
     const columns = [
       {
         title: "ID",
@@ -445,7 +447,7 @@ class AdminApprovePage extends Component {
                     id="date_from"
                     name="date_from"
                     placeholder="Start"
-                    defaultValue={this.state.start}
+                    // defaultValue={this.state.start}
                     onChange={this.onStartChangeDate}
                   />
                 </FormItem>
@@ -454,7 +456,7 @@ class AdminApprovePage extends Component {
                     id="date_from"
                     name="date_from"
                     placeholder="End"
-                    defaultValue={this.state.end}
+                    // defaultValue={this.state.end}
                     onChange={this.onEndChangeDate}
                   />
                 </FormItem>

@@ -55,13 +55,13 @@ export function saveEditLeave(savedLeave, pusher) {
 				error
 			}) => {
 				if (body !== null) {
-					message.body(body)
-					pusher('/employee-request-pending')
+					message.success(body)
+					pusher('/employee/list-pending-request')
 				} else if (error !== null) {
 					message.error(error)
 				}
-			}).catch(err => {
-				message.error(err)
+			}).catch(error => {
+				console.error(error)
 			})
 	}
 }

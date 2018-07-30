@@ -44,6 +44,7 @@ func (e *Employee) GetPendingRequest(employeeNumber int64) ([]structLogic.Reques
 		user.TableName()+".mobile_phone",
 		user.TableName()+".email",
 		user.TableName()+".role",
+		// typeLeave.TableName()+".id as type_id",
 		typeLeave.TableName()+".type_name",
 		userTypeLeave.TableName()+".leave_remaining",
 		leave.TableName()+".reason",
