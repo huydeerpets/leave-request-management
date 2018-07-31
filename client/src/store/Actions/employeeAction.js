@@ -61,7 +61,7 @@ export function employeeGetRequestPending() {
 	}
 }
 
-export function employeeDeleteRequestPending(leaves, id) {
+export function employeeDeleteRequest(leaves, id) {
 	return (dispatch) => {
 		fetch(`${ROOT_API}/api/employee/leave/${id}`, {
 				method: 'DELETE',
@@ -81,11 +81,11 @@ export function employeeDeleteRequestPending(leaves, id) {
 				dispatch(deleteRequestPending(payload))
 
 				if (error !== null) {
-					console.error("error not null @employeeDeleteRequestPending: ", error)
+					console.error("error not null @employeeDeleteRequest: ", error)
 				}
 			})
 			.catch(error => {
-				console.error("error @employeeDeleteRequestPending: ", error)
+				console.error("error @employeeDeleteRequest: ", error)
 			})
 	}
 }

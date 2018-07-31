@@ -68,7 +68,10 @@ class ResetPasswordPage extends Component {
       [e.target.name]: e.target.value
     };
     this.props.handleEdit(loginForm);
-    console.log("================", loginForm);
+
+    this.props.form.setFieldsValue({
+      [e.target.name]: e.target.value
+    });    
   };
 
   render() {

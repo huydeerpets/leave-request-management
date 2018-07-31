@@ -20,7 +20,7 @@ const ButtonLogout = withRouter(({ history }) => (
 export default class HeaderAdmin extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
+    this.state = {
       role: localStorage.getItem("role"),
       id: localStorage.getItem("id")
     };
@@ -29,7 +29,6 @@ export default class HeaderAdmin extends React.Component {
     return (
       <Header>
         <Menu
-          {...this.props}
           theme="dark"
           // mode={mobileVersion ? 'vertical' : 'horizontal'}
           mode="horizontal"
@@ -107,7 +106,6 @@ export default class HeaderAdmin extends React.Component {
             <ButtonLogout />
           </Menu.Item>
         </Menu>
-        {this.props.children}
 
         <div
           style={{

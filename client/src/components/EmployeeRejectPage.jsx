@@ -1,8 +1,21 @@
 import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { employeeGetRequestReject } from "../store/Actions/employeeAction";
-import { Layout, Table, Modal, Button, Input, Icon } from "antd";
+import {
+  employeeGetRequestReject,
+  employeeDeleteRequest
+} from "../store/Actions/employeeAction";
+import {
+  Layout,
+  Table,
+  Modal,
+  Button,
+  Input,
+  Icon,
+  Divider,
+  Popconfirm,
+  message
+} from "antd";
 import HeaderNav from "./menu/HeaderNav";
 import Loading from "./menu/Loading";
 import Footer from "./menu/Footer";
@@ -94,6 +107,10 @@ class EmployeeRejectPage extends Component {
       visible: true,
       user: record
     });
+  };
+
+  employeeDeleteRequest = (leaves, id) => {
+    this.props.employeeDeleteRequest(leaves, id);
   };
 
   onSelectChange = selectedRowKeys => {
@@ -192,12 +209,25 @@ class EmployeeRejectPage extends Component {
       {
         title: "Action",
         key: "action",
-        width: 100,
+        width: 200,
         render: (value, record) => (
           <span>
             <Button type="primary" onClick={() => this.showDetail(record)}>
               Detail
             </Button>
+            <Divider type="vertical" />
+            <Popconfirm
+              placement="top"
+              title={"Are you sure delete this leave request?"}
+              onConfirm={() => {
+                this.employeeDeleteRequest(this.props.leaves, record.id);
+                message.success("Leave request has been delete!");
+              }}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button type="danger">Delete</Button>
+            </Popconfirm>
           </span>
         )
       }
@@ -261,8 +291,7 @@ class EmployeeRejectPage extends Component {
                 Reason : {this.state.user && this.state.user.reason} <br />
                 From : {this.state.user && this.state.user.date_from} <br />
                 To : {this.state.user && this.state.user.date_to} <br />
-                Half Day : {this.state.user && this.state.user.half_dates}{" "}
-                <br />
+                Half Day : {this.state.user && this.state.user.half_dates !== "" ? ( this.state.user.half_dates ):("none")} <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
                 Total Leave : {this.state.user &&
                   this.state.user.total} day <br />
@@ -293,7 +322,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      employeeGetRequestReject
+      employeeGetRequestReject,
+      employeeDeleteRequest
     },
     dispatch
   );

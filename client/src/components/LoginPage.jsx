@@ -67,12 +67,11 @@ class LoginPage extends Component {
       ...this.props.loginForm,
       [e.target.name]: e.target.value
     };
+    this.props.handleFormInput(loginForm);
 
     this.props.form.setFieldsValue({
       [e.target.name]: e.target.value
     });
-
-    this.props.handleFormInput(loginForm);
   };
 
   hasErrors(fieldsError) {
@@ -193,11 +192,8 @@ class LoginPage extends Component {
 
           <Footer className="Login-footer">
             <p>
-              <a href="http://opensource.org/licenses/mit-license.php"> MIT</a>.
-              The website content is licensed{" "}
-              <a href="http://www.tnis.com">
-                &copy; P.T TNIS Service Indonesia
-              </a>.
+              <a href="http://www.tnis.com">PT. TNIS Service Indonesia</a>&copy;
+              All Right Reserved 2018.
             </p>
           </Footer>
         </Layout>

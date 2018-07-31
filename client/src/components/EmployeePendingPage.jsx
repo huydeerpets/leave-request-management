@@ -3,7 +3,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import {
   employeeGetRequestPending,
-  employeeDeleteRequestPending
+  employeeDeleteRequest
 } from "../store/Actions/employeeAction";
 import {
   Layout,
@@ -109,8 +109,8 @@ class EmployeePendingPage extends Component {
     });
   };
 
-  employeeDeleteRequestPending = (leaves, id) => {
-    this.props.employeeDeleteRequestPending(leaves, id);
+  employeeDeleteRequest = (leaves, id) => {
+    this.props.employeeDeleteRequest(leaves, id);
   };
 
   showDetail = record => {
@@ -236,7 +236,7 @@ class EmployeePendingPage extends Component {
               placement="top"
               title={"Are you sure delete this leave request?"}
               onConfirm={() => {
-                this.employeeDeleteRequestPending(this.props.leaves, record.id);
+                this.employeeDeleteRequest(this.props.leaves, record.id);
                 message.success("Leave request has been delete!");
               }}
               okText="Yes"
@@ -307,8 +307,7 @@ class EmployeePendingPage extends Component {
                 Reason : {this.state.user && this.state.user.reason} <br />
                 From : {this.state.user && this.state.user.date_from} <br />
                 To : {this.state.user && this.state.user.date_to} <br />
-                Half Day : {this.state.user && this.state.user.half_dates}{" "}
-                <br />
+                Half Day : {this.state.user && this.state.user.half_dates !== "" ? ( this.state.user.half_dates ):("none")} <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
                 Total Leave : {this.state.user &&
                   this.state.user.total} day <br />
@@ -339,7 +338,7 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
       employeeGetRequestPending,
-      employeeDeleteRequestPending
+      employeeDeleteRequest
     },
     dispatch
   );

@@ -59,7 +59,7 @@ export class DirectorLandingPage extends Component {
 
   render() {
     const events = [];
-    if (this.state.leaves !== null) {
+    if (this.state.leaves) {
       for (let i = 0; i < this.state.leaves.length; i++) {
         events.push({
           title: `${this.state.leaves[i].name} for ${

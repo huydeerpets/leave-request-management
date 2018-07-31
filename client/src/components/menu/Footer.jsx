@@ -7,11 +7,8 @@ export default class FooterLayout extends React.Component {
     return (
       <Footer className="App-footer">
         <p>
-          <a href="http://opensource.org/licenses/mit-license.php"> MIT</a>. The
-          website content is licensed{" "}
-          <a href="http://www.tnis.com">
-          &copy; P.T TNIS Service Indonesia
-          </a>.
+          <a href="http://www.tnis.com">PT. TNIS Service Indonesia</a> &copy; 2018. All
+          Right Reserved.
         </p>
       </Footer>
     );

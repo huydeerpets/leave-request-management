@@ -289,7 +289,7 @@ class AdminPendingPage extends Component {
               paddingBottom: "336px"
             }}
           >
-            <div style={{ padding: 20, background: "#fff" }}>
+            <div style={{ padding: 40, background: "#fff" }}>
               <Table
                 columns={columns}
                 dataSource={this.state.data}
@@ -332,8 +332,7 @@ class AdminPendingPage extends Component {
                 Reason : {this.state.user && this.state.user.reason} <br />
                 From : {this.state.user && this.state.user.date_from} <br />
                 To : {this.state.user && this.state.user.date_to} <br />
-                Half Day : {this.state.user && this.state.user.half_dates}{" "}
-                <br />
+                Half Day : {this.state.user && this.state.user.half_dates !== "" ? ( this.state.user.half_dates ):("none")} <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
                 Total Leave : {this.state.user &&
                   this.state.user.total} day <br />

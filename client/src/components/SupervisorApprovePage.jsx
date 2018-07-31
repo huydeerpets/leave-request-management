@@ -286,7 +286,7 @@ class SupervisorApprovePage extends Component {
               display: "flex",
               margin: "18px 10px 0",
               justifyContent: "space-around",
-              paddingBottom: "336px"
+              paddingBottom: "336px"              
             }}
           >
             <div style={{ padding: 20, background: "#fff" }}>
@@ -294,7 +294,7 @@ class SupervisorApprovePage extends Component {
                 columns={columns}
                 dataSource={this.state.data}
                 rowKey={record => record.id}
-                onRowClick={this.onSelectChange}
+                onRowClick={this.onSelectChange}              
                 pagination={{
                   className: "my-pagination",
                   defaultCurrent: 1,
@@ -332,8 +332,7 @@ class SupervisorApprovePage extends Component {
                 Reason : {this.state.user && this.state.user.reason} <br />
                 From : {this.state.user && this.state.user.date_from} <br />
                 To : {this.state.user && this.state.user.date_to} <br />
-                Half Day : {this.state.user && this.state.user.half_dates}{" "}
-                <br />
+                Half Day : {this.state.user && this.state.user.half_dates !== "" ? ( this.state.user.half_dates ):("none")} <br />
                 Back On : {this.state.user && this.state.user.back_on} <br />
                 Total Leave : {this.state.user &&
                   this.state.user.total} day <br />

@@ -34,11 +34,16 @@
 
 .Login-footer {
   background-color: #4abdcf;
-  height: 100px;
+  height: 100px;  
   color: white;
   justify-content: center;
   align-items: center;
   align-self: auto;
+}
+
+.Login-footer p {
+  margin-top: 20px;
+  margin-bottom: 1em;
 }
 
 .login-form {

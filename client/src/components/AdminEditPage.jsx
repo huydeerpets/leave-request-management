@@ -185,14 +185,14 @@ class AdminEditPage extends Component {
           >
             <div
               style={{
-                padding: 150,
+                padding: 100,
                 paddingBottom: 50,
                 paddingTop: 50,
                 background: "#fff",
                 minHeight: 360
               }}
             >
-              <h1> Form Edit User </h1>
+              <h1> EDIT USER </h1>
               <div>
                 <Form onSubmit={this.handleSubmit} className="login-form">
                   <FormItem {...formItemLayout} label="Name">
