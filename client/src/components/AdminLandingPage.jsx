@@ -45,7 +45,7 @@ class AdminLandingPage extends Component {
       {
         title: "Action",
         key: "action",
-        width: "45%",
+        width: "25%",
         render: (text, record) => (
           //  (record.employee_number))
           <span>
@@ -72,7 +72,7 @@ class AdminLandingPage extends Component {
               <Button type="danger">Delete</Button>
             </Popconfirm>
             <Divider type="vertical" />
-            {record.role === "supervisor" || record.role === "employee" ? (
+            {/* {record.role === "supervisor" || record.role === "employee" ? (
               <Button
                 onClick={() => {
                   this.editBalance(record.employee_number);
@@ -83,7 +83,7 @@ class AdminLandingPage extends Component {
               </Button>
             ) : (
               ""
-            )}
+            )} */}
           </span>
         )
       }
