@@ -338,7 +338,8 @@ func (l *LeaveRequest) DownloadReportCSV(query *structAPI.RequestReport,
 		leave.TableName()+".reason",
 		leave.TableName()+".date_from",
 		leave.TableName()+".date_to",
-		"array_to_string("+leave.TableName()+".half_dates, ', ') as half_dates",
+		// "array_to_string("+leave.TableName()+".half_dates, ', ') as half_dates",
+		leave.TableName()+".half_dates",
 		leave.TableName()+".total",
 		leave.TableName()+".back_on",
 		userTypeLeave.TableName()+".leave_remaining",
@@ -459,7 +460,8 @@ func (l *LeaveRequest) ReportLeaveRequest(query *structAPI.RequestReport) (res [
 		leave.TableName()+".reason",
 		leave.TableName()+".date_from",
 		leave.TableName()+".date_to",
-		"array_to_string("+leave.TableName()+".half_dates, ', ') as half_dates",
+		// "array_to_string("+leave.TableName()+".half_dates, ', ') as half_dates",
+		leave.TableName()+".half_dates",
 		leave.TableName()+".total",
 		leave.TableName()+".back_on",
 		userTypeLeave.TableName()+".leave_remaining",
@@ -473,10 +475,10 @@ func (l *LeaveRequest) ReportLeaveRequest(query *structAPI.RequestReport) (res [
 		InnerJoin(userTypeLeave.TableName()).
 		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
 		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
-		Where("to_date(" + leave.TableName() + ".date_from, 'DD MM YYYY') >= ? ").
-		And("to_date(" + leave.TableName() + ".date_from, 'DD MM YYYY') <= ? ").
+		Where("strftime(" + leave.TableName() + ".date_from) >= strftime(?) ").
+		And("strftime(" + leave.TableName() + ".date_from) <= strftime(?) ").
 		And(leave.TableName() + `.status = ? `).
-		OrderBy("to_date(" + leave.TableName() + ".date_from, 'DD MM YYYY') ASC ")
+		OrderBy("strftime(" + leave.TableName() + ".date_from) ASC ")
 	sql := qb.String()
 
 	count, errRaw := o.Raw(sql, query.FromDate, query.ToDate, statAcceptDirector).QueryRows(&report)
@@ -519,7 +521,8 @@ func (l *LeaveRequest) ReportLeaveRequestTypeLeave(query *structAPI.RequestRepor
 		leave.TableName()+".reason",
 		leave.TableName()+".date_from",
 		leave.TableName()+".date_to",
-		"array_to_string("+leave.TableName()+".half_dates, ', ') as half_dates",
+		// "array_to_string("+leave.TableName()+".half_dates, ', ') as half_dates",
+		leave.TableName()+".half_dates",
 		leave.TableName()+".total",
 		leave.TableName()+".back_on",
 		userTypeLeave.TableName()+".leave_remaining",
@@ -533,11 +536,11 @@ func (l *LeaveRequest) ReportLeaveRequestTypeLeave(query *structAPI.RequestRepor
 		InnerJoin(userTypeLeave.TableName()).
 		On(userTypeLeave.TableName() + ".type_leave_id" + "=" + leave.TableName() + ".type_leave_id").
 		And(userTypeLeave.TableName() + ".employee_number" + "=" + leave.TableName() + ".employee_number").
-		Where("to_date(" + leave.TableName() + ".date_from, 'DD MM YYYY') >= ? ").
-		And("to_date(" + leave.TableName() + ".date_from, 'DD MM YYYY') <= ? ").
+		Where("strftime(" + leave.TableName() + ".date_from) >= strftime(?) ").
+		And("strftime(" + leave.TableName() + ".date_from) <= strftime(?) ").
 		And(leave.TableName() + `.status = ?`).
 		And(leave.TableName() + `.type_leave_id = ?`).
-		OrderBy("to_date(" + leave.TableName() + ".date_from, 'DD MM YYYY') ASC ")
+		OrderBy("strftime(" + leave.TableName() + ".date_from) ASC ")
 	sql := qb.String()
 
 	// id, errCon := strconv.ParseInt(query.TypeLeaveID, 0, 64)

@@ -102,9 +102,9 @@ class PasswordPage extends Component {
           className="container"
           style={{
             display: "flex",
-            margin: "24px 16px 0",
+            margin: "20px 16px 0",
             justifyContent: "center",
-            paddingBottom: "73px"
+            paddingBottom: "411px"
           }}
         >
           <div
@@ -116,7 +116,7 @@ class PasswordPage extends Component {
               // minHeight: 360
             }}
           >
-            <h1> Form Update Password </h1>
+            <h1> UPDATE PASSWORD </h1>
 
             <Form className="login-form">
               <FormItem {...formItemLayout} label="Old Password">

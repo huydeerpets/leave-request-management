@@ -87,9 +87,9 @@ export class DirectorLandingPage extends Component {
               className="container"
               style={{
                 display: "flex",
-                margin: "24px 16px 0",
+                margin: "20px 16px 0",
                 justifyContent: "space-around",
-                paddingBottom: "336px"
+                paddingBottom: "20px"
               }}
             >
               <div style={{ padding: 20, background: "#fff"}}>

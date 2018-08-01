@@ -145,7 +145,50 @@ func (u *Admin) UpdateUser(e *structDB.User, employeeNumber int64) (err error) {
 	}
 
 	o.Raw(`SELECT name, email FROM `+e.TableName()+` WHERE employee_number = ?`, employeeNumber).QueryRow(&user)
-	if e.Email == user.Email {
+
+	if e.Email != user.Email {
+		o.Raw(`SELECT count(*) as Count FROM `+e.TableName()+` WHERE email = ?`, e.Email).QueryRow(&count)
+		if count > 0 {
+			return errors.New("Email already register")
+		} else {
+			qb.Update(e.TableName()).
+				Set("name = ?",
+					"gender = ?",
+					"position = ?",
+					"start_working_date = ?",
+					"mobile_phone = ?",
+					"email= ?",
+					"role = ?",
+					"supervisor_id = ?",
+					"updated_at = ?").Where("employee_number = ? ")
+			sql := qb.String()
+
+			e.Email = strings.ToLower(e.Email)
+
+			res, errRaw := o.Raw(sql,
+				e.Name,
+				e.Gender,
+				e.Position,
+				e.StartWorkingDate,
+				e.MobilePhone,
+				e.Email,
+				e.Role,
+				e.SupervisorID,
+				e.UpdatedAt,
+				employeeNumber).Exec()
+
+			if errRaw != nil {
+				helpers.CheckErr("err update @UpdateUser", errRaw)
+				return errors.New("update user failed")
+			}
+
+			_, errRow := res.RowsAffected()
+			if errRow != nil {
+				helpers.CheckErr("error get rows affected", errRow)
+				return errRow
+			}
+		}
+	} else {
 		qb.Update(e.TableName()).
 			Set("name = ?",
 				"gender = ?",
@@ -181,12 +224,6 @@ func (u *Admin) UpdateUser(e *structDB.User, employeeNumber int64) (err error) {
 		if errRow != nil {
 			helpers.CheckErr("error get rows affected", errRow)
 			return errRow
-		}
-
-	} else {
-		o.Raw(`SELECT count(*) as Count FROM `+e.TableName()+` WHERE email = ?`, e.Email).QueryRow(&count)
-		if count > 0 {
-			return errors.New("Email already register")
 		}
 	}
 
@@ -227,7 +264,8 @@ func (u *Admin) GetLeaveRequestPending() ([]structLogic.RequestPending, error) {
 		leave.TableName()+".reason",
 		leave.TableName()+".date_from",
 		leave.TableName()+".date_to",
-		"array_to_string("+leave.TableName()+".half_dates, ', ') as half_dates",
+		// "array_to_string("+leave.TableName()+".half_dates, ', ') as half_dates",
+		leave.TableName()+".half_dates",
 		leave.TableName()+".total",
 		leave.TableName()+".back_on",
 		leave.TableName()+".contact_address",
@@ -289,7 +327,8 @@ func (u *Admin) GetLeaveRequest() ([]structLogic.RequestAccept, error) {
 		leave.TableName()+".reason",
 		leave.TableName()+".date_from",
 		leave.TableName()+".date_to",
-		"array_to_string("+leave.TableName()+".half_dates, ', ') as half_dates",
+		// "array_to_string("+leave.TableName()+".half_dates, ', ') as half_dates",
+		leave.TableName()+".half_dates",
 		leave.TableName()+".total",
 		leave.TableName()+".back_on",
 		leave.TableName()+".contact_address",
@@ -353,7 +392,8 @@ func (u *Admin) GetLeaveRequestReject() ([]structLogic.RequestReject, error) {
 		leave.TableName()+".reason",
 		leave.TableName()+".date_from",
 		leave.TableName()+".date_to",
-		"array_to_string("+leave.TableName()+".half_dates, ', ') as half_dates",
+		// "array_to_string("+leave.TableName()+".half_dates, ', ') as half_dates",
+		leave.TableName()+".half_dates",
 		leave.TableName()+".total",
 		leave.TableName()+".back_on",
 		leave.TableName()+".contact_address",

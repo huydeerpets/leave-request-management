@@ -5,7 +5,8 @@ import {
 	FETCH_LEAVE_PENDING,
 	FETCH_LEAVE_APPROVE,
 	FETCH_LEAVE_REJECT,
-	CANCEL_LEAVE_REQUEST
+	CANCEL_LEAVE_REQUEST,
+	FETCH_LEAVE_BALANCES
 } from "./types"
 import {
 	message
@@ -53,6 +54,12 @@ function cancelRequest(payload) {
 	}
 }
 
+function fetchLeaveBalance(payload) {
+	return {
+		type: FETCH_LEAVE_BALANCES,
+		payload: payload
+	}
+}
 
 export function adminGetUsers() {
 	return (dispatch) => {
@@ -76,6 +83,32 @@ export function adminGetUsers() {
 			})
 			.catch(error => {
 				console.error("error @adminGetUsers: ", error)
+			})
+	}
+}
+
+export function adminEditLeaveBalances(employeeNumber) {
+	return (dispatch) => {
+		fetch(`${ROOT_API}/api/user/type-leave/${employeeNumber}`, {
+				method: 'GET',
+			})
+			.then((resp) => resp.json())
+			.then(({
+				body,
+				error
+			}) => {
+				let payload = {
+					loading: false,
+					balances: body
+				}
+				dispatch(fetchLeaveBalance(payload))
+
+				if (error !== null) {
+					console.error("error not null @adminEditLeaveBalances: ", error)
+				}
+			})
+			.catch(error => {
+				console.error("error @adminEditLeaveBalances: ", error)
 			})
 	}
 }

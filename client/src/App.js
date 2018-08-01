@@ -10,14 +10,15 @@ import ResetPasswordPage from './components/ResetPasswordPage';
 import AdminLandingPage from './components/AdminLandingPage';
 import RegisterPage from './components/RegisterPage';
 import AdminEditPage from './components/AdminEditPage';
+import AdminEditBalancePage from './components/AdminEditBalancePage';
 import AdminPendingPage from './components/AdminPendingPage';
 import AdminApprovePage from './components/AdminApprovePage';
 import AdminRejectPage from './components/AdminRejectPage';
 
-
 import EmployeeLandingPage from './components/EmployeeLandingPage';
 import ProfilePage from './components/ProfilePage';
 import PasswordPage from './components/PasswordPage';
+import PasswordPageAdmin from './components/PasswordPageAdmin';
 
 import LeaveRequestPage from './components/LeaveRequestPage';
 import LeaveEditPage from './components/LeaveEditPage';
@@ -25,12 +26,10 @@ import EmployeePendingPage from './components/EmployeePendingPage';
 import EmployeeApprovePage from './components/EmployeeApprovePage';
 import EmployeeRejectPage from './components/EmployeeRejectPage';
 
-
 import SupervisorLandingPage from './components/SupervisorLandingPage';
 import SupervisorPendingPage from './components/SupervisorPendingPage';
 import SupervisorApprovePage from './components/SupervisorApprovePage';
 import SupervisorRejectPage from './components/SupervisorRejectPage';
-
 
 import DirectorLandingPage from './components/DirectorLandingPage';
 import DirectorPendingPage from './components/DirectorPendingPage';
@@ -54,7 +53,8 @@ class App extends Component {
               <Route exact path="/admin" component={AdminLandingPage} />
               <Route exact path="/admin/register-user" component={RegisterPage} />            
               <Route exact path={`/admin/edit-user/:id`} component={AdminEditPage}/>
-              <Route path={`/admin/edit-password`} component={PasswordPage}/>
+              <Route exact path={`/admin/edit-balance/:id`} component={AdminEditBalancePage}/>
+              <Route path={`/admin/edit-password`} component={PasswordPageAdmin}/>
               <Route exact path="/admin/list-pending-request" component={AdminPendingPage} />
               <Route exact path="/admin/list-approve-request" component={AdminApprovePage} />              
               <Route exact path="/admin/list-reject-request" component={AdminRejectPage} />              

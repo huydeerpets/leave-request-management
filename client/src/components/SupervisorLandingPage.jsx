@@ -101,9 +101,9 @@ export class SupervisorLandingPage extends React.Component {
               className="container"
               style={{
                 display: "flex",
-                margin: "24px 16px 0",
-                justifyContent: "space-around",
-                paddingBottom: "507px"
+                margin: "20px 16px 0",
+                justifyContent: "center",
+                paddingBottom: "547px"
               }}
             >
               <div style={{ padding: 20, width: "50%", background: "#fff" }}>

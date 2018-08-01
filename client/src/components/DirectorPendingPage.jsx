@@ -344,9 +344,9 @@ class DirectorPendingPage extends Component {
             className="container"
             style={{
               display: "flex",
-              margin: "18px 10px 0",
+              margin: "20px 16px 0",
               justifyContent: "center",
-              paddingBottom: "336px"
+              paddingBottom: "606px"
             }}
           >
             <div style={{ padding: 20, background: "#fff" }}>

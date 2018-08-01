@@ -9,10 +9,11 @@ Package=(
 		"github.com/astaxie/beego"
 		"github.com/beego/bee"
 		"github.com/lib/pq"
-		"github.com/satori/go.uuid"
+		"github.com/mattn/go-sqlite3"		
 		"golang.org/x/crypto/bcrypt"
-		"gopkg.in/gomail.v2"
-		"github.com/dgrijalva/jwt-go/convey"		
+		"gopkg.in/gomail.v2"		
+		"github.com/dgrijalva/jwt-go"		
+		"github.com/satori/go.uuid"
 		"github.com/smartystreets/goconvey/convey"	
 )
 

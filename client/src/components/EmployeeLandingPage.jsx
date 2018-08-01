@@ -100,12 +100,12 @@ export class EmployeeLandingPage extends React.Component {
               className="container"
               style={{
                 display: "flex",
-                margin: "24px 16px 0",
+                margin: "20px 16px 0",
                 justifyContent: "space-around",
-                paddingBottom: "507px"
+                paddingBottom: "542px"
               }}
             >
-              <div style={{ padding: 20, width: "50%", background: "#fff" }}>
+              <div style={{ padding: 40, width: "50%", background: "#fff" }}>
                 <Row>
                   <Col span={12}>
                     <div

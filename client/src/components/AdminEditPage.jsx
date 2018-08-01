@@ -30,13 +30,7 @@ class AdminEditPage extends Component {
   }
 
   componentWillMount() {
-    console.log(" ----------------- Admin-Edit-User ----------------- ");
-    let id = Number(this.props.history.location.pathname.split("/").pop());
-    let user = this.props.history.location.state.users.filter(
-      el => el.employee_number === id
-    );
-    this.props.fetchedEdit(user[0]);
-    this.props.getSupervisors();
+    console.log(" ----------------- Admin-Edit-User ----------------- ");   
   }
 
   componentDidMount() {
@@ -61,8 +55,7 @@ class AdminEditPage extends Component {
     }
   }
 
-  saveEdit = () => {
-    console.log(this.props.user);
+  saveEdit = () => {    
     this.props.saveEditUser(this.props.user, url => {
       this.props.history.push(url);
     });
@@ -341,7 +334,7 @@ class AdminEditPage extends Component {
                       htmlType="submit"
                       type="primary"
                     >
-                      Edit
+                      UPDATE
                     </Button>
                   </FormItem>
                 </Form>

@@ -196,7 +196,7 @@ class AdminApprovePage extends Component {
       const date = new Date(value._d),
         mnth = ("0" + (date.getMonth() + 1)).slice(-2),
         day = ("0" + date.getDate()).slice(-2);
-      let dateFrom = [date.getFullYear(), mnth, day].join("-");
+      let dateFrom = [day, mnth, date.getFullYear(), ].join("-");
       this.setState({
         from: dateFrom
       });
@@ -208,7 +208,7 @@ class AdminApprovePage extends Component {
       const date = new Date(value._d),
         mnth = ("0" + (date.getMonth() + 1)).slice(-2),
         day = ("0" + date.getDate()).slice(-2);
-      let dateTo = [date.getFullYear(), mnth, day].join("-");
+      let dateTo = [day, mnth, date.getFullYear(), ].join("-");
       this.setState({
         to: dateTo
       });
@@ -233,7 +233,7 @@ class AdminApprovePage extends Component {
       const date = new Date(value._d),
         mnth = ("0" + (date.getMonth() + 1)).slice(-2),
         day = ("0" + date.getDate()).slice(-2);
-      let dateFrom = [date.getFullYear(), mnth, day].join("-");
+      let dateFrom = [day, mnth, date.getFullYear(), ].join("-");
       this.setState({
         start: dateFrom
       });
@@ -245,7 +245,7 @@ class AdminApprovePage extends Component {
       const date = new Date(value._d),
         mnth = ("0" + (date.getMonth() + 1)).slice(-2),
         day = ("0" + date.getDate()).slice(-2);
-      let dateTo = [date.getFullYear(), mnth, day].join("-");
+      let dateTo = [day, mnth, date.getFullYear(), ].join("-");
       this.setState({
         end: dateTo
       });
@@ -397,12 +397,12 @@ class AdminApprovePage extends Component {
             className="container"
             style={{
               display: "flex",
-              margin: "18px 10px 0",
+              margin: "20px 16px 0",
               justifyContent: "center",
-              paddingBottom: "336px"
+              paddingBottom: "528px"
             }}
           >
-            <div style={{ padding: 40, background: "#fff" }}>
+            <div style={{ padding: 20, background: "#fff" }}>
               <Form
                 id="myForm"
                 layout="inline"

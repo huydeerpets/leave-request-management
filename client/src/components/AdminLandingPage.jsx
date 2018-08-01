@@ -16,19 +16,19 @@ class AdminLandingPage extends Component {
         title: "Employee Number",
         dataIndex: "employee_number",
         key: "employee_number",
-        width: "12%"
+        width: "10%"
       },
       {
         title: "Name",
         dataIndex: "name",
         key: "name",
-        width: "20%"
+        width: "18%"
       },
       {
         title: "Email",
         dataIndex: "email",
         key: "email",
-        width: "20%"
+        width: "18%"
       },
       {
         title: "Position",
@@ -40,13 +40,14 @@ class AdminLandingPage extends Component {
         title: "Role",
         dataIndex: "role",
         key: "role",
-        width: "12%"
+        width: "10%"
       },
       {
         title: "Action",
         key: "action",
-        width: "25%",
+        width: "45%",
         render: (text, record) => (
+          //  (record.employee_number))
           <span>
             <Button
               onClick={() => {
@@ -56,6 +57,7 @@ class AdminLandingPage extends Component {
             >
               Edit
             </Button>
+
             <Divider type="vertical" />
             <Popconfirm
               placement="top"
@@ -69,6 +71,19 @@ class AdminLandingPage extends Component {
             >
               <Button type="danger">Delete</Button>
             </Popconfirm>
+            <Divider type="vertical" />
+            {record.role === "supervisor" || record.role === "employee" ? (
+              <Button
+                onClick={() => {
+                  this.editBalance(record.employee_number);
+                }}
+                type="primary"
+              >
+                Edit Leave Balance
+              </Button>
+            ) : (
+              ""
+            )}
           </span>
         )
       }
@@ -93,6 +108,12 @@ class AdminLandingPage extends Component {
     });
   };
 
+  editBalance = employeeNumber => {
+    this.props.history.push({
+      pathname: "/admin/edit-balance/" + employeeNumber
+    });
+  };
+
   adminDeleteUser = (users, employeeNumber) => {
     this.props.adminDeleteUser(users, employeeNumber);
   };
@@ -113,12 +134,12 @@ class AdminLandingPage extends Component {
             className="container"
             style={{
               display: "flex",
-              margin: "24px 16px 0",
-              justifyContent: "space-around",
-              paddingBottom: "336px"
+              margin: "20px 16px 0",
+              justifyContent: "center",
+              paddingBottom: "627px"
             }}
           >
-            <div style={{ padding: 40, background: "#fff" }}>
+            <div style={{ padding: 20, background: "#fff" }}>
               <Table
                 columns={this.columns}
                 dataSource={this.props.users}

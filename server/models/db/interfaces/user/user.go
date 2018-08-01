@@ -36,7 +36,6 @@ type IBaseUser interface {
 		result structLogic.GetEmployee,
 		err error,
 	)
-
 	// GetTypeLeave
 	GetTypeLeave() (
 		result []structDB.TypeLeave,
@@ -64,20 +63,5 @@ type IBaseUser interface {
 	) (
 		result structLogic.UserTypeLeave,
 		err error,
-	)
-	// GetPendingRequest
-	GetPendingRequest(employeeNumber int64) (
-		[]structLogic.RequestPending,
-		error,
-	)
-	// GetAcceptRequest
-	GetAcceptRequest(employeeNumber int64) (
-		[]structLogic.RequestAccept,
-		error,
-	)
-	// GetRejectRequest
-	GetRejectRequest(employeeNumber int64) (
-		[]structLogic.RequestReject,
-		error,
 	)
 }

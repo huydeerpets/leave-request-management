@@ -194,9 +194,9 @@ class RegisterPage extends Component {
             className="container"
             style={{
               display: "flex",
-              margin: "24px 16px 0",
-              justifyContent: "space-around",
-              paddingBottom: "160px"
+              margin: "20px 16px 0",
+              justifyContent: "center",
+              paddingBottom: "96px"
             }}
           >
             <div

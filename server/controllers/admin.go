@@ -161,7 +161,7 @@ func (c *AdminController) UpdateUser() {
 	)
 
 	body := c.Ctx.Input.RequestBody
-	fmt.Println("UPDATE-USER=======>", string(body))
+	// fmt.Println("UPDATE-USER=======>", string(body))
 
 	err := json.Unmarshal(body, &reqUser)
 	if err != nil {
@@ -181,7 +181,6 @@ func (c *AdminController) UpdateUser() {
 
 	resTime, errTime := helpers.NowLoc("Asia/Jakarta")
 	helpers.CheckErr("err time", errTime)
-	fmt.Println(resTime)
 
 	user := structDB.User{
 		EmployeeNumber:   reqUser.EmployeeNumber,

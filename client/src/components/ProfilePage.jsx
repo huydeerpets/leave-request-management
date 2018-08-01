@@ -82,18 +82,17 @@ class ProfilePage extends Component {
             className="container"
             style={{
               display: "flex",
-              margin: "24px 16px 0",
+              margin: "20px 16px 0",
               justifyContent: "space-around",
-              paddingBottom: "160px"
+              paddingBottom: "179px"
             }}
           >
             <div
               style={{
-                padding: 150,
+                padding: 100,
                 paddingBottom: 50,
                 paddingTop: 50,
-                background: "#fff",
-                minHeight: 360
+                background: "#fff"
               }}
             >
               <h1> My Profile </h1>
