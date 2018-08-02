@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
-// import MediaQuery from "react-responsive";
 import { handleFormInput, submitLogin } from "../store/Actions/loginActions";
 import { Layout, Form, Icon, Input, Button } from "antd";
 const { Header, Content } = Layout;

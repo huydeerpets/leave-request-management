@@ -1,4 +1,3 @@
-import setAuthorizationToken from '../../utils/setAuthorizationToken';
 // import jwtDecode from 'jwt-decode';
 import {
 	ROOT_API,
@@ -41,7 +40,7 @@ export function submitLogin(payload, pusher) {
 					const token = body['Token']
 					const id = body['ID']
 					const role = body['Role']
-					setAuthorizationToken(token);
+										
 					if (role === 'admin') {
 						localStorage.setItem('token', token)
 						localStorage.setItem('role', role)
