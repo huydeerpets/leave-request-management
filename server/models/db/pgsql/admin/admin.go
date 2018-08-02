@@ -86,23 +86,22 @@ func (u *Admin) DeleteUser(employeeNumber int64) (err error) {
 }
 
 // GetUsers ...
-func (u *Admin) GetUsers() ([]structDB.User, error) {
+func (u *Admin) GetUsers() (result []structDB.User, err error) {
 	var (
-		user  []structDB.User
-		table structDB.User
-		roles []string
+		dbUser structDB.User
+		roles  []string
 	)
 	roles = append(roles, "employee", "supervisor", "director")
 
 	o := orm.NewOrm()
-	count, err := o.Raw("SELECT * FROM "+table.TableName()+" WHERE role IN (?,?,?)", roles).QueryRows(&user)
+	count, err := o.Raw("SELECT * FROM "+dbUser.TableName()+" WHERE role IN (?,?,?)", roles).QueryRows(&result)
 	if err != nil {
 		helpers.CheckErr("Failed get users @GetUsers", err)
-		return user, err
+		return result, err
 	}
 	beego.Debug("Total user =", count)
 
-	return user, err
+	return result, err
 }
 
 // GetUser ...
@@ -118,9 +117,6 @@ func (u *Admin) GetUser(employeeNumber int64) (result structDB.User, err error) 
 		Where(`employee_number = ? `)
 	qb.Limit(1)
 	sql := qb.String()
-
-	// res, errHas := helpers.HashPassword(result.Password)
-	// fmt.Println("hash================>", res)
 
 	errRaw := o.Raw(sql, employeeNumber).QueryRow(&result)
 	if errRaw != nil {

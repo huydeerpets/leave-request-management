@@ -26,9 +26,9 @@ type IBaseUser interface {
 		result structLogic.GetDirector,
 		err error,
 	)
-	// GetSupervisor
-	GetSupervisor(employeeNumber int64) (
-		result structLogic.GetSupervisor,
+	// GetSupervisors
+	GetSupervisors() (
+		result []structLogic.GetSupervisors,
 		err error,
 	)
 	// GetEmployee
@@ -36,14 +36,10 @@ type IBaseUser interface {
 		result structLogic.GetEmployee,
 		err error,
 	)
+
 	// GetTypeLeave
 	GetTypeLeave() (
 		result []structDB.TypeLeave,
-		err error,
-	)
-	// GetSupervisors
-	GetSupervisors() (
-		result []structLogic.GetSupervisors,
 		err error,
 	)
 	// GetSumarry
@@ -51,17 +47,23 @@ type IBaseUser interface {
 		[]structLogic.UserSumarry,
 		error,
 	)
-	// GetUserTypeLeave
-	GetUserTypeLeave(employeeNumber int64) (
-		result []structLogic.UserTypeLeave,
-		err error,
-	)
 	// GetUserLeaveRemaining
 	GetUserLeaveRemaining(
 		typeID int64,
 		employeeNumber int64,
 	) (
 		result structLogic.UserTypeLeave,
+		err error,
+	)
+
+	// GetSupervisor
+	GetSupervisor(employeeNumber int64) (
+		result structLogic.GetSupervisor,
+		err error,
+	)
+	// GetUserTypeLeave
+	GetUserTypeLeave(employeeNumber int64) (
+		result []structLogic.UserTypeLeave,
 		err error,
 	)
 }

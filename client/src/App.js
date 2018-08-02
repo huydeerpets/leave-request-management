@@ -49,7 +49,6 @@ class App extends Component {
               <Route exact path="/login" component={LoginPage} />
               <Route exact path="/reset-password" component={ResetPasswordPage} />
 
-
               <Route exact path="/admin" component={AdminLandingPage} />
               <Route exact path="/admin/register-user" component={RegisterPage} />            
               <Route exact path={`/admin/edit-user/:id`} component={AdminEditPage}/>

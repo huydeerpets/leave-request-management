@@ -5,6 +5,7 @@ import (
 	"errors"
 	"server/helpers"
 	"server/helpers/constant"
+
 	userLogic "server/models/db/pgsql/admin"
 	structAPI "server/structs/api"
 	structDB "server/structs/db"
@@ -51,6 +52,7 @@ func (u *User) GetJWT(loginData *structAPI.ReqLogin) (result structAPI.RespLogin
 		helpers.CheckErr("error get token @GetJWT", err)
 		return RespLogin, errors.New("Failed Generating token")
 	}
+
 	RespLogin.Token = token
 	RespLogin.ID = user.EmployeeNumber
 	RespLogin.Role = user.Role
@@ -60,19 +62,23 @@ func (u *User) GetJWT(loginData *structAPI.ReqLogin) (result structAPI.RespLogin
 
 // ForgotPassword ...
 func (u *User) ForgotPassword(e *structLogic.PasswordReset) error {
-	var count int
-	var getEmployee structLogic.GetEmployee
-	var user structDB.User
+	var (
+		dbUser      structDB.User
+		getEmployee structLogic.GetEmployee
+		count       int
+	)
+
 	passwordReset := "JDJhJDEwJGtLeW42RFBOOEt2WUdpMlZHdHJ6bnVqY0gyU0lYUFNBMFVDQ0VQMW1kSWRIcHRmdWRsTmJl"
 
 	o := orm.NewOrm()
-	o.Raw(`SELECT count(*) as Count FROM `+user.TableName()+` WHERE email = ?`, e.Email).QueryRow(&count)
-	o.Raw(`SELECT name, email FROM `+user.TableName()+` WHERE email = ?`, e.Email).QueryRow(&getEmployee)
+
+	o.Raw(`SELECT count(*) as Count FROM `+dbUser.TableName()+` WHERE email = ?`, e.Email).QueryRow(&count)
+	o.Raw(`SELECT name, email FROM `+dbUser.TableName()+` WHERE email = ?`, e.Email).QueryRow(&getEmployee)
 
 	if count == 0 {
 		return errors.New("email not register")
 	} else {
-		_, errRAW := o.Raw(`UPDATE `+user.TableName()+` SET password = ? WHERE email = ?`, passwordReset, e.Email).Exec()
+		_, errRAW := o.Raw(`UPDATE `+dbUser.TableName()+` SET password = ? WHERE email = ?`, passwordReset, e.Email).Exec()
 		if errRAW != nil {
 			helpers.CheckErr("error forgot password @ForgotPassword", errRAW)
 		}
@@ -80,13 +86,14 @@ func (u *User) ForgotPassword(e *structLogic.PasswordReset) error {
 		helpers.GoMailForgotPassword(getEmployee.Email, getEmployee.Name)
 		return errRAW
 	}
-	// return error
 }
 
 // UpdatePassword ...
 func (u *User) UpdatePassword(p *structLogic.NewPassword, employeeNumber int64) (err error) {
-	var user structDB.User
-	var admin userLogic.Admin
+	var (
+		dbUser structDB.User
+		admin  userLogic.Admin
+	)
 
 	o := orm.NewOrm()
 	qb, errQB := orm.NewQueryBuilder("mysql")
@@ -105,7 +112,7 @@ func (u *User) UpdatePassword(p *structLogic.NewPassword, employeeNumber int64) 
 		if len(bsNewPassword) < 7 && len(bsConfirmPassword) < 7 {
 			return errors.New("Password length minimum must be 7")
 		} else if p.NewPassword == p.ConfirmPassword {
-			qb.Update(user.TableName()).Set("password = ?").
+			qb.Update(dbUser.TableName()).Set("password = ?").
 				Where(`employee_number = ?`)
 			sql := qb.String()
 
@@ -225,6 +232,105 @@ func (u *User) GetEmployee(employeeNumber int64) (result structLogic.GetEmployee
 	return result, err
 }
 
+// GetSumarry ...
+func (u *User) GetSumarry(employeeNumber int64) ([]structLogic.UserSumarry, error) {
+	var (
+		sumarry     []structLogic.UserSumarry
+		dbLeave     structDB.LeaveRequest
+		dbTypeLeave structDB.TypeLeave
+	)
+
+	statSuccessInDirector := constant.StatusSuccessInDirector
+
+	o := orm.NewOrm()
+	qb, errQB := orm.NewQueryBuilder("mysql")
+	if errQB != nil {
+		helpers.CheckErr("Query builder failed @GetSumarry", errQB)
+		return sumarry, errQB
+	}
+
+	qb.Select(
+		dbTypeLeave.TableName()+".type_name",
+		"SUM("+dbLeave.TableName()+".total) as used").
+		From(dbLeave.TableName()).
+		InnerJoin(dbTypeLeave.TableName()).
+		On(dbTypeLeave.TableName() + ".id" + " = " + dbLeave.TableName() + ".type_leave_id").
+		Where(dbLeave.TableName() + `.employee_number = ? `).
+		And(dbLeave.TableName() + `.status = ?`).
+		GroupBy(dbTypeLeave.TableName() + `.type_name`)
+	sql := qb.String()
+
+	_, errRaw := o.Raw(sql, employeeNumber, statSuccessInDirector).QueryRows(&sumarry)
+	if errRaw != nil {
+		helpers.CheckErr("Failed Query Select @GetSumarry", errRaw)
+		return sumarry, errors.New("error get user summary")
+	}
+
+	return sumarry, errRaw
+}
+
+// GetUserTypeLeave ...
+func (u *User) GetUserTypeLeave(employeeNumber int64) (result []structLogic.UserTypeLeave, err error) {
+	var (
+		dbType          structDB.TypeLeave
+		dbUserTypeLeave structDB.UserTypeLeave
+	)
+
+	o := orm.NewOrm()
+	qb, errQB := orm.NewQueryBuilder("mysql")
+	if errQB != nil {
+		helpers.CheckErr("Query builder failed @GetUserTypeLeave", errQB)
+		return result, errQB
+	}
+
+	qb.Select(
+		dbType.TableName()+".type_name",
+		dbUserTypeLeave.TableName()+".leave_remaining").
+		From(dbType.TableName()).
+		InnerJoin(dbUserTypeLeave.TableName()).
+		On(dbUserTypeLeave.TableName() + ".type_leave_id" + " = " + dbType.TableName() + ".id").
+		Where(dbUserTypeLeave.TableName() + `.employee_number = ? `)
+	sql := qb.String()
+
+	_, errRaw := o.Raw(sql, employeeNumber).QueryRows(&result)
+	if errRaw != nil {
+		helpers.CheckErr("Failed Query Select @GetUserTypeLeave", errRaw)
+		return result, errors.New("error get")
+	}
+	return result, err
+}
+
+// GetUserLeaveRemaining ...
+func (u *User) GetUserLeaveRemaining(typeID int64, employeeNumber int64) (result structLogic.UserTypeLeave, err error) {
+	var (
+		dbType          structDB.TypeLeave
+		dbUserTypeLeave structDB.UserTypeLeave
+	)
+
+	o := orm.NewOrm()
+	qb, errQB := orm.NewQueryBuilder("mysql")
+	if errQB != nil {
+		helpers.CheckErr("Query builder failed @GetUserLeaveRemaining", errQB)
+		return result, errQB
+	}
+
+	qb.Select(
+		dbType.TableName()+".type_name",
+		dbUserTypeLeave.TableName()+".leave_remaining").
+		From(dbUserTypeLeave.TableName()).
+		InnerJoin(dbType.TableName()).
+		On(dbType.TableName() + ".id" + " = " + dbUserTypeLeave.TableName() + ".type_leave_id").
+		Where(dbUserTypeLeave.TableName() + `.type_leave_id = ? `).And(dbUserTypeLeave.TableName() + `.employee_number = ? `)
+	sql := qb.String()
+
+	errRaw := o.Raw(sql, typeID, employeeNumber).QueryRow(&result)
+	if errRaw != nil {
+		helpers.CheckErr("Failed Query Select @GetUserLeaveRemaining", errRaw)
+		return result, errors.New("error get")
+	}
+	return result, err
+}
+
 // GetSupervisors ...
 func (u *User) GetSupervisors() (result []structLogic.GetSupervisors, err error) {
 	var dbSupervisor structDB.User
@@ -272,105 +378,6 @@ func (u *User) GetTypeLeave() (result []structDB.TypeLeave, err error) {
 	_, errRaw := o.Raw(sql).QueryRows(&result)
 	if errRaw != nil {
 		helpers.CheckErr("Failed Query Select @GetTypeLeave", errRaw)
-		return result, errors.New("error get")
-	}
-	return result, err
-}
-
-// GetSumarry ...
-func (u *User) GetSumarry(employeeNumber int64) ([]structLogic.UserSumarry, error) {
-	var (
-		sumarry   []structLogic.UserSumarry
-		leave     structDB.LeaveRequest
-		typeLeave structDB.TypeLeave
-	)
-
-	statSuccessInDirector := constant.StatusSuccessInDirector
-
-	o := orm.NewOrm()
-	qb, errQB := orm.NewQueryBuilder("mysql")
-	if errQB != nil {
-		helpers.CheckErr("Query builder failed @GetSumarry", errQB)
-		return sumarry, errQB
-	}
-
-	qb.Select(
-		typeLeave.TableName()+".type_name",
-		"SUM("+leave.TableName()+".total) as used").
-		From(leave.TableName()).
-		InnerJoin(typeLeave.TableName()).
-		On(typeLeave.TableName() + ".id" + " = " + leave.TableName() + ".type_leave_id").
-		Where(leave.TableName() + `.employee_number = ? `).
-		And(leave.TableName() + `.status = ?`).
-		GroupBy(typeLeave.TableName() + `.type_name`)
-	sql := qb.String()
-
-	_, errRaw := o.Raw(sql, employeeNumber, statSuccessInDirector).QueryRows(&sumarry)
-	if errRaw != nil {
-		helpers.CheckErr("Failed Query Select @GetSumarry", errRaw)
-		return sumarry, errors.New("error get user summary")
-	}
-
-	return sumarry, errRaw
-}
-
-// GetUserTypeLeave ...
-func (u *User) GetUserTypeLeave(employeeNumber int64) (result []structLogic.UserTypeLeave, err error) {
-	var (
-		dbType        structDB.TypeLeave
-		userTypeLeave structDB.UserTypeLeave
-	)
-
-	o := orm.NewOrm()
-	qb, errQB := orm.NewQueryBuilder("mysql")
-	if errQB != nil {
-		helpers.CheckErr("Query builder failed @GetUserTypeLeave", errQB)
-		return result, errQB
-	}
-
-	qb.Select(
-		dbType.TableName()+".type_name",
-		userTypeLeave.TableName()+".leave_remaining").
-		From(dbType.TableName()).
-		InnerJoin(userTypeLeave.TableName()).
-		On(userTypeLeave.TableName() + ".type_leave_id" + " = " + dbType.TableName() + ".id").
-		Where(userTypeLeave.TableName() + `.employee_number = ? `)
-	sql := qb.String()
-
-	_, errRaw := o.Raw(sql, employeeNumber).QueryRows(&result)
-	if errRaw != nil {
-		helpers.CheckErr("Failed Query Select @GetUserTypeLeave", errRaw)
-		return result, errors.New("error get")
-	}
-	return result, err
-}
-
-// GetUserLeaveRemaining ...
-func (u *User) GetUserLeaveRemaining(typeID int64, employeeNumber int64) (result structLogic.UserTypeLeave, err error) {
-	var (
-		dbType        structDB.TypeLeave
-		userTypeLeave structDB.UserTypeLeave
-	)
-
-	o := orm.NewOrm()
-	qb, errQB := orm.NewQueryBuilder("mysql")
-	if errQB != nil {
-		helpers.CheckErr("Query builder failed @GetUserLeaveRemaining", errQB)
-		return result, errQB
-	}
-
-	qb.Select(
-		dbType.TableName()+".type_name",
-		userTypeLeave.TableName()+".leave_remaining").
-		From(userTypeLeave.TableName()).
-		InnerJoin(dbType.TableName()).
-		On(dbType.TableName() + ".id" + " = " + userTypeLeave.TableName() + ".type_leave_id").
-		Where(userTypeLeave.TableName() + `.type_leave_id = ? `).And(userTypeLeave.TableName() + `.employee_number = ? `)
-	sql := qb.String()
-
-	errRaw := o.Raw(sql, typeID, employeeNumber).QueryRow(&result)
-	if errRaw != nil {
-		helpers.CheckErr("Failed Query Select @GetUserLeaveRemaining", errRaw)
 		return result, errors.New("error get")
 	}
 	return result, err

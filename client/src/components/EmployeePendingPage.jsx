@@ -222,7 +222,7 @@ class EmployeePendingPage extends Component {
             <Button type="primary" onClick={() => this.showDetail(record)}>
               Detail
             </Button>
-            <Divider type="vertical" />
+            {/* <Divider type="vertical" />
             <Button
               onClick={() => {
                 this.editLeave(this.props.leaves, record.id);
@@ -230,7 +230,7 @@ class EmployeePendingPage extends Component {
               type="primary"
             >
               Edit
-            </Button>
+            </Button> */}
             <Divider type="vertical" />
             <Popconfirm
               placement="top"

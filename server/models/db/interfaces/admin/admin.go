@@ -13,8 +13,8 @@ type IBaseAdmin interface {
 	DeleteUser(employeeNumber int64) error
 	// GetUsers
 	GetUsers() (
-		[]structDB.User,
-		error,
+		result []structDB.User,
+		err error,
 	)
 	// GetUser
 	GetUser(employeeNumber int64) (
@@ -27,13 +27,13 @@ type IBaseAdmin interface {
 		employeeNumber int64,
 	) (err error)
 	// GetLeaveRequest
-	GetLeaveRequest() (
-		[]structLogic.RequestAccept,
+	GetLeaveRequestPending() (
+		[]structLogic.RequestPending,
 		error,
 	)
 	// GetLeaveRequest
-	GetLeaveRequestPending() (
-		[]structLogic.RequestPending,
+	GetLeaveRequest() (
+		[]structLogic.RequestAccept,
 		error,
 	)
 	// GetLeaveRequest

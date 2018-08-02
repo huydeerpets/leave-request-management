@@ -119,41 +119,6 @@ func (c *UserController) UpdateNewPassword() {
 	}
 }
 
-// GetTypeLeave ...
-func (c *UserController) GetTypeLeave() {
-	var resp structAPI.RespData
-	res, errGet := logic.DBPostUser.GetTypeLeave()
-	if errGet != nil {
-		resp.Error = errGet.Error()
-		c.Ctx.Output.SetStatus(400)
-	} else {
-		resp.Body = res
-	}
-
-	err := c.Ctx.Output.JSON(resp, false, false)
-	if err != nil {
-		helpers.CheckErr("failed giving output @GetTypeLeave", err)
-	}
-}
-
-// GetSupervisors ...
-func (c *UserController) GetSupervisors() {
-	var resp structAPI.RespData
-
-	res, errGet := logic.DBPostUser.GetSupervisors()
-	if errGet != nil {
-		resp.Error = errGet.Error()
-		c.Ctx.Output.SetStatus(400)
-	} else {
-		resp.Body = res
-	}
-
-	err := c.Ctx.Output.JSON(resp, false, false)
-	if err != nil {
-		helpers.CheckErr("failed giving output @GetSupervisors", err)
-	}
-}
-
 // GetUserSummary ...
 func (c *UserController) GetUserSummary() {
 	var (
@@ -205,5 +170,40 @@ func (c *UserController) GetUserTypeLeave() {
 	err := c.Ctx.Output.JSON(resp, false, false)
 	if err != nil {
 		helpers.CheckErr("failed giving output @GetUserTypeLeave", err)
+	}
+}
+
+// GetSupervisors ...
+func (c *UserController) GetSupervisors() {
+	var resp structAPI.RespData
+
+	res, errGet := logic.DBPostUser.GetSupervisors()
+	if errGet != nil {
+		resp.Error = errGet.Error()
+		c.Ctx.Output.SetStatus(400)
+	} else {
+		resp.Body = res
+	}
+
+	err := c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		helpers.CheckErr("failed giving output @GetSupervisors", err)
+	}
+}
+
+// GetTypeLeave ...
+func (c *UserController) GetTypeLeave() {
+	var resp structAPI.RespData
+	res, errGet := logic.DBPostUser.GetTypeLeave()
+	if errGet != nil {
+		resp.Error = errGet.Error()
+		c.Ctx.Output.SetStatus(400)
+	} else {
+		resp.Body = res
+	}
+
+	err := c.Ctx.Output.JSON(resp, false, false)
+	if err != nil {
+		helpers.CheckErr("failed giving output @GetTypeLeave", err)
 	}
 }
