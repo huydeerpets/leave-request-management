@@ -2,7 +2,7 @@ import {
 	createStore,
 	combineReducers,
 	applyMiddleware
-} from '../../../../../../../.cache/typescript/2.9/node_modules/redux'
+} from 'redux'
 import thunk from 'redux-thunk';
 
 import loginReducer from './Reducers/loginReducer'

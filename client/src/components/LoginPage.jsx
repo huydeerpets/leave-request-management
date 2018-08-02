@@ -191,8 +191,8 @@ class LoginPage extends Component {
 
           <Footer className="Login-footer">
             <p>
-              <a href="http://www.tnis.com">PT. TNIS Service Indonesia</a>&copy;
-              All Right Reserved 2018.
+              <a href="http://www.tnis.com">PT. TNIS Service Indonesia</a> &copy;
+              2018. All Right Reserved.
             </p>
           </Footer>
         </Layout>
