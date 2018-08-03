@@ -84,6 +84,9 @@ class LoginPage extends Component {
       getFieldError,
       isFieldTouched
     } = this.props.form;
+    const formStyle = {
+      width: "100%"
+    };
 
     const emailError = isFieldTouched("email") && getFieldError("email");
     const passwordError =
@@ -103,15 +106,15 @@ class LoginPage extends Component {
             className="container"
             style={{
               display: "flex",
-              margin: "138px 15px ",
-              justifyContent: "space-around"
+              margin: "153px 20px ",
+              justifyContent: "center"
             }}
           >
             <div
-              style={{ padding: 100, background: "#fff", "border-radius": 7 }}
+              style={{ padding: 70, background: "#fff", "border-radius": 7 }}
             >
-              <h1> Welcome! </h1>
               <Form onSubmit={this.handleSumbitLogin} className="login-form">
+                <h1 align="left">Login to your account</h1>
                 <FormItem
                   validateStatus={emailError ? "error" : ""}
                   help={emailError || ""}
@@ -139,6 +142,7 @@ class LoginPage extends Component {
                           style={{ color: "rgba(0,0,0,.25)" }}
                         />
                       }
+                      style={formStyle}
                     />
                   )}
                 </FormItem>
@@ -169,11 +173,9 @@ class LoginPage extends Component {
                     />
                   )}
                 </FormItem>
-
                 <FormItem>
                   <Button
                     type="primary"
-                    ghost
                     htmlType="submit"
                     className="login-form-button"
                     onClick={this.handleSumbitLogin}
@@ -182,8 +184,11 @@ class LoginPage extends Component {
                     LOGIN
                   </Button>
                 </FormItem>
-                <NavLink to="/reset-password">forgot password?</NavLink>
-
+                <h3 align="left">Forgot your password ?</h3>
+                no worries, click <NavLink to="/reset-password">
+                  here
+                </NavLink>{" "}
+                to reset your password.
                 <FormItem />
               </Form>
             </div>
@@ -191,8 +196,8 @@ class LoginPage extends Component {
 
           <Footer className="Login-footer">
             <p>
-              <a href="http://www.tnis.com">PT. TNIS Service Indonesia</a> &copy;
-              2018. All Right Reserved.
+              <a href="http://www.tnis.com">PT. TNIS Service Indonesia</a>{" "}
+              &copy; 2018. All Right Reserved.
             </p>
           </Footer>
         </Layout>

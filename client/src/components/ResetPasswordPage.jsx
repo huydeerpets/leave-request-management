@@ -46,6 +46,7 @@ class ResetPasswordPage extends Component {
     ) {
       this.props.history.push("/employee");
     }
+    this.props.form.validateFields();
   }
 
   handleSumbitLogin = e => {
@@ -71,11 +72,22 @@ class ResetPasswordPage extends Component {
 
     this.props.form.setFieldsValue({
       [e.target.name]: e.target.value
-    });    
+    });
   };
 
+  hasErrors(fieldsError) {
+    return Object.keys(fieldsError).some(field => fieldsError[field]);
+  }
+
   render() {
-    const { getFieldDecorator } = this.props.form;
+    const {
+      getFieldDecorator,
+      getFieldsError,
+      getFieldError,
+      isFieldTouched
+    } = this.props.form;
+    const emailError = isFieldTouched("email") && getFieldError("email");
+
     return (
       <div>
         <Layout className="App">
@@ -91,16 +103,24 @@ class ResetPasswordPage extends Component {
             className="container"
             style={{
               display: "flex",
-              margin: "170px 15px ",
+              margin: "192px 15px ",
               justifyContent: "space-around"
             }}
           >
             <div
-              style={{ padding: 100, background: "#fff", "border-radius": 7 }}
+              style={{ padding: 50, background: "#fff", "border-radius": 7 }}
             >
-              <h1> Welcome! </h1>
               <Form onSubmit={this.handleSumbitLogin} className="login-form">
-                <FormItem>
+                <h1 align="left"> Forget Password ?</h1>
+                <p align="left">
+                  Enter your e-mail address below <br /> so we can send back
+                  your password.
+                </p>
+
+                <FormItem
+                  validateStatus={emailError ? "error" : ""}
+                  help={emailError || ""}
+                >
                   {getFieldDecorator("email", {
                     rules: [
                       {
@@ -132,15 +152,15 @@ class ResetPasswordPage extends Component {
                 <FormItem>
                   <Button
                     type="primary"
-                    ghost
                     htmlType="submit"
                     className="login-form-button"
                     onClick={this.handleSumbitLogin}
+                    disabled={this.hasErrors(getFieldsError())}
                   >
                     FORGOT
                   </Button>
                 </FormItem>
-                <NavLink to="/">login!</NavLink>
+                <NavLink to="/">back!</NavLink>
 
                 <FormItem />
               </Form>
@@ -149,11 +169,8 @@ class ResetPasswordPage extends Component {
 
           <Footer className="Login-footer">
             <p>
-              <a href="http://opensource.org/licenses/mit-license.php"> MIT</a>.
-              The website content is licensed{" "}
-              <a href="http://www.tnis.com">
-                &copy; P.T TNIS Service Indonesia
-              </a>.
+              <a href="http://www.tnis.com">PT. TNIS Service Indonesia</a>{" "}
+              &copy; 2018. All Right Reserved.
             </p>
           </Footer>
         </Layout>

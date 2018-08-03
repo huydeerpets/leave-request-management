@@ -62,7 +62,7 @@ export class DirectorLandingPage extends Component {
     if (this.state.leaves) {
       for (let i = 0; i < this.state.leaves.length; i++) {
         events.push({
-          title: `${this.state.leaves[i].name} for ${
+          title: `${this.state.leaves[i].name} ${this.state.leaves[i].total} day(s) for ${
             this.state.leaves[i].type_name
           }`,
           start: this.formatDate(
