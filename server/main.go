@@ -24,5 +24,5 @@ func main() {
 }
 
 func init() {
-	db.RegisterPGSQL()
+	db.RegisterSQLite()
 }

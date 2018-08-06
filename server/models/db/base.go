@@ -22,28 +22,36 @@ func RegisterPGSQL() {
 	maxIdle := 30
 	maxConn := 30
 
-	// errRegisterDriver := orm.RegisterDriver("postgres", orm.DRPostgres)
-	// if errRegisterDriver != nil {
-	// 	helpers.CheckErr("error while register driver @RegisterPGSQL", errRegisterDriver)
-	// }
-
-	// errRegisterDataBase := orm.RegisterDataBase("default", "postgres",
-	// 	adapter.CallPGSQL(),
-	// 	maxIdle, maxConn)
-	// if errRegisterDataBase != nil {
-	// 	helpers.CheckErr("error while register DB @RegisterPGSQL", errRegisterDataBase)
-	// }
-
-	errRegisterDriver := orm.RegisterDriver("sqlite3", orm.DRSqlite)
+	errRegisterDriver := orm.RegisterDriver("postgres", orm.DRPostgres)
 	if errRegisterDriver != nil {
 		helpers.CheckErr("error while register driver @RegisterPGSQL", errRegisterDriver)
 	}
 
-	errRegisterDataBase := orm.RegisterDataBase("default", "sqlite3", adapter.CallSQLITE(), maxIdle, maxConn)
+	errRegisterDataBase := orm.RegisterDataBase("default", "postgres",
+		adapter.CallPGSQL(),
+		maxIdle, maxConn)
 	if errRegisterDataBase != nil {
 		helpers.CheckErr("error while register DB @RegisterPGSQL", errRegisterDataBase)
 	}
-	beego.Debug(adapter.CallSQLITE())
+
+	RegisterModel()
+}
+
+// RegisterSQLite ...
+func RegisterSQLite() {
+	maxIdle := 30
+	maxConn := 30
+
+	errRegisterDriver := orm.RegisterDriver("sqlite3", orm.DRSqlite)
+	if errRegisterDriver != nil {
+		helpers.CheckErr("error while register driver @RegisterSQLite", errRegisterDriver)
+	}
+
+	errRegisterDataBase := orm.RegisterDataBase("default", "sqlite3", adapter.CallSQLITE(), maxIdle, maxConn)
+	if errRegisterDataBase != nil {
+		helpers.CheckErr("error while register DB @RegisterSQLite", errRegisterDataBase)
+	}
+	// beego.Debug(adapter.CallSQLITE())
 
 	RegisterModel()
 	CreateTableUser()
